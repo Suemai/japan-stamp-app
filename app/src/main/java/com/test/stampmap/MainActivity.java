@@ -3,7 +3,12 @@ package com.test.stampmap;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.preference.PreferenceManager;
+import android.util.Log;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -11,6 +16,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
+import org.osmdroid.events.MapEventsReceiver;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
@@ -18,11 +24,14 @@ import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.compass.CompassOverlay;
 import org.osmdroid.views.overlay.gestures.RotationGestureOverlay;
+import org.osmdroid.views.overlay.infowindow.InfoWindow;
+import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MapEventsReceiver {
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
     private MapView map = null;
 
@@ -63,6 +72,13 @@ public class MainActivity extends AppCompatActivity {
         GeoPoint startPoint = new GeoPoint(36.117052, 140.098735); //my dorm bitch
         mapController.setCenter(startPoint);
 
+        //location marker - dunno if it works, but there's something
+        MyLocationNewOverlay locationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(ctx),map);
+        locationOverlay.enableMyLocation();
+        locationOverlay.enableFollowLocation();
+        map.getOverlays().add(locationOverlay);
+
+
         //add marker to starting point
         Marker startMarker = new Marker(map);
         startMarker.setPosition(startPoint);
@@ -71,24 +87,34 @@ public class MainActivity extends AppCompatActivity {
 
         map.getOverlays().add(startMarker);
 
-        //adds compass (doesn't do compass work whilst rotating with map)
-        CompassOverlay compass = new CompassOverlay(this,map);
-        compass.enableCompass();
-        map.getOverlays().add(compass);
 
+        //marker off on short press
+        MapEventsOverlay mapEventsOverlay = new MapEventsOverlay(this, this);
+        map.getOverlays().add(0, mapEventsOverlay);
+
+
+
+        //adds compass (doesn't do compass work whilst rotating with map)
+//        CompassOverlay compass = new CompassOverlay(this,map);
+//        compass.enableCompass();
+//        map.getOverlays().add(compass);
 
     }
+
 
     @Override
     public void onResume(){
         super.onResume();
         map.onResume();
+        Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this));
+        //locationOverlay.enableMyLocation();
     }
 
     @Override
     public void onPause(){
         super.onPause();
         map.onPause();
+        //locationOverlay.disableMyLocation();
     }
 
     @Override
@@ -124,5 +150,18 @@ public class MainActivity extends AppCompatActivity {
                     REQUEST_PERMISSIONS_REQUEST_CODE);
         }
     }
+
+    @Override
+    public boolean singleTapConfirmedHelper(GeoPoint p) {
+        InfoWindow.closeAllInfoWindowsOn(map);
+        return true;
+    }
+
+    @Override
+    public boolean longPressHelper(GeoPoint p) {
+        //DO NOTHING FOR NOW:
+    return false;
+    }
+
 
 }
