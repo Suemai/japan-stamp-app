@@ -23,6 +23,8 @@ import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.compass.CompassOverlay;
+import org.osmdroid.views.overlay.compass.IOrientationConsumer;
+import org.osmdroid.views.overlay.compass.IOrientationProvider;
 import org.osmdroid.views.overlay.gestures.RotationGestureOverlay;
 import org.osmdroid.views.overlay.infowindow.InfoWindow;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
@@ -95,9 +97,21 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
 
 
         //adds compass (doesn't do compass work whilst rotating with map)
-//        CompassOverlay compass = new CompassOverlay(this,map);
-//        compass.enableCompass();
-//        map.getOverlays().add(compass);
+        // update: now we compassing
+        CompassOverlay compass = new CompassOverlay(this, new IOrientationProvider() {
+            public boolean startOrientationProvider(IOrientationConsumer orientationConsumer) {return true;}
+            public void stopOrientationProvider() {}
+            public float getLastKnownOrientation() {return -map.getMapOrientation();}
+            public void destroy() {}
+        }, map);
+        map.getOverlays().add(compass);
+        compass.enableCompass();
+        compass.onOrientationChanged(-map.getMapOrientation(), compass.getOrientationProvider());
+        map.setOnTouchListener((v, event) -> {
+            v.performClick();
+            compass.onOrientationChanged(-map.getMapOrientation(), compass.getOrientationProvider());
+            return false;
+        });
 
     }
 
@@ -138,8 +152,8 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
         ArrayList<String> permissionsToRequest = new ArrayList<>();
         for (String permission : permissions){
             if (ContextCompat.checkSelfPermission(this, permission)
-                !=PackageManager.PERMISSION_GRANTED){
-                    permissionsToRequest.add(permission);
+                    !=PackageManager.PERMISSION_GRANTED){
+                permissionsToRequest.add(permission);
 
             }
         }
@@ -160,7 +174,7 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
     @Override
     public boolean longPressHelper(GeoPoint p) {
         //DO NOTHING FOR NOW:
-    return false;
+        return false;
     }
 
 
