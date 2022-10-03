@@ -8,6 +8,10 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,6 +23,8 @@ import org.osmdroid.config.Configuration;
 import org.osmdroid.events.MapEventsReceiver;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.CustomZoomButtonsController;
+import org.osmdroid.views.CustomZoomButtonsDisplay;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
@@ -62,23 +68,44 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
         //ZOOM man ZOOM
         map.setMultiTouchControls(true);
 
+
         //allow rotating movement
         RotationGestureOverlay rotationOverlay = new RotationGestureOverlay(this,map);
         rotationOverlay.setEnabled(true);
         map.setMultiTouchControls(true);
         map.getOverlays().add(rotationOverlay);
 
+        //remove zoom buttons
+        map.getZoomController().setVisibility(CustomZoomButtonsController.Visibility.NEVER);
+
         //set the starting point
         IMapController mapController = map.getController();
         mapController.setZoom(19.0);
+
+
         GeoPoint startPoint = new GeoPoint(36.117052, 140.098735); //my dorm bitch
-        mapController.setCenter(startPoint);
+        //Update: redundant line of code
+        //mapController.setCenter(startPoint);
+
 
         //location marker - dunno if it works, but there's something
         MyLocationNewOverlay locationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(ctx),map);
         locationOverlay.enableMyLocation();
         locationOverlay.enableFollowLocation();
         map.getOverlays().add(locationOverlay);
+
+
+        //button to get center your current location
+        ImageButton currentButton = findViewById(R.id.btn_passenger_current_location);
+        currentButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                locationOverlay.enableFollowLocation();
+                mapController.setZoom(19.5);
+                map.setMapOrientation(0);
+                return false;
+            }
+        });
 
 
         //add marker to starting point
