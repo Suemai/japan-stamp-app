@@ -27,6 +27,16 @@
                 android:layout_marginRight="10dp"
                 android:background="@drawable/ic_menu_mylocation"/>
 
+        <Button android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:background="@drawable/trans_circle"
+                android:id="@+id/compassButton"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_marginTop="12dp"
+                android:layout_marginLeft="12dp"
+                />
+
 
     </RelativeLayout>
 

@@ -140,6 +140,15 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
             return false;
         });
 
+        //compass on rotate on touch
+        Button compassButton = findViewById(R.id.compassButton);
+        compassButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                map.setMapOrientation(0);
+                return false;
+            }
+        });
     }
 
 
