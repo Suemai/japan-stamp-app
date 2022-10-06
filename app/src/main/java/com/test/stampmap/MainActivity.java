@@ -146,6 +146,7 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 map.setMapOrientation(0);
+                compass.onOrientationChanged(0, compass.getOrientationProvider());
                 return false;
             }
         });
