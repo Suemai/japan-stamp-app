@@ -36,6 +36,11 @@ import org.osmdroid.views.overlay.infowindow.InfoWindow;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
+import org.json.*;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -150,6 +155,21 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
                 return false;
             }
         });
+
+        String JSONString = loadJSONStringFromAsset("all-stamps-coords.json");
+        try {
+            JSONArray parsedJson = new JSONArray(JSONString);
+            ArrayList<JSONObject> filteredStamps = searchStampsByLocation(parsedJson, "北海道"); // gets stamps filtered by the search term
+            for (JSONObject stampSet : filteredStamps){
+                JSONObject stamp = stampSet.getJSONArray("スタンプ").getJSONObject(0); // only grabs the first stamp for now
+                Marker stampMarker = new Marker(map);
+                String coords = stamp.getJSONArray("経緯度").join(",");
+                stampMarker.setPosition(GeoPoint.fromDoubleString(coords, ','));
+                stampMarker.setAnchor(Marker.ANCHOR_CENTER,Marker.ANCHOR_CENTER);
+                stampMarker.setTitle(stamp.getString("名前"));
+                map.getOverlays().add(stampMarker);
+            }
+        } catch (JSONException ignored) {}
     }
 
 
@@ -214,5 +234,44 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
         return false;
     }
 
+    /**
+     * Thank you StackOverflow
+     *
+     * @param fileName file to be loaded from assets
+     * @return {@code String} of JSON data from file.
+     */
+    public String loadJSONStringFromAsset(String fileName) {
+        String json;
+        try {
+            InputStream is = this.getAssets().open(fileName);
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            json = new String(buffer, StandardCharsets.UTF_8);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+        return json;
+    }
 
+    /**
+     * Returns a filtered {@code ArrayList} of {@code JSONObject}s containing stamp information
+     *
+     * @throws JSONException if the {@code JSONArray} is invalid or something.
+     */
+    public ArrayList<JSONObject> searchStampsByLocation(JSONArray stampList, String input) throws JSONException {
+        ArrayList<JSONObject> results = new ArrayList<>();
+        for (int i=0; i<stampList.length(); i++){
+            JSONObject stampSet = stampList.getJSONObject(i);
+            try {
+                String address = stampSet.getString("所在地");
+                if (address.contains(input)){
+                    results.add(stampSet);
+                }
+            } catch (JSONException ignored){}
+        }
+        return results;
+    }
 }
