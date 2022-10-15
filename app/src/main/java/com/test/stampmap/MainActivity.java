@@ -7,6 +7,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.preference.PreferenceManager;
+import android.text.SpannableString;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -47,6 +48,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements MapEventsReceiver {
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
     private MapView map = null;
+    private final String STAMP_FILE = "all-stamps-coords.json";
 
 
     @Override
@@ -81,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
         map.getOverlays().add(rotationOverlay);
 
         //remove zoom buttons
-        map.getZoomController().setVisibility(CustomZoomButtonsController.Visibility.NEVER);
+        //map.getZoomController().setVisibility(CustomZoomButtonsController.Visibility.NEVER);
 
         //set the starting point
         IMapController mapController = map.getController();
@@ -156,20 +158,15 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
             }
         });
 
-        String JSONString = loadJSONStringFromAsset("all-stamps-coords.json");
-        try {
-            JSONArray parsedJson = new JSONArray(JSONString);
-            ArrayList<JSONObject> filteredStamps = searchStampsByLocation(parsedJson, "北海道"); // gets stamps filtered by the search term
-            for (JSONObject stampSet : filteredStamps){
-                JSONObject stamp = stampSet.getJSONArray("スタンプ").getJSONObject(0); // only grabs the first stamp for now
-                Marker stampMarker = new Marker(map);
-                String coords = stamp.getJSONArray("経緯度").join(",");
-                stampMarker.setPosition(GeoPoint.fromDoubleString(coords, ','));
-                stampMarker.setAnchor(Marker.ANCHOR_CENTER,Marker.ANCHOR_CENTER);
-                stampMarker.setTitle(stamp.getString("名前"));
-                map.getOverlays().add(stampMarker);
-            }
-        } catch (JSONException ignored) {}
+        JSONArray parsedJson = loadJSONArrayFromAsset(STAMP_FILE);
+        ArrayList<StampSet> filteredStamps = searchStampsByLocation(parsedJson, "大洗");
+        for (StampSet stampSet : filteredStamps){
+            Marker stampMarker = new Marker(map);
+            GeoPoint baseCoords = stampSet.getStamps().get(0).getCoordinates();
+            stampMarker.setTitle(stampSet.toString());
+            stampMarker.setPosition(baseCoords);
+            map.getOverlays().add(stampMarker);
+        }
     }
 
 
@@ -240,7 +237,7 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
      * @param fileName file to be loaded from assets
      * @return {@code String} of JSON data from file.
      */
-    public String loadJSONStringFromAsset(String fileName) {
+    public JSONArray loadJSONArrayFromAsset(String fileName) {
         String json;
         try {
             InputStream is = this.getAssets().open(fileName);
@@ -253,23 +250,23 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
             ex.printStackTrace();
             return null;
         }
-        return json;
+        JSONArray parsed = null;
+        try {
+            parsed = new JSONArray(json);
+        } catch (JSONException ignored) {}
+        return parsed;
     }
 
     /**
-     * Returns a filtered {@code ArrayList} of {@code JSONObject}s containing stamp information
-     *
-     * @throws JSONException if the {@code JSONArray} is invalid or something.
+     * @return a filtered {@link ArrayList} of {@link StampSet}s containing stamp information
      */
-    public ArrayList<JSONObject> searchStampsByLocation(JSONArray stampList, String input) throws JSONException {
-        ArrayList<JSONObject> results = new ArrayList<>();
+    public ArrayList<StampSet> searchStampsByLocation(JSONArray stampList, String input) {
+        ArrayList<StampSet> results = new ArrayList<>();
         for (int i=0; i<stampList.length(); i++){
-            JSONObject stampSet = stampList.getJSONObject(i);
             try {
+                JSONObject stampSet = stampList.getJSONObject(i);
                 String address = stampSet.getString("所在地");
-                if (address.contains(input)){
-                    results.add(stampSet);
-                }
+                if (address.contains(input)) results.add(StampSet.StampSetFromJSON(stampSet));
             } catch (JSONException ignored){}
         }
         return results;
