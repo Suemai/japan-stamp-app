@@ -1,16 +1,12 @@
 package com.test.stampmap;
 
 import android.util.Log;
-import androidx.annotation.NonNull;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.function.Consumer;
+import java.util.*;
 
 public class StampSet implements Iterable<Stamp>{
     private final String name, address, difficulty, openHours, holiday;
@@ -20,8 +16,8 @@ public class StampSet implements Iterable<Stamp>{
         this.name = name;
         this.address = address;
         this.difficulty = difficulty;
-        this.openHours = openHours;
-        this.holiday = holiday;
+        this.openHours = !Objects.equals(openHours, "") ? openHours : "未確認";
+        this.holiday = !Objects.equals(holiday, "") ? holiday : "未確認";
         this.stamps = stamps;
     }
 
@@ -57,14 +53,18 @@ public class StampSet implements Iterable<Stamp>{
 
     public static StampSet StampSetFromJSON(JSONObject JSONStampSet){
         List<Stamp> stamps = new ArrayList<>();
+        String[] keyNames = new String[JSONStampSet.length()];
         try {
+            keyNames = JSONStampSet.names().join(",").replace("\"", "").split(",");
             JSONArray JSONStamps = JSONStampSet.getJSONArray("スタンプ");
             for (int i=0; i<JSONStamps.length(); i++) {
                 JSONObject JSONStamp = JSONStamps.getJSONObject(i);
                 stamps.add(Stamp.StampFromJSON(JSONStamp));
             }
         } catch (JSONException ignored) {}
-        return new StampSet(JSONStampSet.optString("名前"), JSONStampSet.optString("所在地"), JSONStampSet.optString("難易度"), JSONStampSet.optString("営業時間"), JSONStampSet.optString("定休日"), stamps);
+        String openHoursKey = Arrays.stream(keyNames).filter(key -> key.contains("営業時間")).findFirst().orElse("営業時間");
+        String holidayKey = Arrays.stream(keyNames).filter(key -> key.contains("定休日")).findFirst().orElse("定休日");
+        return new StampSet(JSONStampSet.optString("名前"), JSONStampSet.optString("所在地"), JSONStampSet.optString("難易度"), JSONStampSet.optString(openHoursKey), JSONStampSet.optString(holidayKey), stamps);
     }
 
     /**

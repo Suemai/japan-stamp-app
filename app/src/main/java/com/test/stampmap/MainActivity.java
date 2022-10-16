@@ -3,17 +3,12 @@ package com.test.stampmap;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.preference.PreferenceManager;
-import android.text.SpannableString;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -24,8 +19,6 @@ import org.osmdroid.config.Configuration;
 import org.osmdroid.events.MapEventsReceiver;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.CustomZoomButtonsController;
-import org.osmdroid.views.CustomZoomButtonsDisplay;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
@@ -43,7 +36,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements MapEventsReceiver {
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
@@ -159,7 +151,9 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
         });
 
         JSONArray parsedJson = loadJSONArrayFromAsset(STAMP_FILE);
-        ArrayList<StampSet> filteredStamps = searchStampsByLocation(parsedJson, "大洗");
+        IFilter[] filters = {Filters.Prefecture.TOKYO, Filters.Prefecture.KYOTO, Filters.Prefecture.AOMORI, Filters.Difficulty.THREE, Filters.SearchType.NAME};
+        ArrayList<StampSet> filteredStamps = Filters.FilterStamps(parsedJson, filters, "JR");
+
         for (StampSet stampSet : filteredStamps){
             Marker stampMarker = new Marker(map);
             GeoPoint baseCoords = stampSet.getStamps().get(0).getCoordinates();
@@ -235,7 +229,7 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
      * Thank you StackOverflow
      *
      * @param fileName file to be loaded from assets
-     * @return {@code String} of JSON data from file.
+     * @return {@link String} of JSON data from file.
      */
     public JSONArray loadJSONArrayFromAsset(String fileName) {
         String json;
@@ -255,20 +249,5 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
             parsed = new JSONArray(json);
         } catch (JSONException ignored) {}
         return parsed;
-    }
-
-    /**
-     * @return a filtered {@link ArrayList} of {@link StampSet}s containing stamp information
-     */
-    public ArrayList<StampSet> searchStampsByLocation(JSONArray stampList, String input) {
-        ArrayList<StampSet> results = new ArrayList<>();
-        for (int i=0; i<stampList.length(); i++){
-            try {
-                JSONObject stampSet = stampList.getJSONObject(i);
-                String address = stampSet.getString("所在地");
-                if (address.contains(input)) results.add(StampSet.StampSetFromJSON(stampSet));
-            } catch (JSONException ignored){}
-        }
-        return results;
     }
 }
