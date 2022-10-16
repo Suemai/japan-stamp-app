@@ -46,7 +46,7 @@ public class Filters {
         GIFU("岐阜県"),
         GUNMA("群馬県"),
         HIROSHIMA("広島県"),
-        HOKKAIDO("北海道県"),
+        HOKKAIDO("北海道"),
         HYOGO("兵庫県"),
         IBARAKI("茨城県"),
         ISHIKAWA("石川県"),
