@@ -10,34 +10,58 @@
     <org.osmdroid.views.MapView
             android:id="@+id/mapView"
             android:layout_height="match_parent"
-            android:layout_width="match_parent"/>
+            android:layout_width="match_parent"
+    />
 
     <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
+        <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:minHeight="?attr/actionBarSize"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="5dp"
+                app:titleTextColor="@android:color/white"
+                android:background="@drawable/searchbar"
+                android:backgroundTint="#B3B1B1"
+                android:elevation="60dp"
+        >
+        </androidx.appcompat.widget.Toolbar>
 
 
         <ImageButton
                 android:id="@+id/btn_passenger_current_location"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
                 android:layout_alignParentRight="true"
-                android:layout_marginBottom="20dp"
+                android:layout_marginBottom="10dp"
                 android:layout_marginRight="10dp"
+                android:layout_above="@id/bottomNavigationView"
                 android:background="@drawable/ic_menu_mylocation"/>
 
         <Button android:layout_width="45dp"
                 android:layout_height="45dp"
                 android:background="@drawable/trans_circle"
                 android:id="@+id/compassButton"
-                android:layout_alignParentTop="true"
+                android:layout_below="@+id/toolbar"
                 android:layout_alignParentLeft="true"
                 android:layout_marginTop="12dp"
                 android:layout_marginLeft="12dp"
                 />
 
-
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottomNavigationView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:menu="@menu/bottom_nav_menu"
+    />
     </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

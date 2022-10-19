@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+            android:title="Explore"
+            android:id="@+id/explore"
+            android:icon="@drawable/explore_foreground"
+    />
+    <item
+            android:title="Filter"
+            android:id="@+id/filter"
+            android:icon="@drawable/filter_foreground"
+    />
+    <item
+            android:title="Settings"
+            android:id="@+id/settings"
+            android:icon="@drawable/settings_foreground"
+    />
+</menu>

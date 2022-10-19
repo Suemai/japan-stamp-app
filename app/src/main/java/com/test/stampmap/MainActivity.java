@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -19,6 +21,7 @@ import org.osmdroid.config.Configuration;
 import org.osmdroid.events.MapEventsReceiver;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.CustomZoomButtonsController;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
@@ -75,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
         map.getOverlays().add(rotationOverlay);
 
         //remove zoom buttons
-        //map.getZoomController().setVisibility(CustomZoomButtonsController.Visibility.NEVER);
+        map.getZoomController().setVisibility(CustomZoomButtonsController.Visibility.NEVER);
 
         //set the starting point
         IMapController mapController = map.getController();
@@ -150,6 +153,9 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
             }
         });
 
+        //moving the compass location
+        compass.setCompassCenter(40,100);
+
         JSONArray parsedJson = loadJSONArrayFromAsset(STAMP_FILE);
         IFilter[] filters = {Filters.Prefecture.TOKYO, Filters.Prefecture.KYOTO, Filters.Prefecture.AOMORI, Filters.Difficulty.THREE, Filters.SearchType.NAME};
         ArrayList<StampSet> filteredStamps = Filters.FilterStamps(parsedJson, filters, "JR");
@@ -223,6 +229,14 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
     public boolean longPressHelper(GeoPoint p) {
         //DO NOTHING FOR NOW:
         return false;
+    }
+
+    //search bar
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.search_options, menu);
+        return true;
     }
 
     /**
