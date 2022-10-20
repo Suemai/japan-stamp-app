@@ -1,6 +1,5 @@
 package com.test.stampmap;
 
-import android.util.Log;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -9,15 +8,16 @@ import org.json.JSONObject;
 import java.util.*;
 
 public class StampSet implements Iterable<Stamp>{
-    private final String name, address, difficulty, openHours, holiday;
+    private final String name, address, difficulty, openHours, holiday, entryFee;
     private final List<Stamp> stamps;
 
-    public StampSet(String name, String address, String difficulty, String openHours, String holiday, List<Stamp> stamps) {
+    public StampSet(String name, String address, String difficulty, String openHours, String holiday, String entryFee, List<Stamp> stamps) {
         this.name = name;
         this.address = address;
         this.difficulty = difficulty;
-        this.openHours = !Objects.equals(openHours, "") ? openHours : "未確認";
-        this.holiday = !Objects.equals(holiday, "") ? holiday : "未確認";
+        this.openHours = !openHours.equals("") ? openHours : "年中無休（仮）";
+        this.holiday = !holiday.equals("") ? holiday : "未確認";
+        this.entryFee = !entryFee.equals("") ? entryFee : "無料（仮）";
         this.stamps = stamps;
     }
 
@@ -64,7 +64,7 @@ public class StampSet implements Iterable<Stamp>{
         } catch (JSONException ignored) {}
         String openHoursKey = Arrays.stream(keyNames).filter(key -> key.contains("営業時間")).findFirst().orElse("営業時間");
         String holidayKey = Arrays.stream(keyNames).filter(key -> key.contains("定休日")).findFirst().orElse("定休日");
-        return new StampSet(JSONStampSet.optString("名前"), JSONStampSet.optString("所在地"), JSONStampSet.optString("難易度"), JSONStampSet.optString(openHoursKey), JSONStampSet.optString(holidayKey), stamps);
+        return new StampSet(JSONStampSet.optString("名前"), JSONStampSet.optString("所在地"), JSONStampSet.optString("難易度"), JSONStampSet.optString(openHoursKey), JSONStampSet.optString(holidayKey), JSONStampSet.optString("入場料（大人一般）"), stamps);
     }
 
     /**
@@ -78,7 +78,8 @@ public class StampSet implements Iterable<Stamp>{
         String address = "Address: " + this.address + "\n";
         String difficulty = "Difficulty: " + this.difficulty + "\n";
         String openHours = "Open Hours: " + this.openHours + "\n";
-        String holiday = "Holiday: " + this.holiday;
+        String holiday = "Holiday: " + this.holiday + "\n";
+        String entreeFee = "Entry Fee: " + this.entryFee;
         StringBuilder stamps = new StringBuilder();
         int i = 1;
         for (Stamp stamp : this){
@@ -87,6 +88,6 @@ public class StampSet implements Iterable<Stamp>{
             String stampInfo = stamp.toString();
             stamps.append(title).append(stampInfo);
         }
-        return name + address + difficulty + openHours + holiday + stamps;
+        return name + address + difficulty + openHours + holiday + entreeFee + stamps;
     }
 }

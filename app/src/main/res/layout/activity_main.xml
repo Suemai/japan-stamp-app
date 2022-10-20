@@ -25,11 +25,16 @@
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
                 android:layout_marginTop="5dp"
-                app:titleTextColor="@android:color/white"
+                app:titleTextColor="@android:color/black"
                 android:background="@drawable/searchbar"
-                android:backgroundTint="#B3B1B1"
-                android:elevation="60dp"
-        >
+                android:backgroundTint="#f5f3f0"
+                android:elevation="60dp">
+
+            <androidx.appcompat.widget.SearchView
+                    android:id="@+id/searchBar"
+                    android:title="@string/search"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
         </androidx.appcompat.widget.Toolbar>
 
 
