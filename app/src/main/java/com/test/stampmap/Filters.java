@@ -1,10 +1,11 @@
 package com.test.stampmap;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Filters {
     public enum Difficulty implements IFilter{
@@ -21,14 +22,6 @@ public class Filters {
         Difficulty(String value) {
             this.value = value;
         }
-        @Override
-        public boolean hasMatch(JSONObject stampSet, String searchTerm){
-            return stampSet.optString("難易度").contains(this.value);
-        }
-        @Override
-        public int filterType(){
-            return 1;
-        }
     }
     public enum SearchType implements IFilter{
         NAME("名前"),
@@ -39,16 +32,6 @@ public class Filters {
 
         SearchType(String value){
             this.value = value;
-        }
-        @Override
-        public boolean hasMatch(JSONObject stampSet, String searchTerm){
-            if (this.value.equals(""))
-                return (stampSet.optString(SearchType.NAME.value).contains(searchTerm) || stampSet.optString(SearchType.ADDRESS.value).contains(searchTerm));
-            else return (stampSet.optString(this.value).contains(searchTerm));
-        }
-        @Override
-        public int filterType(){
-            return 2;
         }
     }
     public enum Prefecture implements IFilter{
@@ -106,49 +89,50 @@ public class Filters {
         Prefecture(String value){
             this.value = value;
         }
-        @Override
-        public boolean hasMatch(JSONObject stampSet, String searchTerm){
-            return stampSet.optString(SearchType.ADDRESS.value).contains(this.value);
-        }
-        @Override
-        public int filterType(){
-            return 4;
-        }
     }
-    public enum EntryFee implements IFilter{
-        FREE("無料"),
-        PAID("円"),
-        ANY("");
 
-        public final String value;
+    public static ArrayList<StampSet> FilterStamps(JSONArray stampList, SearchType[] searchTypes, Difficulty[] difficulties, Prefecture[] prefectures, String searchTerm) {
+        ArrayList<StampSet> results = new ArrayList<>();
+        for (int i=0; i<stampList.length(); i++){
+            try {
+                boolean searchTypeMatch = false, diffMatch = false, prefectureMatch = false;
+                JSONObject stampSet = stampList.getJSONObject(i);
+                for (SearchType searchType : searchTypes) {
+                    if (searchType == SearchType.ANY) {
+                        if (stampSet.getString(SearchType.NAME.value).contains(searchTerm) ||
+                            stampSet.getString(SearchType.ADDRESS.value).contains(searchTerm)) searchTypeMatch = true;
+                    }
+                    else if (stampSet.getString(searchType.value).contains(searchTerm)) searchTypeMatch = true;
+                }
+                for (Difficulty difficulty : difficulties)
+                    if (stampSet.getString("難易度").contains(difficulty.value)) diffMatch = true;
+                for (Prefecture prefecture : prefectures)
+                    if (stampSet.getString(SearchType.ADDRESS.value).contains(prefecture.value)) prefectureMatch = true;
+                if (searchTypeMatch && diffMatch && prefectureMatch) results.add(StampSet.StampSetFromJSON(stampSet));
+            } catch (JSONException ignored){}
+        }
+        return results;
+    }
 
-        EntryFee(String value) {
-            this.value = value;
-        }
-        @Override
-        public boolean hasMatch(JSONObject stampSet, String searchTerm) {
-            String fee = stampSet.optString("入場料（大人一般）");
-            return !fee.equals("") ? fee.contains(this.value) : this != EntryFee.PAID;
-        }
-        @Override
-        public int filterType() {
-            return 8;
-        }
+    public static ArrayList<StampSet> FilterStamps(JSONArray stampList, SearchType[] searchTypes, String searchTerm) {
+        return FilterStamps(stampList, searchTypes, new Difficulty[]{Difficulty.ANY}, new Prefecture[]{Prefecture.ANY}, searchTerm);
+    }
+
+    public static ArrayList<StampSet> FilterStamps(JSONArray stampList, Difficulty[] difficulties, String searchTerm) {
+        return FilterStamps(stampList, new SearchType[]{SearchType.ANY}, difficulties,new Prefecture[]{Prefecture.ANY}, searchTerm);
     }
 
     public static ArrayList<StampSet> FilterStamps(JSONArray stampList, String searchTerm) {
-        return FilterStamps(stampList, new IFilter[]{SearchType.ANY}, searchTerm);
+        return FilterStamps(stampList, new SearchType[]{SearchType.ANY}, new Difficulty[]{Difficulty.ANY},new Prefecture[]{Prefecture.ANY}, searchTerm);
     }
 
     public static ArrayList<StampSet> FilterStamps(JSONArray stampList, IFilter[] filters, String searchTerm) {
-        ArrayList<StampSet> results = new ArrayList<>();
-        for (int i=0; i<stampList.length(); i++) {
-            JSONObject stampSet = stampList.optJSONObject(i);
-            Set<Integer> filterTypes = Arrays.stream(filters).mapToInt(IFilter::filterType).boxed().collect(Collectors.toSet());
-            Set<Integer> matchedFilterTypes = new HashSet<>();
-            for (IFilter filter : filters) if (filter.hasMatch(stampSet, searchTerm)) matchedFilterTypes.add(filter.filterType());
-            if (filterTypes.equals(matchedFilterTypes)) results.add(StampSet.StampSetFromJSON(stampSet));
-        }
-        return results;
+        Difficulty[] diffs = Arrays.stream(filters).filter(filter -> filter instanceof Difficulty).toArray(Difficulty[]::new);
+        SearchType[] searchTypes = Arrays.stream(filters).filter(filter -> filter instanceof SearchType).toArray(SearchType[]::new);
+        Prefecture[] prefectures = Arrays.stream(filters).filter(filter -> filter instanceof Prefecture).toArray(Prefecture[]::new);
+        searchTypes = searchTypes.length == 0 ? new SearchType[]{SearchType.ANY} : searchTypes;
+        diffs = diffs.length == 0 ? new Difficulty[]{Difficulty.ANY} : diffs;
+        prefectures = prefectures.length == 0 ? new Prefecture[]{Prefecture.ANY} : prefectures;
+        return FilterStamps(stampList, searchTypes, diffs, prefectures, searchTerm);
     }
 }
