@@ -5,15 +5,14 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MotionEvent;
-import android.view.View;
+import android.view.*;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
+import androidx.appcompat.widget.SearchView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import org.osmdroid.api.IMapController;
@@ -39,10 +38,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class MainActivity extends AppCompatActivity implements MapEventsReceiver {
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
     private MapView map = null;
+    private SearchView searchBar = null;
     private final String STAMP_FILE = "all-stamps-coords.json";
 
 
@@ -154,19 +155,34 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
         });
 
         //moving the compass location
-        compass.setCompassCenter(40,100);
+        compass.setCompassCenter(40, findViewById(R.id.toolbar).getBackground().getMinimumHeight());
 
-        JSONArray parsedJson = loadJSONArrayFromAsset(STAMP_FILE);
-        IFilter[] filters = {Filters.Prefecture.TOKYO, Filters.Prefecture.KYOTO, Filters.Prefecture.AOMORI, Filters.Difficulty.THREE, Filters.SearchType.NAME};
-        ArrayList<StampSet> filteredStamps = Filters.FilterStamps(parsedJson, filters, "JR");
+//        IFilter[] filters = {Filters.Prefecture.TOKYO, Filters.Prefecture.KYOTO, Filters.Prefecture.AOMORI, Filters.Prefecture.IBARAKI};
 
-        for (StampSet stampSet : filteredStamps){
-            Marker stampMarker = new Marker(map);
-            GeoPoint baseCoords = stampSet.getStamps().get(0).getCoordinates();
-            stampMarker.setTitle(stampSet.toString());
-            stampMarker.setPosition(baseCoords);
-            map.getOverlays().add(stampMarker);
-        }
+        searchBar = findViewById(R.id.searchBar);
+        searchBar.setQueryHint("KNOBHEAD");
+//        TextView textView = searchBar.findViewById(androidx.appcompat.R.id.search_src_text);
+//        textView.setHintTextColor(Color.RED);
+        searchBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                if (query.equals("")) return false;
+                map.getOverlays().removeAll(map.getOverlays().stream().filter(item -> item instanceof Marker).collect(Collectors.toList()));
+                JSONArray parsedJson = loadJSONArrayFromAsset(STAMP_FILE);
+                ArrayList<StampSet> filteredStamps = Filters.FilterStamps(parsedJson, query);
+
+                for (StampSet stampSet : filteredStamps) {
+                    Marker stampMarker = new Marker(map);
+                    GeoPoint baseCoords = stampSet.getStamps().get(0).getCoordinates();
+                    stampMarker.setTitle(stampSet.toString());
+                    stampMarker.setPosition(baseCoords);
+                    map.getOverlays().add(stampMarker);
+                }
+                return false;
+            }
+            @Override
+            public boolean onQueryTextChange(String newText) {return false;}
+        });
     }
 
 
@@ -222,6 +238,7 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
     @Override
     public boolean singleTapConfirmedHelper(GeoPoint p) {
         InfoWindow.closeAllInfoWindowsOn(map);
+        searchBar.clearFocus();
         return true;
     }
 
