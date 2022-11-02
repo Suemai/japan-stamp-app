@@ -1,5 +1,6 @@
 package com.test.stampmap;
 
+import Dialogues.BottomSheetDialogue;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -8,6 +9,7 @@ import android.util.Log;
 import android.view.*;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,6 +17,7 @@ import android.os.Bundle;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.events.MapEventsReceiver;
@@ -73,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
 
 
         //allow rotating movement
-        RotationGestureOverlay rotationOverlay = new RotationGestureOverlay(this,map);
+        RotationGestureOverlay rotationOverlay = new RotationGestureOverlay(this, map);
         rotationOverlay.setEnabled(true);
         map.setMultiTouchControls(true);
         map.getOverlays().add(rotationOverlay);
@@ -92,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
 
 
         //location marker - dunno if it works, but there's something
-        MyLocationNewOverlay locationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(ctx),map);
+        MyLocationNewOverlay locationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(ctx), map);
         locationOverlay.enableMyLocation();
         locationOverlay.enableFollowLocation();
         map.getOverlays().add(locationOverlay);
@@ -114,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
         //add marker to starting point
         Marker startMarker = new Marker(map);
         startMarker.setPosition(startPoint);
-        startMarker.setAnchor(Marker.ANCHOR_CENTER,Marker.ANCHOR_CENTER);
+        startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER);
         startMarker.setTitle("Ichinoya Building 35");
 
         map.getOverlays().add(startMarker);
@@ -125,14 +128,22 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
         map.getOverlays().add(0, mapEventsOverlay);
 
 
-
         //adds compass (doesn't do compass work whilst rotating with map)
         // update: now we compassing
         CompassOverlay compass = new CompassOverlay(this, new IOrientationProvider() {
-            public boolean startOrientationProvider(IOrientationConsumer orientationConsumer) {return true;}
-            public void stopOrientationProvider() {}
-            public float getLastKnownOrientation() {return -map.getMapOrientation();}
-            public void destroy() {}
+            public boolean startOrientationProvider(IOrientationConsumer orientationConsumer) {
+                return true;
+            }
+
+            public void stopOrientationProvider() {
+            }
+
+            public float getLastKnownOrientation() {
+                return -map.getMapOrientation();
+            }
+
+            public void destroy() {
+            }
         }, map);
         map.getOverlays().add(compass);
         compass.enableCompass();
@@ -180,9 +191,46 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
                 }
                 return false;
             }
+
             @Override
-            public boolean onQueryTextChange(String newText) {return false;}
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
         });
+
+
+        ImageButton filterBottom = findViewById(R.id.filter);
+        filterBottom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                BottomSheetDialogue filterSheet = new BottomSheetDialogue();
+                filterSheet.show(getSupportFragmentManager(),
+                        "ModalBottomSheet");
+            }
+        });
+
+
+
+        // distance filter do something about it
+        //commented out cus it crashes it for some reason
+//        SeekBar distanceFilter = findViewById(R.id.distance_slider);
+//        distanceFilter.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+//            @Override
+//            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+//
+//            }
+//
+//            @Override
+//            public void onStartTrackingTouch(SeekBar seekBar) {
+//
+//            }
+//
+//            @Override
+//            public void onStopTrackingTouch(SeekBar seekBar) {
+//
+//            }
+//        });
+
     }
 
 

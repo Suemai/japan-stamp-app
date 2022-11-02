@@ -15,26 +15,47 @@
 
     <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            tools:ignore="MissingConstraints">
+
 
         <androidx.appcompat.widget.Toolbar
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginTop="10dp"
                 android:id="@+id/toolbar"
                 android:minHeight="?attr/actionBarSize"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginTop="5dp"
                 app:titleTextColor="@android:color/black"
                 android:background="@drawable/searchbar"
                 android:backgroundTint="#f5f3f0"
-                android:elevation="60dp">
+                android:elevation="60dp"
+        >
 
-            <androidx.appcompat.widget.SearchView
-                    android:id="@+id/searchBar"
-                    android:title="@string/search"
+            <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginEnd="10dp">
+
+                <androidx.appcompat.widget.SearchView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/searchBar"
+                        android:layout_weight="0.9"
+                />
+
+                <ImageButton
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="center"
+                        android:id="@+id/filter"
+                        app:srcCompat="@drawable/filter_foreground"
+                        android:layout_weight="0.1"
+                        android:background="@null"
+                />
+            </LinearLayout>
         </androidx.appcompat.widget.Toolbar>
 
 
@@ -51,22 +72,22 @@
         <Button android:layout_width="45dp"
                 android:layout_height="45dp"
                 android:background="@drawable/trans_circle"
-                android:id="@+id/compassButton"
                 android:layout_below="@+id/toolbar"
+                android:id="@+id/compassButton"
                 android:layout_alignParentLeft="true"
                 android:layout_marginTop="12dp"
                 android:layout_marginLeft="12dp"
-                />
+        />
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:id="@+id/bottomNavigationView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:menu="@menu/bottom_nav_menu"
-    />
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+                android:id="@+id/bottomNavigationView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:menu="@menu/bottom_nav_menu"
+        />
     </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
