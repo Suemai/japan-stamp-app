@@ -1,10 +1,11 @@
-package com.test.stampmap;
+package com.test.stampmap.Filter;
 
-import Dialogues.BottomSheetDialogue;
+import com.test.stampmap.Activity.MainActivity;
+import com.test.stampmap.Dialogues.FilterSheetDialogue;
 import android.content.Context;
-import android.util.Log;
 import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
+import com.test.stampmap.Interface.IFilter;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,10 +23,10 @@ public class FilterAlertBox extends AlertDialog.Builder{
             if (selected) MainActivity.filters.add(type.values[index]);
             else MainActivity.filters.remove(type.values[index]);
         });
-        setPositiveButton("OK", (dialogInterface, l) -> BottomSheetDialogue.setTexts(textView, type));
+        setPositiveButton("OK", (dialogInterface, l) -> FilterSheetDialogue.setTexts(textView, type));
         setNeutralButton("Clear Filter", (dialogInterface, i) -> {
             MainActivity.filters.removeAll(MainActivity.filters.stream().filter(item -> item.filterType() == type.ordinal()).collect(Collectors.toList()));
-            BottomSheetDialogue.setTexts(textView, type);
+            FilterSheetDialogue.setTexts(textView, type);
         });
         show();
     }

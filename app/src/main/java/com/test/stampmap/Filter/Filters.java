@@ -1,14 +1,15 @@
-package com.test.stampmap;
+package com.test.stampmap.Filter;
 
+import com.test.stampmap.Interface.IFilter;
+import com.test.stampmap.Stamp.StampSet;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.*;
-import java.util.logging.Filter;
 import java.util.stream.Collectors;
 
 public class Filters {
-    public enum Difficulty implements IFilter{
+    public enum Difficulty implements IFilter {
         ZERO("☆☆☆☆☆"),
         ONE("★☆☆☆☆"),
         TWO("★★☆☆☆"),

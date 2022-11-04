@@ -1,4 +1,4 @@
-package com.test.stampmap;
+package com.test.stampmap.Stamp;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;

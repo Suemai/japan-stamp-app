@@ -1,13 +1,11 @@
-package com.test.stampmap;
+package com.test.stampmap.Activity;
 
-import Dialogues.BottomSheetDialogue;
+import com.test.stampmap.Dialogues.FilterSheetDialogue;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.preference.PreferenceManager;
-import android.renderscript.ScriptGroup;
-import android.util.Log;
 import android.view.*;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
@@ -17,7 +15,10 @@ import android.os.Bundle;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.test.stampmap.Filter.Filters;
+import com.test.stampmap.Interface.IFilter;
+import com.test.stampmap.R;
+import com.test.stampmap.Stamp.StampSet;
 import org.jetbrains.annotations.Nullable;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
@@ -43,7 +44,6 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class MainActivity extends AppCompatActivity implements MapEventsReceiver {
@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
     private MapView map = null;
     private SearchView searchBar = null;
     private final String STAMP_FILE = "all-stamps-coords.json";
-    private final BottomSheetDialogue filterSheet = new BottomSheetDialogue();
+    private final FilterSheetDialogue filterSheet = new FilterSheetDialogue();
     public static List<IFilter> filters = new ArrayList<>();
 
     @Override

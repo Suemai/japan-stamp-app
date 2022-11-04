@@ -1,4 +1,4 @@
-package com.test.stampmap;
+package com.test.stampmap.Interface;
 
 import org.json.JSONObject;
 

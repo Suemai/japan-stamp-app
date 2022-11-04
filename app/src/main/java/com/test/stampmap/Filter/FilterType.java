@@ -1,6 +1,9 @@
-package com.test.stampmap;
+package com.test.stampmap.Filter;
 
 import androidx.annotation.ArrayRes;
+import com.test.stampmap.Filter.Filters;
+import com.test.stampmap.Interface.IFilter;
+import com.test.stampmap.R;
 
 public enum FilterType {
     DIFFICULTY(R.array.difficulties, Filters.Difficulty.values(), "Difficulty"),

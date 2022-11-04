@@ -1,4 +1,4 @@
-package Dialogues;
+package com.test.stampmap.Dialogues;
 
 
 import android.os.Bundle;
@@ -9,12 +9,15 @@ import android.widget.*;
 import androidx.annotation.Nullable;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.test.stampmap.*;
+import com.test.stampmap.Activity.MainActivity;
+import com.test.stampmap.Filter.FilterAlertBox;
+import com.test.stampmap.Filter.FilterType;
+import com.test.stampmap.Interface.IFilter;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class BottomSheetDialogue extends BottomSheetDialogFragment {
+public class FilterSheetDialogue extends BottomSheetDialogFragment {
 
     @Override
     public View onCreateView(LayoutInflater layoutInflater, @Nullable ViewGroup container, @Nullable Bundle savedInstance){

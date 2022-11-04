@@ -1,6 +1,5 @@
-package com.test.stampmap;
+package com.test.stampmap.Stamp;
 
-import android.util.Log;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
