@@ -9,8 +9,8 @@ public enum FilterType {
     ENTRYFEE(R.array.entryfee, Filters.EntryFee.values(), "Entry Fee"),
     OPENHOURS(R.array.prefectures, Filters.Prefecture.values(), "Open Hours");
 
-    @ArrayRes final int itemsId;
-    final IFilter[] values;
+    @ArrayRes public final int itemsId;
+    public final IFilter[] values;
     public final String name;
 
     FilterType(@ArrayRes int itemsId, IFilter[] values, String name){

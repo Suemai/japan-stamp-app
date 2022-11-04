@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.test.stampmap.*;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,9 +43,10 @@ public class BottomSheetDialogue extends BottomSheetDialogFragment {
             textView.setText(stringBuilder.toString());
             return;
         }
+        String[] values = textView.getResources().getStringArray(type.itemsId);
         stringBuilder.append(type.name).append(": ");
         for (int i = 0; i < currentFilters.size(); i++) {
-            stringBuilder.append(currentFilters.get(i).getValue());
+            stringBuilder.append(values[((Enum<?>)currentFilters.get(i)).ordinal()]);
             if (i != currentFilters.size() - 1) stringBuilder.append(", ");
         }
         textView.setText(stringBuilder.toString());
