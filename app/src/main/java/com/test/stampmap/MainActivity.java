@@ -194,12 +194,8 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
             public boolean onQueryTextChange(String newText) {return false;}
         });
 
-
-
         ImageButton filterBottom = findViewById(R.id.filter);
         filterBottom.setOnClickListener(view -> filterSheet.show(getSupportFragmentManager(), "ModalBottomSheet"));
-
-
 
         // distance filter do something about it
         //commented out cus it crashes it for some reason

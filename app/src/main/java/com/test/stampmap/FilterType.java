@@ -11,7 +11,7 @@ public enum FilterType {
 
     @ArrayRes final int itemsId;
     final IFilter[] values;
-    final String name;
+    public final String name;
 
     FilterType(@ArrayRes int itemsId, IFilter[] values, String name){
         this.itemsId = itemsId;

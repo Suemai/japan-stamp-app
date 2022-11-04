@@ -30,6 +30,10 @@ public class Filters {
         public int filterType(){
             return FilterType.DIFFICULTY.ordinal();
         }
+        @Override
+        public String getValue() {
+            return this.value;
+        }
     }
     public enum SearchType implements IFilter{
         NAME("名前"),
@@ -50,6 +54,10 @@ public class Filters {
         @Override
         public int filterType(){
             return FilterType.SEARCH.ordinal();
+        }
+        @Override
+        public String getValue() {
+            return this.value;
         }
     }
     public enum Prefecture implements IFilter{
@@ -115,6 +123,10 @@ public class Filters {
         public int filterType(){
             return FilterType.PREFECTURE.ordinal();
         }
+        @Override
+        public String getValue() {
+            return this.value;
+        }
     }
     public enum EntryFee implements IFilter{
         FREE("無料"),
@@ -134,6 +146,11 @@ public class Filters {
         @Override
         public int filterType() {
             return FilterType.ENTRYFEE.ordinal();
+        }
+
+        @Override
+        public String getValue() {
+            return this.value;
         }
     }
 
