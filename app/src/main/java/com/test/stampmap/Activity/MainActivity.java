@@ -1,5 +1,7 @@
 package com.test.stampmap.Activity;
 
+import android.util.Log;
+import android.view.inputmethod.EditorInfo;
 import com.test.stampmap.Dialogues.FilterSheetDialogue;
 import android.Manifest;
 import android.app.Activity;
@@ -176,22 +178,15 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
         searchBar.setQueryHint("KNOBHEAD");
 
         TextView searchText = searchBar.findViewById(androidx.appcompat.R.id.search_src_text);
-        searchText.setOnKeyListener((v, keyCode, event) -> {
-            if (keyCode == KeyEvent.KEYCODE_ENTER){
-                if (searchBar.getQuery().toString().equals("")){
-                    InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                    return performSearch(null);
-                }
+
+        searchText.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_NULL){
+                InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                String queryText = searchBar.getQuery().toString();
+                return performSearch(queryText.equals("") ? null : queryText);
             }
             return false;
-        });
-
-        searchBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {return performSearch(query);}
-            @Override
-            public boolean onQueryTextChange(String newText) {return false;}
         });
 
         ImageButton filterBottom = findViewById(R.id.filter);
