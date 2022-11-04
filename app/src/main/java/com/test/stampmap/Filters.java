@@ -143,9 +143,10 @@ public class Filters {
 
     public static ArrayList<StampSet> FilterStamps(JSONArray stampList, IFilter[] filters, String searchTerm) {
         ArrayList<StampSet> results = new ArrayList<>();
+        Set<Integer> filterTypes = Arrays.stream(filters).mapToInt(IFilter::filterType).boxed().collect(Collectors.toSet());
+        if (filterTypes.isEmpty()) return results;
         for (int i=0; i<stampList.length(); i++) {
             JSONObject stampSet = stampList.optJSONObject(i);
-            Set<Integer> filterTypes = Arrays.stream(filters).mapToInt(IFilter::filterType).boxed().collect(Collectors.toSet());
             Set<Integer> matchedFilterTypes = new HashSet<>();
             for (IFilter filter : filters) if (filter.hasMatch(stampSet, searchTerm)) matchedFilterTypes.add(filter.filterType());
             if (filterTypes.equals(matchedFilterTypes)) results.add(StampSet.StampSetFromJSON(stampSet));

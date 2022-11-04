@@ -172,11 +172,8 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
         //moving the compass location
         compass.setCompassCenter(40, findViewById(R.id.toolbar).getBackground().getMinimumHeight());
 
-//        IFilter[] filters = {Filters.Prefecture.TOKYO, Filters.Prefecture.KYOTO, Filters.Prefecture.AOMORI, Filters.Prefecture.IBARAKI};
         searchBar = findViewById(R.id.searchBar);
         searchBar.setQueryHint("KNOBHEAD");
-//        TextView textView = searchBar.findViewById(androidx.appcompat.R.id.search_src_text);
-//        textView.setHintTextColor(Color.RED);
 
         TextView searchText = searchBar.findViewById(androidx.appcompat.R.id.search_src_text);
         searchText.setOnKeyListener((v, keyCode, event) -> {
@@ -184,7 +181,7 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
                 if (searchBar.getQuery().toString().equals("")){
                     InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                    performSearch(null);
+                    return performSearch(null);
                 }
             }
             return false;
@@ -192,10 +189,7 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
 
         searchBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public boolean onQueryTextSubmit(String query) {
-                performSearch(query);
-                return false;
-            }
+            public boolean onQueryTextSubmit(String query) {return performSearch(query);}
             @Override
             public boolean onQueryTextChange(String newText) {return false;}
         });
@@ -229,7 +223,7 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
 
     }
 
-    public void performSearch(@Nullable String query){
+    public boolean performSearch(@Nullable String query){
         map.getOverlays().removeAll(map.getOverlays().stream().filter(item -> item instanceof Marker).collect(Collectors.toList()));
         JSONArray parsedJson = loadJSONArrayFromAsset(STAMP_FILE);
         List<IFilter> clone = (List<IFilter>)((ArrayList<IFilter>) filters).clone();
@@ -252,6 +246,7 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
                 return true;
             });
         }
+        return false;
     }
 
     @Override
