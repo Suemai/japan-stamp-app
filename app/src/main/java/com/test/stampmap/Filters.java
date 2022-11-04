@@ -4,6 +4,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.*;
+import java.util.logging.Filter;
 import java.util.stream.Collectors;
 
 public class Filters {
@@ -27,7 +28,7 @@ public class Filters {
         }
         @Override
         public int filterType(){
-            return 1;
+            return FilterType.DIFFICULTY.ordinal();
         }
     }
     public enum SearchType implements IFilter{
@@ -48,7 +49,7 @@ public class Filters {
         }
         @Override
         public int filterType(){
-            return 2;
+            return FilterType.SEARCH.ordinal();
         }
     }
     public enum Prefecture implements IFilter{
@@ -112,7 +113,7 @@ public class Filters {
         }
         @Override
         public int filterType(){
-            return 4;
+            return FilterType.PREFECTURE.ordinal();
         }
     }
     public enum EntryFee implements IFilter{
@@ -132,7 +133,7 @@ public class Filters {
         }
         @Override
         public int filterType() {
-            return 8;
+            return FilterType.ENTRYFEE.ordinal();
         }
     }
 

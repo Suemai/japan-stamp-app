@@ -7,10 +7,7 @@ import android.content.pm.PackageManager;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.*;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.SeekBar;
-import android.widget.TextView;
+import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -18,6 +15,7 @@ import androidx.appcompat.widget.SearchView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import org.jetbrains.annotations.Nullable;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.events.MapEventsReceiver;
@@ -41,6 +39,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class MainActivity extends AppCompatActivity implements MapEventsReceiver {
@@ -48,7 +48,8 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
     private MapView map = null;
     private SearchView searchBar = null;
     private final String STAMP_FILE = "all-stamps-coords.json";
-
+    private final BottomSheetDialogue filterSheet = new BottomSheetDialogue();
+    public static List<IFilter> filters = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -169,45 +170,32 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
         compass.setCompassCenter(40, findViewById(R.id.toolbar).getBackground().getMinimumHeight());
 
 //        IFilter[] filters = {Filters.Prefecture.TOKYO, Filters.Prefecture.KYOTO, Filters.Prefecture.AOMORI, Filters.Prefecture.IBARAKI};
-
         searchBar = findViewById(R.id.searchBar);
         searchBar.setQueryHint("KNOBHEAD");
 //        TextView textView = searchBar.findViewById(androidx.appcompat.R.id.search_src_text);
 //        textView.setHintTextColor(Color.RED);
+
+
+        TextView searchText = searchBar.findViewById(androidx.appcompat.R.id.search_src_text);
+        searchText.setOnKeyListener((v, keyCode, event) -> {
+            if (keyCode == KeyEvent.KEYCODE_ENTER){
+                if (searchBar.getQuery().toString().equals("")) performSearch(null);
+            }
+            return false;
+        });
+
         searchBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                if (query.equals("")) return false;
-                map.getOverlays().removeAll(map.getOverlays().stream().filter(item -> item instanceof Marker).collect(Collectors.toList()));
-                JSONArray parsedJson = loadJSONArrayFromAsset(STAMP_FILE);
-                ArrayList<StampSet> filteredStamps = Filters.FilterStamps(parsedJson, query);
-
-                for (StampSet stampSet : filteredStamps) {
-                    Marker stampMarker = new Marker(map);
-                    GeoPoint baseCoords = stampSet.getStamps().get(0).getCoordinates();
-                    stampMarker.setTitle(stampSet.toString());
-                    stampMarker.setPosition(baseCoords);
-                    map.getOverlays().add(stampMarker);
-                }
+                performSearch(query);
                 return false;
             }
-
             @Override
-            public boolean onQueryTextChange(String newText) {
-                return false;
-            }
+            public boolean onQueryTextChange(String newText) {return false;}
         });
-
 
         ImageButton filterBottom = findViewById(R.id.filter);
-        filterBottom.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                BottomSheetDialogue filterSheet = new BottomSheetDialogue();
-                filterSheet.show(getSupportFragmentManager(),
-                        "ModalBottomSheet");
-            }
-        });
+        filterBottom.setOnClickListener(view -> filterSheet.show(getSupportFragmentManager(), "ModalBottomSheet"));
 
 
 
@@ -231,6 +219,31 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
 //            }
 //        });
 
+    }
+
+    public void performSearch(@Nullable String query){
+        map.getOverlays().removeAll(map.getOverlays().stream().filter(item -> item instanceof Marker).collect(Collectors.toList()));
+        JSONArray parsedJson = loadJSONArrayFromAsset(STAMP_FILE);
+        List<IFilter> clone = (List<IFilter>)((ArrayList<IFilter>) filters).clone();
+        if(query!= null) clone.add(Filters.SearchType.ANY);
+        IFilter[] searchFilters = clone.toArray(new IFilter[0]);
+        ArrayList<StampSet> filteredStamps = Filters.FilterStamps(parsedJson, searchFilters, query);
+
+        for (StampSet stampSet : filteredStamps) {
+            Marker stampMarker = new Marker(map);
+            GeoPoint baseCoords = stampSet.getStamps().get(0).getCoordinates();
+            stampMarker.setTitle(stampSet.toString());
+            stampMarker.setPosition(baseCoords);
+            map.getOverlays().add(stampMarker);
+            stampMarker.setOnMarkerClickListener((marker, mapView) -> {
+                if (marker.isInfoWindowShown()) marker.closeInfoWindow();
+                else{
+                    mapView.getController().animateTo(marker.getPosition());
+                    marker.showInfoWindow();
+                }
+                return true;
+            });
+        }
     }
 
 

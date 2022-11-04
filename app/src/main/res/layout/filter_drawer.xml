@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:layout_height="match_parent"
+        xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_height="match_parent"
         android:layout_width="match_parent"
         xmlns:android="http://schemas.android.com/apk/res/android">
     <FrameLayout
@@ -36,22 +36,49 @@
                     android:valueTo="10"
                     android:id="@+id/distance_slider"/>
 
+<!--            <CheckBox-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    android:checked="false"-->
+<!--                    android:id="@+id/aichi_checkBox"-->
+<!--                    android:text="愛知県"/>-->
 
-
-            <CheckBox
+            <TextView
+                    android:id="@+id/prefecture_filter"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:checked="false"
-                    android:id="@+id/aichi_checkBox"
-                    android:text="愛知県"/>
-
-
-            <Button
-                    android:layout_margin="10dp"
-                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/akita_button"
-                    android:text="秋田県"/>
+                    android:background="@android:drawable/editbox_background"
+                    android:drawablePadding="16dp"
+                    android:hint="Select Prefecture"
+                    android:padding="12dp"
+                    app:drawableRightCompat="@android:drawable/arrow_down_float"/>
+
+            <TextView
+                    android:id="@+id/difficulty_filter"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:drawable/editbox_background"
+                    android:drawablePadding="16dp"
+                    android:hint="Select Difficulty"
+                    android:padding="12dp"
+                    app:drawableRightCompat="@android:drawable/arrow_down_float"/>
+
+            <TextView
+                    android:id="@+id/entryfee_filter"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:drawable/editbox_background"
+                    android:drawablePadding="16dp"
+                    android:hint="Select Entry Fee"
+                    android:padding="12dp"
+                    app:drawableRightCompat="@android:drawable/arrow_down_float"/>
+
+<!--            <Button-->
+<!--                    android:layout_margin="10dp"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:id="@+id/akita_button"-->
+<!--                    android:text="秋田県"/>-->
 
         </LinearLayout>
 
