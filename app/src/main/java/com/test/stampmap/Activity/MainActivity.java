@@ -1,5 +1,6 @@
 package com.test.stampmap.Activity;
 
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.inputmethod.EditorInfo;
 import com.test.stampmap.Dialogues.FilterSheetDialogue;
@@ -183,8 +184,9 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
             if (actionId == EditorInfo.IME_NULL){
                 InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+
                 String queryText = searchBar.getQuery().toString();
-                return performSearch(queryText.equals("") ? null : queryText);
+                return performSearch(TextUtils.getTrimmedLength(queryText) > 0 ? queryText : null);
             }
             return false;
         });
@@ -237,6 +239,7 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
                 return true;
             });
         }
+        filters.clear();
         return false;
     }
 
