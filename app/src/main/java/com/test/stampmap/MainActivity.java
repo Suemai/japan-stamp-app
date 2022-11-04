@@ -2,11 +2,14 @@ package com.test.stampmap;
 
 import Dialogues.BottomSheetDialogue;
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.preference.PreferenceManager;
+import android.renderscript.ScriptGroup;
 import android.util.Log;
 import android.view.*;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
@@ -175,11 +178,14 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
 //        TextView textView = searchBar.findViewById(androidx.appcompat.R.id.search_src_text);
 //        textView.setHintTextColor(Color.RED);
 
-
         TextView searchText = searchBar.findViewById(androidx.appcompat.R.id.search_src_text);
         searchText.setOnKeyListener((v, keyCode, event) -> {
             if (keyCode == KeyEvent.KEYCODE_ENTER){
-                if (searchBar.getQuery().toString().equals("")) performSearch(null);
+                if (searchBar.getQuery().toString().equals("")){
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                    performSearch(null);
+                }
             }
             return false;
         });
@@ -193,6 +199,8 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
             @Override
             public boolean onQueryTextChange(String newText) {return false;}
         });
+
+
 
         ImageButton filterBottom = findViewById(R.id.filter);
         filterBottom.setOnClickListener(view -> filterSheet.show(getSupportFragmentManager(), "ModalBottomSheet"));
@@ -245,7 +253,6 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
             });
         }
     }
-
 
     @Override
     public void onResume(){
