@@ -2,17 +2,21 @@ package com.test.stampmap.Dialogues;
 
 
 import android.os.Bundle;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.android.material.slider.Slider;
 import com.test.stampmap.*;
 import com.test.stampmap.Activity.MainActivity;
 import com.test.stampmap.Filter.FilterAlertBox;
 import com.test.stampmap.Filter.FilterType;
 import com.test.stampmap.Interface.IFilter;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,6 +30,7 @@ public class FilterSheetDialogue extends BottomSheetDialogFragment {
         TextView prefectureFilter = v.findViewById(R.id.prefecture_filter);
         TextView difficultyFilter = v.findViewById(R.id.difficulty_filter);
         TextView entryfeeFilter = v.findViewById(R.id.entryfee_filter);
+        Slider distanceSlider = v.findViewById(R.id.distance_slider);
 
         setTexts(prefectureFilter, FilterType.PREFECTURE);
         setTexts(difficultyFilter, FilterType.DIFFICULTY);
@@ -34,6 +39,9 @@ public class FilterSheetDialogue extends BottomSheetDialogFragment {
         prefectureFilter.setOnClickListener(view -> new FilterAlertBox(requireContext(), prefectureFilter, FilterType.PREFECTURE));
         difficultyFilter.setOnClickListener(view -> new FilterAlertBox(requireContext(), difficultyFilter, FilterType.DIFFICULTY));
         entryfeeFilter.setOnClickListener(view -> new FilterAlertBox(requireContext(), entryfeeFilter, FilterType.ENTRYFEE));
+
+        distanceSlider.setValue(MainActivity.distanceSliderValue);
+        distanceSlider.addOnChangeListener((slider, value, fromUser) -> MainActivity.distanceSliderValue = value);
 
         return v;
     }

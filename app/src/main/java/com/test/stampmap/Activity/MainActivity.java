@@ -3,6 +3,7 @@ package com.test.stampmap.Activity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.inputmethod.EditorInfo;
+import com.google.android.material.slider.Slider;
 import com.test.stampmap.Dialogues.FilterSheetDialogue;
 import android.Manifest;
 import android.app.Activity;
@@ -54,8 +55,9 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
     private MapView map = null;
     private SearchView searchBar = null;
     private final String STAMP_FILE = "all-stamps-coords.json";
-    private final FilterSheetDialogue filterSheet = new FilterSheetDialogue();
     public static List<IFilter> filters = new ArrayList<>();
+    public static GpsMyLocationProvider locationProvider = null;
+    public static float distanceSliderValue = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,7 +104,8 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
 
 
         //location marker - dunno if it works, but there's something
-        MyLocationNewOverlay locationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(ctx), map);
+        locationProvider = new GpsMyLocationProvider(ctx);
+        MyLocationNewOverlay locationOverlay = new MyLocationNewOverlay(locationProvider, map);
         locationOverlay.enableMyLocation();
         locationOverlay.enableFollowLocation();
         map.getOverlays().add(locationOverlay);
@@ -192,28 +195,7 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
         });
 
         ImageButton filterBottom = findViewById(R.id.filter);
-        filterBottom.setOnClickListener(view -> filterSheet.show(getSupportFragmentManager(), "ModalBottomSheet"));
-
-        // distance filter do something about it
-        //commented out cus it crashes it for some reason
-//        SeekBar distanceFilter = findViewById(R.id.distance_slider);
-//        distanceFilter.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-//            @Override
-//            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-//
-//            }
-//
-//            @Override
-//            public void onStartTrackingTouch(SeekBar seekBar) {
-//
-//            }
-//
-//            @Override
-//            public void onStopTrackingTouch(SeekBar seekBar) {
-//
-//            }
-//        });
-
+        filterBottom.setOnClickListener(view -> new FilterSheetDialogue().show(getSupportFragmentManager(), "ModalBottomSheet"));
     }
 
     public boolean performSearch(@Nullable String query){
@@ -221,6 +203,7 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
         JSONArray parsedJson = loadJSONArrayFromAsset(STAMP_FILE);
         List<IFilter> clone = (List<IFilter>)((ArrayList<IFilter>) filters).clone();
         if(query!= null) clone.add(Filters.SearchType.ANY);
+        if (distanceSliderValue > 0) clone.add(Filters.Distance.KILOMETRES.set(distanceSliderValue));
         IFilter[] searchFilters = clone.toArray(new IFilter[0]);
         ArrayList<StampSet> filteredStamps = Filters.FilterStamps(parsedJson, searchFilters, query);
 
@@ -240,6 +223,7 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
             });
         }
         filters.clear();
+        distanceSliderValue = 0;
         return false;
     }
 

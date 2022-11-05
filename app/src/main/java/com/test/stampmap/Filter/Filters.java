@@ -1,9 +1,14 @@
 package com.test.stampmap.Filter;
 
+import android.location.Location;
+import android.util.Log;
+import com.test.stampmap.Activity.MainActivity;
 import com.test.stampmap.Interface.IFilter;
 import com.test.stampmap.Stamp.StampSet;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.osmdroid.util.Distance;
+import org.osmdroid.util.GeoPoint;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -152,6 +157,39 @@ public class Filters {
         @Override
         public String getValue() {
             return this.value;
+        }
+    }
+    public enum Distance implements IFilter{
+        KILOMETRES,
+        MILES;
+
+        public String value;
+        public float distance;
+
+        @Override
+        public boolean hasMatch(JSONObject stampSet, String searchTerm) {
+            GeoPoint stampCoords = StampSet.StampSetFromJSON(stampSet).getStamps().get(0).getCoordinates();
+            Location myLocation = MainActivity.locationProvider.getLastKnownLocation();
+            Location stampLocation = new Location("NANI!!!");
+            stampLocation.setLatitude(stampCoords.getLatitude()); stampLocation.setLongitude(stampCoords.getLongitude());
+            float dist = myLocation.distanceTo(stampLocation);
+            return dist/1000f <= this.distance;
+        }
+
+        @Override
+        public int filterType() {
+            return FilterType.DISTANCE.ordinal();
+        }
+
+        @Override
+        public String getValue() {
+            return null;
+        }
+
+        public Distance set(float dist){
+            if (ordinal() == 0) this.distance = dist;
+            else this.distance = (float)(dist * 1.6);
+            return this;
         }
     }
 

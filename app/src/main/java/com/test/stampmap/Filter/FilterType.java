@@ -10,7 +10,8 @@ public enum FilterType {
     PREFECTURE(R.array.prefectures, Filters.Prefecture.values(), "Prefecture"),
     SEARCH(R.array.searchtype, Filters.SearchType.values(), "Search Type"),
     ENTRYFEE(R.array.entryfee, Filters.EntryFee.values(), "Entry Fee"),
-    OPENHOURS(R.array.prefectures, Filters.Prefecture.values(), "Open Hours");
+    OPENHOURS(R.array.prefectures, Filters.Prefecture.values(), "Open Hours"),
+    DISTANCE(R.array.prefectures, Filters.Distance.values(), "Distance");
 
     @ArrayRes public final int itemsId;
     public final IFilter[] values;
