@@ -1,9 +1,9 @@
 package com.test.stampmap.Interface;
 
-import org.json.JSONObject;
+import com.test.stampmap.Stamp.StampSet;
 
 public interface IFilter {
-    boolean hasMatch(JSONObject stampSet, String searchTerm);
+    boolean hasMatch(StampSet stampSet);
     int filterType();
 
     String getValue();

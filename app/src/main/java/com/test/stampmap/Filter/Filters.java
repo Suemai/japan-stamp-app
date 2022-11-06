@@ -1,13 +1,10 @@
 package com.test.stampmap.Filter;
 
 import android.location.Location;
-import android.util.Log;
 import com.test.stampmap.Activity.MainActivity;
 import com.test.stampmap.Interface.IFilter;
 import com.test.stampmap.Stamp.StampSet;
 import org.json.JSONArray;
-import org.json.JSONObject;
-import org.osmdroid.util.Distance;
 import org.osmdroid.util.GeoPoint;
 
 import java.util.*;
@@ -29,8 +26,8 @@ public class Filters {
             this.value = value;
         }
         @Override
-        public boolean hasMatch(JSONObject stampSet, String searchTerm){
-            return stampSet.optString("難易度").contains(this.value);
+        public boolean hasMatch(StampSet stampSet){
+            return stampSet.getDifficulty().contains(this.value);
         }
         @Override
         public int filterType(){
@@ -47,15 +44,23 @@ public class Filters {
         ANY("");
 
         public final String value;
+        public String searchTerm;
 
         SearchType(String value){
             this.value = value;
         }
         @Override
-        public boolean hasMatch(JSONObject stampSet, String searchTerm){
-            if (this.value.equals(""))
-                return (stampSet.optString(SearchType.NAME.value).contains(searchTerm) || stampSet.optString(SearchType.ADDRESS.value).contains(searchTerm));
-            else return (stampSet.optString(this.value).contains(searchTerm));
+        public boolean hasMatch(StampSet stampSet){
+            switch (this.ordinal()){
+                case 0:
+                    return stampSet.getName().contains(this.searchTerm);
+                case 1:
+                    return stampSet.getAddress().contains(this.searchTerm);
+                case 2:
+                    return (stampSet.getName().contains(this.searchTerm) || stampSet.getAddress().contains(this.searchTerm));
+                default:
+                    return false;
+            }
         }
         @Override
         public int filterType(){
@@ -64,6 +69,10 @@ public class Filters {
         @Override
         public String getValue() {
             return this.value;
+        }
+        public SearchType set(String term){
+            this.searchTerm = term;
+            return this;
         }
     }
     public enum Prefecture implements IFilter{
@@ -122,8 +131,8 @@ public class Filters {
             this.value = value;
         }
         @Override
-        public boolean hasMatch(JSONObject stampSet, String searchTerm){
-            return stampSet.optString(SearchType.ADDRESS.value).contains(this.value);
+        public boolean hasMatch(StampSet stampSet){
+            return stampSet.getAddress().contains(this.value);
         }
         @Override
         public int filterType(){
@@ -145,9 +154,9 @@ public class Filters {
             this.value = value;
         }
         @Override
-        public boolean hasMatch(JSONObject stampSet, String searchTerm) {
-            String fee = stampSet.optString("入場料（大人一般）");
-            return !fee.equals("") ? fee.contains(this.value) : this != EntryFee.PAID;
+        public boolean hasMatch(StampSet stampSet) {
+            String fee = stampSet.getEntryFee();
+            return fee.contains(this.value);
         }
         @Override
         public int filterType() {
@@ -160,15 +169,19 @@ public class Filters {
         }
     }
     public enum Distance implements IFilter{
-        KILOMETRES,
-        MILES;
+        KILOMETRES("km"),
+        MILES("miles");
 
-        public String value;
+        public final String value;
         public float distance;
 
+        Distance(String value) {
+            this.value = value;
+        }
+
         @Override
-        public boolean hasMatch(JSONObject stampSet, String searchTerm) {
-            GeoPoint stampCoords = StampSet.StampSetFromJSON(stampSet).getStamps().get(0).getCoordinates();
+        public boolean hasMatch(StampSet stampSet) {
+            GeoPoint stampCoords = stampSet.getStamps().get(0).getCoordinates();
             Location myLocation = MainActivity.locationProvider.getLastKnownLocation();
             Location stampLocation = new Location("NANI!!!");
             stampLocation.setLatitude(stampCoords.getLatitude()); stampLocation.setLongitude(stampCoords.getLongitude());
@@ -194,18 +207,18 @@ public class Filters {
     }
 
     public static ArrayList<StampSet> FilterStamps(JSONArray stampList, String searchTerm) {
-        return FilterStamps(stampList, new IFilter[]{SearchType.ANY}, searchTerm);
+        return FilterStamps(stampList, new IFilter[]{SearchType.ANY.set(searchTerm)});
     }
 
-    public static ArrayList<StampSet> FilterStamps(JSONArray stampList, IFilter[] filters, String searchTerm) {
+    public static ArrayList<StampSet> FilterStamps(JSONArray stampList, IFilter[] filters) {
         ArrayList<StampSet> results = new ArrayList<>();
         Set<Integer> filterTypes = Arrays.stream(filters).mapToInt(IFilter::filterType).boxed().collect(Collectors.toSet());
         if (filterTypes.isEmpty()) return results;
         for (int i=0; i<stampList.length(); i++) {
-            JSONObject stampSet = stampList.optJSONObject(i);
+            StampSet stampSet = StampSet.StampSetFromJSON(stampList.optJSONObject(i));
             Set<Integer> matchedFilterTypes = new HashSet<>();
-            for (IFilter filter : filters) if (filter.hasMatch(stampSet, searchTerm)) matchedFilterTypes.add(filter.filterType());
-            if (filterTypes.equals(matchedFilterTypes)) results.add(StampSet.StampSetFromJSON(stampSet));
+            for (IFilter filter : filters) if (filter.hasMatch(stampSet)) matchedFilterTypes.add(filter.filterType());
+            if (filterTypes.equals(matchedFilterTypes)) results.add(stampSet);
         }
         return results;
     }

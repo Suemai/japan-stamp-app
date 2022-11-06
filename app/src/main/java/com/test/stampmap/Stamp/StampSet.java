@@ -47,6 +47,10 @@ public class StampSet implements Iterable<Stamp>{
         return this.holiday;
     }
 
+    public String getEntryFee() {
+        return this.entryFee;
+    }
+
     public List<Stamp> getStamps(){
         return this.stamps;
     }

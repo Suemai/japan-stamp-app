@@ -202,10 +202,10 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
         map.getOverlays().removeAll(map.getOverlays().stream().filter(item -> item instanceof Marker).collect(Collectors.toList()));
         JSONArray parsedJson = loadJSONArrayFromAsset(STAMP_FILE);
         List<IFilter> clone = (List<IFilter>)((ArrayList<IFilter>) filters).clone();
-        if(query!= null) clone.add(Filters.SearchType.ANY);
+        if(query!= null) clone.add(Filters.SearchType.ANY.set(query));
         if (distanceSliderValue > 0) clone.add(Filters.Distance.KILOMETRES.set(distanceSliderValue));
         IFilter[] searchFilters = clone.toArray(new IFilter[0]);
-        ArrayList<StampSet> filteredStamps = Filters.FilterStamps(parsedJson, searchFilters, query);
+        ArrayList<StampSet> filteredStamps = Filters.FilterStamps(parsedJson, searchFilters);
 
         for (StampSet stampSet : filteredStamps) {
             Marker stampMarker = new Marker(map);
