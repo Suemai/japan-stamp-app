@@ -4,10 +4,15 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import androidx.annotation.Nullable;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.android.material.divider.MaterialDivider;
 import com.test.stampmap.R;
+import com.test.stampmap.Stamp.Stamp;
 import com.test.stampmap.Stamp.StampSet;
 
 public class StampSheetDialogue extends BottomSheetDialogFragment {
@@ -31,6 +36,16 @@ public class StampSheetDialogue extends BottomSheetDialogFragment {
         open.setText("Open Hours: " + stampSet.getOpenHours());
         holiday.setText("Holiday: " + stampSet.getHoliday());
         fee.setText("Entry Fee: " + stampSet.getEntryFee());
+
+        LinearLayout stampList = v.findViewById(R.id.stamp_list);
+        int i = 1;
+        for (Stamp stamp : stampSet) {
+            View element = layoutInflater.inflate(R.layout.stamp_element, null, false);
+            ((TextView)element.findViewById(R.id.stampNo_drawer)).setText("Stamp: " + i++);
+            ((TextView)element.findViewById(R.id.obtainable_drawer)).setText("Obtainable: " + (stamp.getIsObtainable() ? "Yes" : "No"));
+            ((TextView)element.findViewById(R.id.location_drawer)).setText("Location: " + stamp.getLocation());
+            stampList.addView(element);
+        }
         return v;
     }
 }
