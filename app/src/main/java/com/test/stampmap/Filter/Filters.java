@@ -184,7 +184,8 @@ public class Filters {
             GeoPoint stampCoords = stampSet.getStamps().get(0).getCoordinates();
             Location myLocation = MainActivity.locationProvider.getLastKnownLocation();
             Location stampLocation = new Location("NANI!!!");
-            stampLocation.setLatitude(stampCoords.getLatitude()); stampLocation.setLongitude(stampCoords.getLongitude());
+            stampLocation.setLatitude(stampCoords.getLatitude());
+            stampLocation.setLongitude(stampCoords.getLongitude());
             float dist = myLocation.distanceTo(stampLocation);
             return dist/1000f <= this.distance;
         }

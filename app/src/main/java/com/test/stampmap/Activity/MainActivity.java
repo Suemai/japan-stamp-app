@@ -19,9 +19,11 @@ import android.os.Bundle;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import com.test.stampmap.Dialogues.StampSheetDialogue;
 import com.test.stampmap.Filter.Filters;
 import com.test.stampmap.Interface.IFilter;
 import com.test.stampmap.R;
+import com.test.stampmap.Stamp.StampMarker;
 import com.test.stampmap.Stamp.StampSet;
 import org.jetbrains.annotations.Nullable;
 import org.osmdroid.api.IMapController;
@@ -208,17 +210,13 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
         ArrayList<StampSet> filteredStamps = Filters.FilterStamps(parsedJson, searchFilters);
 
         for (StampSet stampSet : filteredStamps) {
-            Marker stampMarker = new Marker(map);
+            StampMarker stampMarker = new StampMarker(map, stampSet);
             GeoPoint baseCoords = stampSet.getStamps().get(0).getCoordinates();
             stampMarker.setTitle(stampSet.toString());
             stampMarker.setPosition(baseCoords);
             map.getOverlays().add(stampMarker);
-            stampMarker.setOnMarkerClickListener((marker, mapView) -> {
-                if (marker.isInfoWindowShown()) marker.closeInfoWindow();
-                else{
-                    mapView.getController().animateTo(marker.getPosition());
-                    marker.showInfoWindow();
-                }
+            stampMarker.setOnMarkerClickListener((marker, view) -> {
+                new StampSheetDialogue(stampMarker.getStampSet()).show(getSupportFragmentManager(), "ModalBottomSheet");
                 return true;
             });
         }
