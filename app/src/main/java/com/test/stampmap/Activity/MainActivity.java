@@ -1,5 +1,7 @@
 package com.test.stampmap.Activity;
 
+import android.location.Location;
+import android.media.MicrophoneInfo;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.inputmethod.EditorInfo;
@@ -23,6 +25,7 @@ import com.test.stampmap.Dialogues.StampSheetDialogue;
 import com.test.stampmap.Filter.Filters;
 import com.test.stampmap.Interface.IFilter;
 import com.test.stampmap.R;
+import com.test.stampmap.Stamp.Stamp;
 import com.test.stampmap.Stamp.StampMarker;
 import com.test.stampmap.Stamp.StampSet;
 import org.jetbrains.annotations.Nullable;
@@ -30,6 +33,7 @@ import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.events.MapEventsReceiver;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.util.Distance;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.CustomZoomButtonsController;
 import org.osmdroid.views.MapView;
@@ -48,8 +52,7 @@ import org.json.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class MainActivity extends AppCompatActivity implements MapEventsReceiver {
@@ -212,7 +215,6 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
         for (StampSet stampSet : filteredStamps) {
             StampMarker stampMarker = new StampMarker(map, stampSet);
             GeoPoint baseCoords = stampSet.getStamps().get(0).getCoordinates();
-            stampMarker.setTitle(stampSet.toString());
             stampMarker.setPosition(baseCoords);
             map.getOverlays().add(stampMarker);
             stampMarker.setOnMarkerClickListener((marker, view) -> {
@@ -220,9 +222,42 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
                 return true;
             });
         }
+        handleMapMovementAndZoom(filteredStamps);
         filters.clear();
         distanceSliderValue = 0;
         return false;
+    }
+
+    void handleMapMovementAndZoom(ArrayList<StampSet> filteredStamps){
+        if (filteredStamps.isEmpty()) return;
+        float[] coords = {0, 0};
+        GeoPoint[] extremes = {null, null, null, null};
+        for (StampSet stampSet : filteredStamps){
+            GeoPoint baseCoords = stampSet.getStamps().get(0).getCoordinates();
+            if (baseCoords.getLongitude() == 0.0f || baseCoords.getLatitude() >= 90.0f) continue;
+            if (extremes[0] == null || baseCoords.getLatitude() > extremes[0].getLatitude()) extremes[0] = baseCoords;
+            if (extremes[1] == null || baseCoords.getLongitude() > extremes[1].getLongitude()) extremes[1] = baseCoords;
+            if (extremes[2] == null || baseCoords.getLatitude() < extremes[2].getLatitude()) extremes[2] = baseCoords;
+            if (extremes[3] == null || baseCoords.getLongitude() < extremes[3].getLongitude()) extremes[3] = baseCoords;
+        }
+        coords[0] += extremes[0].getLatitude() + extremes[2].getLatitude();
+        coords[1] += extremes[1].getLongitude() + extremes[3].getLongitude();
+        GeoPoint[] trueExtremes = Arrays.stream(extremes).distinct().toArray(GeoPoint[]::new);
+        double coorDistance = 0;
+        if (trueExtremes.length == 1) map.getController().setZoom(18.0f);
+        else for (int i = 0; i < trueExtremes.length; i++) {
+            for (int k = i + 1; k < trueExtremes.length; k++) {
+                if (trueExtremes[i] != trueExtremes[k]) {
+                    double dist = Math.sqrt(Distance.getSquaredDistanceToPoint(
+                            trueExtremes[i].getLatitude(), trueExtremes[i].getLongitude(),
+                            trueExtremes[k].getLatitude(), trueExtremes[k].getLongitude()));
+                    if (dist > coorDistance) coorDistance = dist;
+                }
+            }
+        }
+        double zoom = Math.log(360/coorDistance)/Math.log(2);
+        if (coorDistance > 0) map.getController().setZoom(zoom + 1.6);
+        map.getController().animateTo(new GeoPoint(coords[0]/2, coords[1]/2));
     }
 
     @Override
