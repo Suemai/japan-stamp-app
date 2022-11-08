@@ -1,11 +1,8 @@
 package com.test.stampmap.Activity;
 
-import android.location.Location;
-import android.media.MicrophoneInfo;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.inputmethod.EditorInfo;
-import com.google.android.material.slider.Slider;
 import com.test.stampmap.Dialogues.FilterSheetDialogue;
 import android.Manifest;
 import android.app.Activity;
