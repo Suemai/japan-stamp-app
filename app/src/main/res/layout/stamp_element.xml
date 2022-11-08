@@ -9,33 +9,27 @@
             android:layout_height="match_parent"
             android:gravity="center_horizontal"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:paddingTop="12dp"
+            android:paddingBottom="16dp">
 
         <TextView
                 android:id="@+id/stampNo_drawer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Stamp number"
         />
 
         <TextView
                 android:id="@+id/obtainable_drawer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Obtainable"
         />
 
         <TextView
                 android:id="@+id/location_drawer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Stamp Location"
         />
 
-<!--        <com.google.android.material.divider.MaterialDivider-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--        />-->
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
