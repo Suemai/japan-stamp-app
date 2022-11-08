@@ -37,19 +37,19 @@ public class StampSheetDialogue extends BottomSheetDialogFragment {
         holiday.setText("Holiday: " + stampSet.getHoliday());
         fee.setText("Entry Fee: " + stampSet.getEntryFee());
 
-        ArrayList<HashMap<String, String>> list = new ArrayList<>();
+        ListView stampList = v.findViewById(R.id.stamp_list);
+        ArrayList<HashMap<String, String>> dataSet = new ArrayList<>();
+        String[] keys = {"num", "obtain", "location"};
+        int[] ids = {R.id.stampNo_drawer, R.id.obtainable_drawer, R.id.location_drawer};
         int i = 1;
         for (Stamp stamp : stampSet){
             HashMap<String, String> map = new HashMap<>();
-            map.put("num", "Stamp " + i++);
-            map.put("obtain", "Obtainable: " + (stamp.getIsObtainable() ? "Yes" : "No"));
-            map.put("location", "Location: " + stamp.getLocation());
-            list.add(map);
+            map.put(keys[0], "Stamp " + i++);
+            map.put(keys[1], "Obtainable: " + (stamp.getIsObtainable() ? "Yes" : "No"));
+            map.put(keys[2], "Location: " + stamp.getLocation());
+            dataSet.add(map);
         }
-        ((ListView)v.findViewById(R.id.stamp_list)).setAdapter(
-                new SimpleAdapter(requireContext(), list, R.layout.stamp_element,
-                    new String[]{"num", "obtain", "location"},
-                    new int[]{R.id.stampNo_drawer, R.id.obtainable_drawer, R.id.location_drawer}));
+        stampList.setAdapter(new SimpleAdapter(requireContext(), dataSet, R.layout.stamp_element, keys, ids));
         return v;
     }
 }
