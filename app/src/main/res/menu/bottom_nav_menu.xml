@@ -6,9 +6,9 @@
             android:icon="@drawable/explore_foreground"
     />
     <item
-            android:title="Filter"
-            android:id="@+id/filter"
-            android:icon="@drawable/filter_foreground"
+            android:title="My Stamps"
+            android:id="@+id/myStamps"
+            android:icon="@drawable/myStamps_foreground"
     />
     <item
             android:title="Settings"

@@ -16,6 +16,10 @@
     <string name="filter_button">filter button</string>
     <string name="distance">Distance</string>
     <string name="prefecture">Prefecture</string>
+    <string name="gotten">Gotten</string>
+    <string name="Obtained"/>
+    <string name="not_obtained">Not Obtained</string>
+    <string name="obtained">Obtained</string>
 
     <string-array name="prefectures">
         <item>愛知県</item>
@@ -88,4 +92,6 @@
         <item>入場料あり</item>
         <item>両方</item>
     </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
