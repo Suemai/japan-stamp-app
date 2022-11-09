@@ -8,7 +8,7 @@
     <item
             android:title="My Stamps"
             android:id="@+id/myStamps"
-            android:icon="@drawable/myStamps_foreground"
+            android:icon="@drawable/mystamps_foreground"
     />
     <item
             android:title="Settings"
