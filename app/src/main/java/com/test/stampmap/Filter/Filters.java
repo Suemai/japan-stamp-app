@@ -213,14 +213,14 @@ public class Filters {
     }
 
     public static ArrayList<StampSet> FilterStamps(IFilter[] filters) {
-        ArrayList<StampSet> results = new ArrayList<>();
+        StampCollection.getInstance().getCurrentFilteredStamps().clear();
         Set<Integer> filterTypes = Arrays.stream(filters).mapToInt(IFilter::filterType).boxed().collect(Collectors.toSet());
-        if (filterTypes.isEmpty()) return results;
+        if (filterTypes.isEmpty()) return StampCollection.getInstance().getCurrentFilteredStamps();
         for (StampSet stampSet : StampCollection.getInstance().getAllStamps()) {
             Set<Integer> matchedFilterTypes = new HashSet<>();
             for (IFilter filter : filters) if (filter.hasMatch(stampSet)) matchedFilterTypes.add(filter.filterType());
-            if (filterTypes.equals(matchedFilterTypes)) results.add(stampSet);
+            if (filterTypes.equals(matchedFilterTypes)) StampCollection.getInstance().getCurrentFilteredStamps().add(stampSet);
         }
-        return results;
+        return StampCollection.getInstance().getCurrentFilteredStamps();
     }
 }

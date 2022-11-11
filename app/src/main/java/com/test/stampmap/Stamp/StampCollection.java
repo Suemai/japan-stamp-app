@@ -2,7 +2,6 @@ package com.test.stampmap.Stamp;
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -15,11 +14,11 @@ public class StampCollection {
     private static final String SAVE_FILE_NAME = "MyStamps";
     private static final String STAMP_FILE = "all-stamps-coords.json";
 
-    private static StampCollection instance = new StampCollection();
+    private static final StampCollection instance = new StampCollection();
 
     private final ArrayList<StampSet> allStamps = new ArrayList<>();
-    private ArrayList<StampSet> myStamps = new ArrayList<>();
-    private ArrayList<StampSet> currentFilteredStamps = new ArrayList<>();
+    private final ArrayList<StampSet> myStamps = new ArrayList<>();
+    private final ArrayList<StampSet> currentFilteredStamps = new ArrayList<>();
 
     private boolean refreshRequired;
 
@@ -50,7 +49,7 @@ public class StampCollection {
     }
 
     public void load(Context context){
-        JSONArray stampList = loadJSONArrayFromAsset(STAMP_FILE, context);
+        JSONArray stampList = loadJSONArrayFromAsset(context);
         allStamps.clear();
         for (int i=0; i<stampList.length(); i++)
             allStamps.add(StampSet.StampSetFromJSON(stampList.optJSONObject(i)));
@@ -61,7 +60,7 @@ public class StampCollection {
         ObjectInputStream objIn;
         try (FileInputStream in = context.openFileInput(SAVE_FILE_NAME)){
             objIn = new ObjectInputStream(in);
-            this.myStamps = new ArrayList<>((ArrayList<StampSet>) objIn.readObject());
+            this.myStamps.addAll((ArrayList<StampSet>) objIn.readObject());
             for (StampSet myStamp : this.myStamps){
                 for (StampSet allStamp : this.allStamps){
                     if (myStamp.equals(allStamp)){
@@ -89,16 +88,20 @@ public class StampCollection {
         refreshRequired = true;
     }
 
+    public void setObtainedStamp(Stamp stamp, boolean value){
+        stamp.setObtained(value);
+        refreshRequired = true;
+    }
+
     /**
      * Thank you StackOverflow
      *
-     * @param fileName file to be loaded from assets
      * @return {@link String} of JSON data from file.
      */
-    private JSONArray loadJSONArrayFromAsset(String fileName, Context context) {
+    private JSONArray loadJSONArrayFromAsset(Context context) {
         String json;
         try {
-            InputStream is = context.getAssets().open(fileName);
+            InputStream is = context.getAssets().open(STAMP_FILE);
             int size = is.available();
             byte[] buffer = new byte[size];
             is.read(buffer);

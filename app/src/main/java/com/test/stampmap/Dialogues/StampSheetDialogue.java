@@ -70,7 +70,7 @@ public class StampSheetDialogue extends BottomSheetDialogFragment {
             obtained.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             obtained.setChecked(stamp.getIsObtained());
             obtained.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                StampCollection.getInstance().setObtainedStamp(stampSet, position, isChecked);
+                StampCollection.getInstance().setObtainedStamp(stamp, isChecked);
                 StampCollection.getInstance().saveMyStamps(requireContext());
                 ((TextView)view.findViewById(R.id.owned_drawer)).setText("Owned: " + (stamp.getIsObtained() ? "Yes" : "No"));
             });
