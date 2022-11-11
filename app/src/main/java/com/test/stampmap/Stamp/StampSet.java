@@ -5,9 +5,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class StampSet implements Iterable<Stamp>{
+public class StampSet implements Iterable<Stamp>, Serializable {
     private final String name, address, difficulty, openHours, holiday, entryFee;
     private final List<Stamp> stamps;
 
@@ -93,5 +94,13 @@ public class StampSet implements Iterable<Stamp>{
             stamps.append(title).append(stampInfo);
         }
         return name + address + difficulty + openHours + holiday + entreeFee + stamps;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        StampSet that = (StampSet) o;
+        return this.name.equals(that.name) && this.address.equals(that.address);
     }
 }

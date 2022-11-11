@@ -5,10 +5,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.osmdroid.util.GeoPoint;
 
-public class Stamp {
+import java.io.Serializable;
+
+public class Stamp implements Serializable {
     private final String name, address, location, imageLink;
     private final boolean isObtainable;
     private final GeoPoint coordinates;
+    private boolean isObtained;
 
     public Stamp(String name, String address, String location, String imageLink, boolean isObtainable, GeoPoint coordinates) {
         this.name = name;
@@ -17,6 +20,7 @@ public class Stamp {
         this.imageLink = imageLink;
         this.isObtainable = isObtainable;
         this.coordinates = coordinates;
+        this.isObtained = false;
     }
 
     public String getName(){
@@ -41,6 +45,14 @@ public class Stamp {
 
     public GeoPoint getCoordinates() {
         return this.coordinates;
+    }
+
+    public boolean getIsObtained(){
+        return this.isObtained;
+    }
+
+    protected void setObtained(boolean value) {
+        this.isObtained = value;
     }
 
     public static Stamp StampFromJSON(JSONObject JSONStamp){

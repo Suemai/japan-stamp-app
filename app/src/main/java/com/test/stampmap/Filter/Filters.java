@@ -3,6 +3,7 @@ package com.test.stampmap.Filter;
 import android.location.Location;
 import com.test.stampmap.Activity.MainActivity;
 import com.test.stampmap.Interface.IFilter;
+import com.test.stampmap.Stamp.StampCollection;
 import com.test.stampmap.Stamp.StampSet;
 import org.json.JSONArray;
 import org.osmdroid.util.GeoPoint;
@@ -207,16 +208,15 @@ public class Filters {
         }
     }
 
-    public static ArrayList<StampSet> FilterStamps(JSONArray stampList, String searchTerm) {
-        return FilterStamps(stampList, new IFilter[]{SearchType.ANY.set(searchTerm)});
+    public static ArrayList<StampSet> FilterStamps(String searchTerm) {
+        return FilterStamps(new IFilter[]{SearchType.ANY.set(searchTerm)});
     }
 
-    public static ArrayList<StampSet> FilterStamps(JSONArray stampList, IFilter[] filters) {
+    public static ArrayList<StampSet> FilterStamps(IFilter[] filters) {
         ArrayList<StampSet> results = new ArrayList<>();
         Set<Integer> filterTypes = Arrays.stream(filters).mapToInt(IFilter::filterType).boxed().collect(Collectors.toSet());
         if (filterTypes.isEmpty()) return results;
-        for (int i=0; i<stampList.length(); i++) {
-            StampSet stampSet = StampSet.StampSetFromJSON(stampList.optJSONObject(i));
+        for (StampSet stampSet : StampCollection.getInstance().getAllStamps()) {
             Set<Integer> matchedFilterTypes = new HashSet<>();
             for (IFilter filter : filters) if (filter.hasMatch(stampSet)) matchedFilterTypes.add(filter.filterType());
             if (filterTypes.equals(matchedFilterTypes)) results.add(stampSet);

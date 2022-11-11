@@ -1,8 +1,10 @@
 package com.test.stampmap.Activity;
 
+import android.app.Application;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.inputmethod.EditorInfo;
+import androidx.annotation.NonNull;
 import com.test.stampmap.Dialogues.FilterSheetDialogue;
 import android.Manifest;
 import android.app.Activity;
@@ -23,6 +25,7 @@ import com.test.stampmap.Filter.Filters;
 import com.test.stampmap.Interface.IFilter;
 import com.test.stampmap.R;
 import com.test.stampmap.Stamp.Stamp;
+import com.test.stampmap.Stamp.StampCollection;
 import com.test.stampmap.Stamp.StampMarker;
 import com.test.stampmap.Stamp.StampSet;
 import org.jetbrains.annotations.Nullable;
@@ -56,7 +59,6 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
     private MapView map = null;
     private SearchView searchBar = null;
-    private final String STAMP_FILE = "all-stamps-coords.json";
     public static List<IFilter> filters = new ArrayList<>();
     public static GpsMyLocationProvider locationProvider = null;
     public static float distanceSliderValue = 0;
@@ -74,6 +76,9 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
                 //get current location
                 Manifest.permission.ACCESS_FINE_LOCATION,
         });
+
+        //load stamp data
+        StampCollection.getInstance().load(ctx);
 
         //inflate and create a map
         setContentView(R.layout.activity_main);
@@ -202,12 +207,11 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
 
     public boolean performSearch(@Nullable String query){
         map.getOverlays().removeAll(map.getOverlays().stream().filter(item -> item instanceof Marker).collect(Collectors.toList()));
-        JSONArray parsedJson = loadJSONArrayFromAsset(STAMP_FILE);
         List<IFilter> clone = (List<IFilter>)((ArrayList<IFilter>) filters).clone();
         if(query!= null) clone.add(Filters.SearchType.ANY.set(query));
         if (distanceSliderValue > 0) clone.add(Filters.Distance.KILOMETRES.set(distanceSliderValue));
         IFilter[] searchFilters = clone.toArray(new IFilter[0]);
-        ArrayList<StampSet> filteredStamps = Filters.FilterStamps(parsedJson, searchFilters);
+        ArrayList<StampSet> filteredStamps = Filters.FilterStamps(searchFilters);
 
         for (StampSet stampSet : filteredStamps) {
             StampMarker stampMarker = new StampMarker(map, stampSet);
@@ -325,31 +329,5 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.search_options, menu);
         return true;
-    }
-
-    /**
-     * Thank you StackOverflow
-     *
-     * @param fileName file to be loaded from assets
-     * @return {@link String} of JSON data from file.
-     */
-    public JSONArray loadJSONArrayFromAsset(String fileName) {
-        String json;
-        try {
-            InputStream is = this.getAssets().open(fileName);
-            int size = is.available();
-            byte[] buffer = new byte[size];
-            is.read(buffer);
-            is.close();
-            json = new String(buffer, StandardCharsets.UTF_8);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return null;
-        }
-        JSONArray parsed = null;
-        try {
-            parsed = new JSONArray(json);
-        } catch (JSONException ignored) {}
-        return parsed;
     }
 }
