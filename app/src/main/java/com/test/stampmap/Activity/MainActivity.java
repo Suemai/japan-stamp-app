@@ -6,8 +6,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.inputmethod.EditorInfo;
 import androidx.annotation.NonNull;
-import androidx.savedstate.SavedStateRegistry;
-import androidx.savedstate.SavedStateRegistryOwner;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.test.stampmap.Dialogues.FilterSheetDialogue;
 import android.Manifest;
@@ -60,7 +58,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class MainActivity extends AppCompatActivity implements MapEventsReceiver, SavedStateRegistryOwner {
+public class MainActivity extends AppCompatActivity implements MapEventsReceiver {
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
     private MapView map = null;
     private SearchView searchBar = null;
