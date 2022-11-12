@@ -1,10 +1,12 @@
 package com.test.stampmap.Activity;
 
 import android.app.Application;
+import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.inputmethod.EditorInfo;
 import androidx.annotation.NonNull;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.test.stampmap.Dialogues.FilterSheetDialogue;
 import android.Manifest;
 import android.app.Activity;
@@ -28,6 +30,7 @@ import com.test.stampmap.Stamp.Stamp;
 import com.test.stampmap.Stamp.StampCollection;
 import com.test.stampmap.Stamp.StampMarker;
 import com.test.stampmap.Stamp.StampSet;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
@@ -104,11 +107,12 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
         IMapController mapController = map.getController();
         mapController.setZoom(19.0);
 
-
-        GeoPoint startPoint = new GeoPoint(36.117052, 140.098735); //my dorm bitch
+        /*
+        //not needed anymore
+        //GeoPoint startPoint = new GeoPoint(36.117052, 140.098735); //my dorm bitch
         //Update: redundant line of code
         //mapController.setCenter(startPoint);
-
+        */
 
         //location marker - dunno if it works, but there's something
         locationProvider = new GpsMyLocationProvider(ctx);
@@ -132,13 +136,15 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
 
 
         //add marker to starting point
+        /*
+        //update: not needed anymore
         Marker startMarker = new Marker(map);
         startMarker.setPosition(startPoint);
         startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER);
         startMarker.setTitle("Ichinoya Building 35");
 
         map.getOverlays().add(startMarker);
-
+        */
 
         //marker off on short press
         MapEventsOverlay mapEventsOverlay = new MapEventsOverlay(this, this);
@@ -191,7 +197,7 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
         TextView searchText = searchBar.findViewById(androidx.appcompat.R.id.search_src_text);
 
         searchText.setOnEditorActionListener((v, actionId, event) -> {
-            if (actionId == EditorInfo.IME_NULL){
+            if (actionId == EditorInfo.IME_NULL) {
                 InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
 
@@ -203,12 +209,34 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
 
         ImageButton filterBottom = findViewById(R.id.filter);
         filterBottom.setOnClickListener(view -> new FilterSheetDialogue().show(getSupportFragmentManager(), "ModalBottomSheet"));
+
+        //bottom navigation
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
+        bottomNavigationView.setSelectedItemId(R.id.explore);
+
+        //perform listener
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener(){
+
+            @Override
+            public boolean onNavigationItemSelected(@NonNull @NotNull MenuItem item) {
+                switch (item.getItemId()){
+                    case R.id.explore:
+                        return true;
+
+                    case R.id.myStamps:
+                        startActivity(new Intent(getApplicationContext(),MyStampsActivity.class));
+                        overridePendingTransition(0,0);
+                        return true;
+                }
+                return false;
+            }
+        });
     }
 
-    public boolean performSearch(@Nullable String query){
+    public boolean performSearch(@Nullable String query) {
         map.getOverlays().removeAll(map.getOverlays().stream().filter(item -> item instanceof Marker).collect(Collectors.toList()));
-        List<IFilter> clone = (List<IFilter>)((ArrayList<IFilter>) filters).clone();
-        if(query!= null) clone.add(Filters.SearchType.ANY.set(query));
+        List<IFilter> clone = (List<IFilter>) ((ArrayList<IFilter>) filters).clone();
+        if (query != null) clone.add(Filters.SearchType.ANY.set(query));
         if (distanceSliderValue > 0) clone.add(Filters.Distance.KILOMETRES.set(distanceSliderValue));
         IFilter[] searchFilters = clone.toArray(new IFilter[0]);
         ArrayList<StampSet> filteredStamps = Filters.FilterStamps(searchFilters);
@@ -229,11 +257,11 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
         return false;
     }
 
-    void handleMapMovementAndZoom(ArrayList<StampSet> filteredStamps){
+    void handleMapMovementAndZoom(ArrayList<StampSet> filteredStamps) {
         if (filteredStamps.isEmpty()) return;
         float[] coords = {0, 0};
         GeoPoint[] extremes = {null, null, null, null};
-        for (StampSet stampSet : filteredStamps){
+        for (StampSet stampSet : filteredStamps) {
             GeoPoint baseCoords = stampSet.getStamps().get(0).getCoordinates();
             if (baseCoords.getLongitude() == 0.0f || baseCoords.getLatitude() >= 90.0f) continue;
             if (extremes[0] == null || baseCoords.getLatitude() > extremes[0].getLatitude()) extremes[0] = baseCoords;
@@ -256,13 +284,13 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
                 }
             }
         }
-        double zoom = Math.log(360/coorDistance)/Math.log(2);
+        double zoom = Math.log(360 / coorDistance) / Math.log(2);
         if (coorDistance > 0) map.getController().setZoom(zoom + 1.6);
-        map.getController().animateTo(new GeoPoint(coords[0]/2, coords[1]/2));
+        map.getController().animateTo(new GeoPoint(coords[0] / 2, coords[1] / 2));
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         map.onResume();
         Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this));
@@ -270,7 +298,7 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
     }
 
     @Override
-    public void onPause(){
+    public void onPause() {
         super.onPause();
         map.onPause();
         //locationOverlay.disableMyLocation();
@@ -291,18 +319,20 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
                     REQUEST_PERMISSIONS_REQUEST_CODE);
         }
 
-    };
+    }
+
+    ;
 
     private void requestPermissionsIfNecessary(String[] permissions) {
         ArrayList<String> permissionsToRequest = new ArrayList<>();
-        for (String permission : permissions){
+        for (String permission : permissions) {
             if (ContextCompat.checkSelfPermission(this, permission)
-                    !=PackageManager.PERMISSION_GRANTED){
+                    != PackageManager.PERMISSION_GRANTED) {
                 permissionsToRequest.add(permission);
 
             }
         }
-        if(permissionsToRequest.size() > 0){
+        if (permissionsToRequest.size() > 0) {
             ActivityCompat.requestPermissions(
                     this,
                     permissionsToRequest.toArray(new String[0]),
