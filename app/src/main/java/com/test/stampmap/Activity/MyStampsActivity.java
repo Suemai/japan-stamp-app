@@ -60,21 +60,20 @@ public class MyStampsActivity extends AppCompatActivity {
         bottomNavigationView.setSelectedItemId(R.id.myStamps);
 
         //perform listener
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener(){
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.explore:
+                    Intent openExplore = new Intent(getApplicationContext(), MainActivity.class);
+                    openExplore.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                    openExplore.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivityIfNeeded(openExplore, 0);
+                    overridePendingTransition(0, 0);
+                    return true;
 
-            @Override
-            public boolean onNavigationItemSelected(@NonNull @NotNull MenuItem item) {
-                switch (item.getItemId()){
-                    case R.id.explore:
-                        startActivity(new Intent(getApplicationContext(),MainActivity.class));
-                        overridePendingTransition(0,0);
-                        return true;
-
-                    case R.id.myStamps:
-                        return true;
-                }
-                return false;
+                case R.id.myStamps:
+                    return true;
             }
+            return false;
         });
     }
 }

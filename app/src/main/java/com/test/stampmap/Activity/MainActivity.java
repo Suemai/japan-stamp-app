@@ -6,6 +6,8 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.inputmethod.EditorInfo;
 import androidx.annotation.NonNull;
+import androidx.savedstate.SavedStateRegistry;
+import androidx.savedstate.SavedStateRegistryOwner;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.test.stampmap.Dialogues.FilterSheetDialogue;
 import android.Manifest;
@@ -58,7 +60,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class MainActivity extends AppCompatActivity implements MapEventsReceiver {
+public class MainActivity extends AppCompatActivity implements MapEventsReceiver, SavedStateRegistryOwner {
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
     private MapView map = null;
     private SearchView searchBar = null;
@@ -215,21 +217,17 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
         bottomNavigationView.setSelectedItemId(R.id.explore);
 
         //perform listener
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener(){
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.explore:
+                    return true;
 
-            @Override
-            public boolean onNavigationItemSelected(@NonNull @NotNull MenuItem item) {
-                switch (item.getItemId()){
-                    case R.id.explore:
-                        return true;
-
-                    case R.id.myStamps:
-                        startActivity(new Intent(getApplicationContext(),MyStampsActivity.class));
-                        overridePendingTransition(0,0);
-                        return true;
-                }
-                return false;
+                case R.id.myStamps:
+                    startActivity(new Intent(getApplicationContext(), MyStampsActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
             }
+            return false;
         });
     }
 
@@ -294,6 +292,7 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
         super.onResume();
         map.onResume();
         Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this));
+        ((BottomNavigationView)findViewById(R.id.bottomNavigationView)).setSelectedItemId(R.id.explore);
         //locationOverlay.enableMyLocation();
     }
 
