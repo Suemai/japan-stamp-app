@@ -16,24 +16,28 @@
                 android:id="@+id/stampNo_drawer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textAlignment="center"
         />
 
         <TextView
                 android:id="@+id/obtainable_drawer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textAlignment="center"
         />
 
         <TextView
                 android:id="@+id/location_drawer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textAlignment="center"
         />
 
         <TextView
                 android:id="@+id/owned_drawer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textAlignment="center"
         />
 
     </LinearLayout>
