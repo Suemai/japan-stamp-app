@@ -1,6 +1,8 @@
 package com.test.stampmap.Fragments;
 
 import android.app.Activity;
+import android.content.Context;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.*;
@@ -37,6 +39,7 @@ public class ExploreFragment extends BaseMapFragment implements MapEventsReceive
     public static GpsMyLocationProvider locationProvider = null;
     public static float distanceSliderValue = 0;
     public View v = null;
+    AudioManager audioManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -64,6 +67,8 @@ public class ExploreFragment extends BaseMapFragment implements MapEventsReceive
 
         ImageButton filterBottom = v.findViewById(R.id.filter);
         filterBottom.setOnClickListener(view -> new FilterSheetDialogue().show(getChildFragmentManager(), "ModalBottomSheet"));
+
+        audioManager = (AudioManager)requireContext().getSystemService(Context.AUDIO_SERVICE);
 
         return v;
     }
@@ -155,6 +160,7 @@ public class ExploreFragment extends BaseMapFragment implements MapEventsReceive
             mMapView.getOverlays().add(stampMarker);
             stampMarker.setOnMarkerClickListener((marker, view) -> {
                 new StampSheetDialogue(stampMarker.getStampSet()).show(getChildFragmentManager(), "ModalBottomSheet");
+                audioManager.playSoundEffect(AudioManager.FX_KEY_CLICK);
                 return true;
             });
             mMapView.getOverlays().remove(mMapView.compass);
