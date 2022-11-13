@@ -73,6 +73,7 @@ public class StampSheetDialogue extends BottomSheetDialogFragment {
                 StampCollection.getInstance().setObtainedStamp(stamp, isChecked);
                 StampCollection.getInstance().saveMyStamps(requireContext());
                 ((TextView)view.findViewById(R.id.owned_drawer)).setText("Owned: " + (stamp.getIsObtained() ? "Yes" : "No"));
+                dataSet.get(position).put(keys[3], "Owned: " + (stamp.getIsObtained() ? "Yes" : "No"));
             });
             ll.addView(title); ll.addView(obtained); popup.setView(ll); popup.show();
         });

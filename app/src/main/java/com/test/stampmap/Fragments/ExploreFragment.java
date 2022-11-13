@@ -157,6 +157,8 @@ public class ExploreFragment extends BaseMapFragment implements MapEventsReceive
                 new StampSheetDialogue(stampMarker.getStampSet()).show(getChildFragmentManager(), "ModalBottomSheet");
                 return true;
             });
+            mMapView.getOverlays().remove(mMapView.compass);
+            mMapView.getOverlays().add(mMapView.compass);
         }
     }
 

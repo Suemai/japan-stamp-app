@@ -10,7 +10,6 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 
 public abstract class BaseMapFragment extends Fragment {
     public static final String TAG = "osmBaseFrag";
-    public MapTileProviderBasic tileProvider;
     protected CustomMapView mMapView;
     boolean firstActivation = true;
 
@@ -41,8 +40,7 @@ public abstract class BaseMapFragment extends Fragment {
     public void onResume() {
         super.onResume();
         if (mMapView != null) mMapView.onResume();
-        tileProvider = new MapTileProviderBasic(requireContext(), TileSourceFactory.MAPNIK);
-        getmMapView().setTileProvider(tileProvider);
+        getmMapView().setTileProvider(new MapTileProviderBasic(requireContext(), TileSourceFactory.MAPNIK));
         if (!firstActivation) mMapView.setupMap(requireContext());
         else {
             mMapView.locationOverlay.enableFollowLocation();
