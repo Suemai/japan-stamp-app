@@ -11,33 +11,25 @@ import com.test.stampmap.Fragments.ObtainedFragment;
 import com.test.stampmap.Fragments.WishlistFragment;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 public class MyStampsViewPageAdapter extends FragmentStateAdapter {
-    public MyStampsViewPageAdapter(@NonNull @NotNull FragmentActivity fragmentActivity) {
-        super(fragmentActivity);
+    public List<Fragment> fragments;
+
+    public MyStampsViewPageAdapter(FragmentActivity activity, List<Fragment> fragments) {
+        super(activity);
+        this.fragments = fragments;
     }
 
     @NonNull
     @NotNull
     @Override
     public Fragment createFragment(int position) {
-        switch (position){
-            case 0:
-                return new ObtainedFragment();
-
-            case 1:
-                return new NotObtainedFragment();
-
-            case 2:
-                return new WishlistFragment();
-
-            default:
-                return new ObtainedFragment();
-        }
+        return fragments.get(position);
     }
 
     @Override
     public int getItemCount() {
-        //returns the number of tabs
-        return 3;
+        return fragments.size();
     }
 }

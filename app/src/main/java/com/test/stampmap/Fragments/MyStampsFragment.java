@@ -1,5 +1,6 @@
 package com.test.stampmap.Fragments;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,11 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.test.stampmap.Adapter.MyStampsViewPageAdapter;
 import com.test.stampmap.R;
+import com.test.stampmap.Stamp.StampCollection;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class MyStampsFragment extends Fragment {
 
@@ -26,7 +32,9 @@ public class MyStampsFragment extends Fragment {
 
         tabLayout = view.findViewById(R.id.myStampsTab);
         viewPager2 = view.findViewById(R.id.myStampsPageViewer);
-        myStampsViewPageAdapter = new MyStampsViewPageAdapter(requireActivity());
+        List<Fragment> myStampFragments = Arrays.stream(
+                new Fragment[]{new ObtainedFragment(), new NotObtainedFragment(), new WishlistFragment()}).collect(Collectors.toList());
+        myStampsViewPageAdapter = new MyStampsViewPageAdapter(requireActivity(), myStampFragments);
         viewPager2.setAdapter(myStampsViewPageAdapter);
 
 
@@ -57,5 +65,11 @@ public class MyStampsFragment extends Fragment {
         });
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        myStampsViewPageAdapter.fragments.get(tabLayout.getSelectedTabPosition()).onResume();
     }
 }

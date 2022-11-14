@@ -1,7 +1,6 @@
 package com.test.stampmap.Views;
 
 import android.content.Context;
-import android.util.Log;
 import com.test.stampmap.Fragments.ExploreFragment;
 import org.osmdroid.views.CustomZoomButtonsController;
 import org.osmdroid.views.MapView;
@@ -17,6 +16,7 @@ public class CustomMapView extends MapView {
     public CompassOverlay compass;
     private MapViewRepository repo;
     public MyLocationNewOverlay locationOverlay;
+
     public CustomMapView(Context context) {
         super(context);
         setupMap(context);
@@ -27,7 +27,6 @@ public class CustomMapView extends MapView {
         //allow finger movement......it's not what ur thinking....
         //ZOOM man ZOOM
         this.setMultiTouchControls(true);
-        Log.i("PLEASE DON'T", "DO THIS TO ME");
 
         //allow rotating movement
         RotationGestureOverlay rotationOverlay = new RotationGestureOverlay(this);

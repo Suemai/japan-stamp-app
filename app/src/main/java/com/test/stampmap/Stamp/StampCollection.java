@@ -2,6 +2,7 @@ package com.test.stampmap.Stamp;
 
 import android.app.Activity;
 import android.content.Context;
+import com.test.stampmap.Interface.StampUpdateEventsReceiver;
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -19,6 +20,7 @@ public class StampCollection {
     private final ArrayList<StampSet> allStamps = new ArrayList<>();
     private final ArrayList<StampSet> myStamps = new ArrayList<>();
     private final ArrayList<StampSet> currentFilteredStamps = new ArrayList<>();
+    private final ArrayList<StampUpdateEventsReceiver> updatesCallback = new ArrayList<>();
 
     private boolean refreshRequired;
 
@@ -42,6 +44,10 @@ public class StampCollection {
             }
         }
         return myStamps;
+    }
+
+    public boolean getRefreshRequired(){
+        return refreshRequired;
     }
 
     public ArrayList<StampSet> getCurrentFilteredStamps(){
@@ -91,6 +97,11 @@ public class StampCollection {
     public void setObtainedStamp(Stamp stamp, boolean value){
         stamp.setObtained(value);
         refreshRequired = true;
+        for (StampUpdateEventsReceiver callback : updatesCallback) callback.onStampObtained();
+    }
+
+    public void addStampUpdateEvent(StampUpdateEventsReceiver receiver){
+        updatesCallback.add(receiver);
     }
 
     /**
