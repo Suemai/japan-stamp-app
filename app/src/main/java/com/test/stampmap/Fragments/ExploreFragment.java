@@ -167,7 +167,7 @@ public class ExploreFragment extends Fragment implements MapEventsReceiver {
         ArrayList<StampSet> filteredStamps = Filters.FilterStamps(searchFilters);
         loadMarkers();
         handleMapMovementAndZoom(filteredStamps);
-        if (UserSettings.getConfigValue(ConfigValue.CLEAR_FILTERS)) {
+        if (ConfigValue.CLEAR_FILTERS.getValue()) {
             MainActivity.filters.clear();
             distanceSliderValue = 0;
         }

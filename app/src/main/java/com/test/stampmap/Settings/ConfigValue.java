@@ -5,11 +5,27 @@ public enum ConfigValue {
     CLEAR_FILTERS(true);
 
 
-    public final String name;
-    public final Object defaultValue;
+    private final String name;
+    private final Object defaultValue;
 
     ConfigValue(Object defaultValue) {
         this.name = this.name();
         this.defaultValue = defaultValue;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Object getDefaultValue() {
+        return defaultValue;
+    }
+
+    public <T> T getValue(){
+        return UserSettings.getConfigValue(this);
+    }
+
+    public <T> void setValue(T value){
+        UserSettings.setConfigValue(this, value);
     }
 }

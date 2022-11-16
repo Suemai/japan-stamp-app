@@ -115,4 +115,8 @@ public class MainActivity extends AppCompatActivity {
                     REQUEST_PERMISSIONS_REQUEST_CODE);
         }
     }
+
+    void loadSharedPreferences(){
+        for (ConfigValue configValue : ConfigValue.values()) configValue.getValue();
+    }
 }

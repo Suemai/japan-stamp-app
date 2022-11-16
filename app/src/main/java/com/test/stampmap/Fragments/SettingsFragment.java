@@ -17,15 +17,14 @@ public class SettingsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v =  inflater.inflate(R.layout.settings_fragment, container, false);
         SwitchCompat clearFilters = v.findViewById(R.id.filterClear);
-        clearFilters.setChecked(UserSettings.getConfigValue(ConfigValue.CLEAR_FILTERS));
-        clearFilters.setOnCheckedChangeListener((buttonView, isChecked) -> UserSettings.setConfigValue(ConfigValue.CLEAR_FILTERS, isChecked));
+        clearFilters.setChecked(ConfigValue.CLEAR_FILTERS.getValue());
+        clearFilters.setOnCheckedChangeListener((buttonView, isChecked) -> ConfigValue.CLEAR_FILTERS.setValue(isChecked));
        return v;
     }
 }
