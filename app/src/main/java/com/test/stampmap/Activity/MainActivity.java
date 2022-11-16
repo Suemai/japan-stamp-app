@@ -1,5 +1,6 @@
 package com.test.stampmap.Activity;
 
+import android.content.SharedPreferences;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -16,9 +17,12 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import com.test.stampmap.Fragments.ExploreFragment;
 import com.test.stampmap.Fragments.MyStampsFragment;
+import com.test.stampmap.Fragments.SettingsFragment;
 import com.test.stampmap.Fragments.WishlistFragment;
 import com.test.stampmap.Interface.IFilter;
 import com.test.stampmap.R;
+import com.test.stampmap.Settings.ConfigValue;
+import com.test.stampmap.Settings.UserSettings;
 import com.test.stampmap.Stamp.StampCollection;
 import org.jetbrains.annotations.NotNull;
 import org.osmdroid.config.Configuration;
@@ -30,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
     public static List<IFilter> filters = new ArrayList<>();
     public static float distanceSliderValue = 0;
+    public static UserSettings settings;
 
     ViewPager2 viewPager2;
     NavigationBarAdapter mainFragmentsViewAdapter;
@@ -37,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+//        settings = (UserSettings) getApplication();
 
         //handle permissions first
         Context ctx = getApplicationContext();
@@ -53,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
 
         //inflate and create a map
         setContentView(R.layout.activity_main);
-        List<Fragment> navigationFragments = Arrays.stream(new Fragment[]{new ExploreFragment(), new MyStampsFragment(), new WishlistFragment()}).collect(Collectors.toList());
+        List<Fragment> navigationFragments = Arrays.stream(new Fragment[]{new ExploreFragment(), new MyStampsFragment(), new SettingsFragment()}).collect(Collectors.toList());
         viewPager2 = findViewById(R.id.mainFragmentViewer);
         mainFragmentsViewAdapter = new NavigationBarAdapter(getSupportFragmentManager(), getLifecycle(), navigationFragments);
         viewPager2.setAdapter(mainFragmentsViewAdapter);
@@ -124,13 +131,5 @@ public class MainActivity extends AppCompatActivity {
                     permissionsToRequest.toArray(new String[0]),
                     REQUEST_PERMISSIONS_REQUEST_CODE);
         }
-    }
-
-    //search bar
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.search_options, menu);
-        return true;
     }
 }

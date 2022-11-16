@@ -5,6 +5,7 @@ import android.content.Context;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.*;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -17,6 +18,8 @@ import com.test.stampmap.Dialogues.StampSheetDialogue;
 import com.test.stampmap.Filter.Filters;
 import com.test.stampmap.Interface.IFilter;
 import com.test.stampmap.R;
+import com.test.stampmap.Settings.ConfigValue;
+import com.test.stampmap.Settings.UserSettings;
 import com.test.stampmap.Stamp.StampCollection;
 import com.test.stampmap.Stamp.StampMarker;
 import com.test.stampmap.Stamp.StampSet;
@@ -164,8 +167,10 @@ public class ExploreFragment extends Fragment implements MapEventsReceiver {
         ArrayList<StampSet> filteredStamps = Filters.FilterStamps(searchFilters);
         loadMarkers();
         handleMapMovementAndZoom(filteredStamps);
-        MainActivity.filters.clear();
-        distanceSliderValue = 0;
+        if (MainActivity.settings.getConfigValue(ConfigValue.CLEAR_FILTERS)) {
+            MainActivity.filters.clear();
+            distanceSliderValue = 0;
+        }
         return false;
     }
 
@@ -220,6 +225,7 @@ public class ExploreFragment extends Fragment implements MapEventsReceiver {
     @Override
     public void onResume() {
         super.onResume();
+        Log.i("SURPRISE", "ME");
         mMapView.onResume();
         mMapView.setTileProvider(new MapTileProviderBasic(requireContext(), TileSourceFactory.MAPNIK));
         loadMapData();
