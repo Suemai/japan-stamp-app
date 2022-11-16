@@ -34,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
     public static List<IFilter> filters = new ArrayList<>();
     public static float distanceSliderValue = 0;
-    public static UserSettings settings;
 
     ViewPager2 viewPager2;
     NavigationBarAdapter mainFragmentsViewAdapter;
@@ -43,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-//        settings = (UserSettings) getApplication();
+        UserSettings.setUserSettings((UserSettings) getApplication());
 
         //handle permissions first
         Context ctx = getApplicationContext();
