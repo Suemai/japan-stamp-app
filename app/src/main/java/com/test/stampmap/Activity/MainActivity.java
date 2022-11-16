@@ -93,27 +93,11 @@ public class MainActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
         Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this));
-        //locationOverlay.enableMyLocation();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        //locationOverlay.disableMyLocation();
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NotNull String[] permissions, @NotNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        ArrayList<String> permissionsToRequest = new ArrayList<>(Arrays.asList(permissions).subList(0, grantResults.length));
-        if (permissionsToRequest.size() > 0) {
-            ActivityCompat.requestPermissions(
-                    this,
-                    permissionsToRequest.toArray(new String[0]),
-                    REQUEST_PERMISSIONS_REQUEST_CODE);
-        }
-
     }
 
     private void requestPermissionsIfNecessary(String[] permissions) {
