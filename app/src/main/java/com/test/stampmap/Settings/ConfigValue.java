@@ -2,21 +2,14 @@ package com.test.stampmap.Settings;
 
 public enum ConfigValue {
     // declare config values here
-    CLEAR_FILTERS("clearFilters", true);
+    CLEAR_FILTERS(true);
 
 
-    public final String value;
-    public final Class<?> clazz;
+    public final String name;
     public final Object defaultValue;
 
-    ConfigValue(String name, Object defaultValue) {
-        this.value = name;
+    ConfigValue(Object defaultValue) {
+        this.name = this.name();
         this.defaultValue = defaultValue;
-
-        if (defaultValue instanceof Boolean) this.clazz = Boolean.class;
-        else if (defaultValue instanceof Integer) this.clazz = Integer.class;
-        else if (defaultValue instanceof Float) this.clazz = Float.class;
-        else if (defaultValue instanceof Long) this.clazz = Long.class;
-        else this.clazz = defaultValue.getClass().getDeclaringClass();
     }
 }
