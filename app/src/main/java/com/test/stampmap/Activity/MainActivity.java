@@ -31,7 +31,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class MainActivity extends AppCompatActivity {
-    private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
     public static List<IFilter> filters = new ArrayList<>();
     public static float distanceSliderValue = 0;
 
@@ -43,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         UserSettings.setUserSettings((UserSettings) getApplication());
+        loadSharedPreferences();
 
         //handle permissions first
         Context ctx = getApplicationContext();
@@ -109,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         if (permissionsToRequest.size() > 0) {
+            int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
             ActivityCompat.requestPermissions(
                     this,
                     permissionsToRequest.toArray(new String[0]),
