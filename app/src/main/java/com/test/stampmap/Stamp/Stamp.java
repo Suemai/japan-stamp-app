@@ -12,6 +12,7 @@ public class Stamp implements Serializable {
     private final boolean isObtainable;
     private final GeoPoint coordinates;
     private boolean isObtained;
+    private boolean isOnWishlist;
 
     public Stamp(String name, String address, String location, String imageLink, boolean isObtainable, GeoPoint coordinates) {
         this.name = name;
@@ -21,6 +22,7 @@ public class Stamp implements Serializable {
         this.isObtainable = isObtainable;
         this.coordinates = coordinates;
         this.isObtained = false;
+        this.isOnWishlist = false;
     }
 
     public String getName(){
@@ -51,8 +53,16 @@ public class Stamp implements Serializable {
         return this.isObtained;
     }
 
+    public boolean getIsOnWishlist(){
+        return this.isOnWishlist;
+    }
+
     protected void setObtained(boolean value) {
         this.isObtained = value;
+    }
+
+    protected void setOnWishlist(boolean value) {
+        this.isOnWishlist = value;
     }
 
     public static Stamp StampFromJSON(JSONObject JSONStamp){

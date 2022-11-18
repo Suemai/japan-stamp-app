@@ -1,6 +1,5 @@
 package com.test.stampmap.Activity;
 
-import android.content.SharedPreferences;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -9,7 +8,6 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.preference.PreferenceManager;
-import android.view.*;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -18,13 +16,11 @@ import androidx.core.content.ContextCompat;
 import com.test.stampmap.Fragments.ExploreFragment;
 import com.test.stampmap.Fragments.MyStampsFragment;
 import com.test.stampmap.Fragments.SettingsFragment;
-import com.test.stampmap.Fragments.WishlistFragment;
 import com.test.stampmap.Interface.IFilter;
 import com.test.stampmap.R;
 import com.test.stampmap.Settings.ConfigValue;
 import com.test.stampmap.Settings.UserSettings;
 import com.test.stampmap.Stamp.StampCollection;
-import org.jetbrains.annotations.NotNull;
 import org.osmdroid.config.Configuration;
 
 import java.util.*;

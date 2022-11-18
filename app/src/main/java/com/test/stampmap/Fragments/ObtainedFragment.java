@@ -30,7 +30,7 @@ public class ObtainedFragment extends Fragment {
         adapter = new SimpleAdapter(requireContext(), dataSet, R.layout.stamp_element, keys, ids);
         stampList.setAdapter(adapter);
         setData();
-        StampCollection.getInstance().addStampUpdateEvent(this::setData);
+        StampCollection.getInstance().addMyStampsUpdateEvent(this::setData);
         return v;
     }
 
