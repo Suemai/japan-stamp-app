@@ -37,6 +37,7 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_gravity="center"
+                    android:layout_marginRight="15dp"
                     android:id="@+id/filter"
                     app:srcCompat="@drawable/filter_foreground"
                     android:layout_weight="0.1"
