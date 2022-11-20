@@ -23,5 +23,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
     />
+    <Button
+            android:id="@+id/cache_clear"
+            android:layout_marginLeft="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Clear Image Cache"
+    />
 
 </LinearLayout>

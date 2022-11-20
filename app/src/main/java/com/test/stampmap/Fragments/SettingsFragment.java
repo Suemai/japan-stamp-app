@@ -1,15 +1,16 @@
 package com.test.stampmap.Fragments;
 
 import android.os.Bundle;
-import android.util.Log;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import com.bumptech.glide.Glide;
 import com.test.stampmap.R;
 import com.test.stampmap.Settings.ConfigValue;
-import com.test.stampmap.Settings.UserSettings;
+
+import java.util.concurrent.Executors;
 
 
 public class SettingsFragment extends Fragment {
@@ -25,6 +26,7 @@ public class SettingsFragment extends Fragment {
         SwitchCompat clearFilters = v.findViewById(R.id.filterClear);
         clearFilters.setChecked(ConfigValue.CLEAR_FILTERS.getValue());
         clearFilters.setOnCheckedChangeListener((buttonView, isChecked) -> ConfigValue.CLEAR_FILTERS.setValue(isChecked));
+        v.findViewById(R.id.cache_clear).setOnClickListener(v1 -> Executors.newSingleThreadExecutor().execute(() -> Glide.get(requireContext()).clearDiskCache()));
        return v;
     }
 }

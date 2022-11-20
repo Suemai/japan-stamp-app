@@ -8,11 +8,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.test.stampmap.R;
+import com.test.stampmap.Stamp.Stamp;
 import com.test.stampmap.Stamp.StampCollection;
 import com.test.stampmap.Stamp.StampSet;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 
 public class ObtainedFragment extends Fragment {
@@ -37,13 +39,17 @@ public class ObtainedFragment extends Fragment {
     void setData(){
         dataSet.clear();
         for (StampSet stampSet : StampCollection.getInstance().getMyStamps()) {
-            HashMap<String, String> map = new HashMap<>();
-            map.put(keys[0], stampSet.getName());
-            map.put(keys[1], "Address: " + stampSet.getAddress());
-            map.put(keys[2], "Difficulty: " + stampSet.getDifficulty());
-            map.put(keys[3], "Open Hours: " + stampSet.getOpenHours());
-            dataSet.add(map);
+            for (Stamp stamp : stampSet) {
+                if (!stamp.getIsObtained()) continue;
+                HashMap<String, String> map = new HashMap<>();
+                map.put(keys[0], stampSet.getName());
+                map.put(keys[1], "Address: " + stampSet.getAddress());
+                map.put(keys[2], "Difficulty: " + stampSet.getDifficulty());
+                map.put(keys[3], "Date Obtained: " + stamp.getDateObtained());
+                dataSet.add(map);
+            }
         }
+        dataSet.sort((o1, o2) -> Objects.requireNonNull(o1.get(keys[3])).compareTo(Objects.requireNonNull(o2.get(keys[3]))));
     }
 
     @Override

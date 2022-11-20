@@ -11,6 +11,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 import androidx.appcompat.widget.SearchView;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import com.test.stampmap.Activity.MainActivity;
 import com.test.stampmap.Dialogues.FilterSheetDialogue;
@@ -19,13 +20,15 @@ import com.test.stampmap.Filter.Filters;
 import com.test.stampmap.Interface.IFilter;
 import com.test.stampmap.R;
 import com.test.stampmap.Settings.ConfigValue;
-import com.test.stampmap.Settings.UserSettings;
 import com.test.stampmap.Stamp.StampCollection;
 import com.test.stampmap.Stamp.StampMarker;
 import com.test.stampmap.Stamp.StampSet;
 import com.test.stampmap.Views.CustomMapView;
 import org.jetbrains.annotations.Nullable;
 import org.osmdroid.events.MapEventsReceiver;
+import org.osmdroid.events.MapListener;
+import org.osmdroid.events.ScrollEvent;
+import org.osmdroid.events.ZoomEvent;
 import org.osmdroid.tileprovider.MapTileProviderBasic;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.Distance;
@@ -53,7 +56,7 @@ public class ExploreFragment extends Fragment implements MapEventsReceiver {
     private SearchView searchBar;
     private View v;
     private AudioManager audioManager;
-    private CustomMapView mMapView;
+    private CustomMapView map;
     private CompassOverlay compass;
 
     @Override
@@ -61,9 +64,9 @@ public class ExploreFragment extends Fragment implements MapEventsReceiver {
         super.onCreate(savedInstanceState);
 
         //inflate and create a map
-        mMapView = new CustomMapView(inflater.getContext());
+        map = new CustomMapView(inflater.getContext());
         v = inflater.inflate(R.layout.explore_fragment, container, false);
-        ((RelativeLayout) v.findViewById(R.id.mapView)).addView(mMapView);
+        ((RelativeLayout) v.findViewById(R.id.mapView)).addView(map);
 
         searchBar = v.findViewById(R.id.searchBar);
         searchBar.setQueryHint("KNOBHEAD");
@@ -80,6 +83,8 @@ public class ExploreFragment extends Fragment implements MapEventsReceiver {
             return false;
         });
 
+        searchBar.setOnClickListener(v -> searchBar.setIconified(false));
+
         ImageButton filterBottom = v.findViewById(R.id.filter);
         filterBottom.setOnClickListener(view -> new FilterSheetDialogue().show(getChildFragmentManager(), "ModalBottomSheet"));
 
@@ -91,39 +96,39 @@ public class ExploreFragment extends Fragment implements MapEventsReceiver {
     private void loadMapData(){
         //marker off on short press
         MapEventsOverlay mapEventsOverlay = new MapEventsOverlay(this);
-        mMapView.getOverlays().add(0, mapEventsOverlay);
+        map.getOverlays().add(0, mapEventsOverlay);
 
         //location marker - dunno if it works, but there's something
         ExploreFragment.locationProvider = new GpsMyLocationProvider(requireContext());
-        MyLocationNewOverlay locationOverlay = new MyLocationNewOverlay(ExploreFragment.locationProvider, mMapView);
+        MyLocationNewOverlay locationOverlay = new MyLocationNewOverlay(ExploreFragment.locationProvider, map);
         locationOverlay.enableMyLocation();
         if (firstActivation){
             locationOverlay.enableFollowLocation();
-            mMapView.getController().setZoom(19.5);
+            map.getController().setZoom(19.5);
         }
-        mMapView.getOverlays().add(locationOverlay);
+        map.getOverlays().add(locationOverlay);
 
         //button to get center your current location
         ImageButton currentButton = v.findViewById(R.id.btn_passenger_current_location);
         currentButton.setOnClickListener(view -> {
             locationOverlay.enableFollowLocation();
-            mMapView.getController().setZoom(19.5);
-            mMapView.setMapOrientation(0);
+            map.getController().setZoom(19.5);
+            map.setMapOrientation(0);
         });
         currentButton.bringToFront();
 
         //allow finger movement......it's not what ur thinking....
         //ZOOM man ZOOM
-        mMapView.setMultiTouchControls(true);
+        map.setMultiTouchControls(true);
 
         //allow rotating movement
-        RotationGestureOverlay rotationOverlay = new RotationGestureOverlay(mMapView);
+        RotationGestureOverlay rotationOverlay = new RotationGestureOverlay(map);
         rotationOverlay.setEnabled(true);
-        mMapView.setMultiTouchControls(true);
-        mMapView.getOverlays().add(rotationOverlay);
+        map.setMultiTouchControls(true);
+        map.getOverlays().add(rotationOverlay);
 
         //remove zoom buttons
-        mMapView.getZoomController().setVisibility(CustomZoomButtonsController.Visibility.NEVER);
+        map.getZoomController().setVisibility(CustomZoomButtonsController.Visibility.NEVER);
 
         //adds compass (doesn't do compass work whilst rotating with map)
         // update: now we compassing
@@ -133,22 +138,26 @@ public class ExploreFragment extends Fragment implements MapEventsReceiver {
             }
             public void stopOrientationProvider() {}
             public float getLastKnownOrientation() {
-                return 0;
+                return -map.getMapOrientation();
             }
             public void destroy() {}
-        }, mMapView);
-        mMapView.getOverlays().add(compass);
+        }, map);
+        map.getOverlays().add(compass);
         compass.enableCompass();
-        compass.onOrientationChanged(-mMapView.getMapOrientation(), compass.getOrientationProvider());
-        mMapView.setOnDragListener((view, event) -> {
-            compass.onOrientationChanged(-mMapView.getMapOrientation(), compass.getOrientationProvider());
-            return false;
+        compass.onOrientationChanged(-map.getMapOrientation(), compass.getOrientationProvider());
+        map.addMapListener(new MapListener() {
+            @Override
+            public boolean onScroll(ScrollEvent event) {
+                compass.onOrientationChanged(-map.getMapOrientation(), compass.getOrientationProvider());
+                return false;
+            }
+            public boolean onZoom(ZoomEvent event) {return false;}
         });
 
         //button to reset rotation
         Button compassButton = v.findViewById(R.id.compassButton);
         compassButton.setOnClickListener(view -> {
-            mMapView.setMapOrientation(0);
+            map.setMapOrientation(0);
             compass.onOrientationChanged(0, compass.getOrientationProvider());
         });
 
@@ -159,7 +168,7 @@ public class ExploreFragment extends Fragment implements MapEventsReceiver {
     }
 
     public boolean performSearch(@Nullable String query) {
-        mMapView.getOverlays().removeAll(mMapView.getOverlays().stream().filter(item -> item instanceof Marker).collect(Collectors.toList()));
+        map.getOverlays().removeAll(map.getOverlays().stream().filter(item -> item instanceof Marker).collect(Collectors.toList()));
         List<IFilter> clone = (List<IFilter>) ((ArrayList<IFilter>) MainActivity.filters).clone();
         if (query != null) clone.add(Filters.SearchType.ANY.set(query));
         if (distanceSliderValue > 0) clone.add(Filters.Distance.KILOMETRES.set(distanceSliderValue));
@@ -190,7 +199,7 @@ public class ExploreFragment extends Fragment implements MapEventsReceiver {
         coords[1] += extremes[1].getLongitude() + extremes[3].getLongitude();
         GeoPoint[] trueExtremes = Arrays.stream(extremes).distinct().toArray(GeoPoint[]::new);
         double coorDistance = 0;
-        if (trueExtremes.length == 1) mMapView.getController().setZoom(18.0f);
+        if (trueExtremes.length == 1) map.getController().setZoom(18.0f);
         else for (int i = 0; i < trueExtremes.length; i++) {
             for (int k = i + 1; k < trueExtremes.length; k++) {
                 if (trueExtremes[i] != trueExtremes[k]) {
@@ -202,23 +211,24 @@ public class ExploreFragment extends Fragment implements MapEventsReceiver {
             }
         }
         double zoom = Math.log(360 / coorDistance) / Math.log(2);
-        if (coorDistance > 0) mMapView.getController().setZoom(zoom + 1.6);
-        mMapView.getController().animateTo(new GeoPoint(coords[0] / 2, coords[1] / 2));
+        if (coorDistance > 0) map.getController().setZoom(zoom + 1.6);
+        map.getController().animateTo(new GeoPoint(coords[0] / 2, coords[1] / 2));
     }
 
     private void loadMarkers(){
         for (StampSet stampSet : StampCollection.getInstance().getCurrentFilteredStamps()) {
-            StampMarker stampMarker = new StampMarker(mMapView, stampSet);
+            StampMarker stampMarker = new StampMarker(map, stampSet);
             GeoPoint baseCoords = stampSet.getStamps().get(0).getCoordinates();
             stampMarker.setPosition(baseCoords);
-            mMapView.getOverlays().add(stampMarker);
+            map.getOverlays().add(stampMarker);
+            stampMarker.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.person, getResources().newTheme()));
             stampMarker.setOnMarkerClickListener((marker, view) -> {
                 new StampSheetDialogue(stampMarker.getStampSet()).show(getChildFragmentManager(), "ModalBottomSheet");
                 audioManager.playSoundEffect(AudioManager.FX_KEY_CLICK);
                 return true;
             });
-            mMapView.getOverlays().remove(compass);
-            mMapView.getOverlays().add(compass);
+            map.getOverlays().remove(compass);
+            map.getOverlays().add(compass);
         }
     }
 
@@ -226,15 +236,15 @@ public class ExploreFragment extends Fragment implements MapEventsReceiver {
     public void onResume() {
         super.onResume();
         Log.i("SURPRISE", "ME");
-        mMapView.onResume();
-        mMapView.setTileProvider(new MapTileProviderBasic(requireContext(), TileSourceFactory.MAPNIK));
+        map.onResume();
+        map.setTileProvider(new MapTileProviderBasic(requireContext(), TileSourceFactory.MAPNIK));
         loadMapData();
         firstActivation = false;
     }
 
     @Override
     public boolean singleTapConfirmedHelper(GeoPoint p) {
-        InfoWindow.closeAllInfoWindowsOn(mMapView);
+        InfoWindow.closeAllInfoWindowsOn(map);
         searchBar.clearFocus();
         return true;
     }
