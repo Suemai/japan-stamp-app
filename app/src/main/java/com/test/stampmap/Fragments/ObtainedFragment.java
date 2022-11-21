@@ -12,9 +12,8 @@ import com.test.stampmap.Stamp.Stamp;
 import com.test.stampmap.Stamp.StampCollection;
 import com.test.stampmap.Stamp.StampSet;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Objects;
+import java.text.DateFormat;
+import java.util.*;
 
 
 public class ObtainedFragment extends Fragment {
@@ -38,6 +37,7 @@ public class ObtainedFragment extends Fragment {
 
     void setData(){
         dataSet.clear();
+        DateFormat formatter = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.MEDIUM, Locale.JAPAN);
         for (StampSet stampSet : StampCollection.getInstance().getMyStamps()) {
             for (Stamp stamp : stampSet) {
                 if (!stamp.getIsObtained()) continue;
@@ -45,7 +45,7 @@ public class ObtainedFragment extends Fragment {
                 map.put(keys[0], stampSet.getName());
                 map.put(keys[1], "Address: " + stampSet.getAddress());
                 map.put(keys[2], "Difficulty: " + stampSet.getDifficulty());
-                map.put(keys[3], "Date Obtained: " + stamp.getDateObtained());
+                map.put(keys[3], "Date Obtained: " + formatter.format(stamp.getDateObtained()));
                 dataSet.add(map);
             }
         }

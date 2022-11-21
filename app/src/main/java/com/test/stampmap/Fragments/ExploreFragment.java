@@ -74,9 +74,7 @@ public class ExploreFragment extends Fragment implements MapEventsReceiver {
         TextView searchText = searchBar.findViewById(androidx.appcompat.R.id.search_src_text);
         searchText.setOnEditorActionListener((view, actionId, event) -> {
             if (actionId == EditorInfo.IME_NULL) {
-                InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-
+                closeKeyboard();
                 String queryText = searchBar.getQuery().toString();
                 return performSearch(TextUtils.getTrimmedLength(queryText) > 0 ? queryText : null);
             }
@@ -86,7 +84,10 @@ public class ExploreFragment extends Fragment implements MapEventsReceiver {
         searchBar.setOnClickListener(v -> searchBar.setIconified(false));
 
         ImageButton filterBottom = v.findViewById(R.id.filter);
-        filterBottom.setOnClickListener(view -> new FilterSheetDialogue().show(getChildFragmentManager(), "ModalBottomSheet"));
+        filterBottom.setOnClickListener(view -> {
+            new FilterSheetDialogue().show(getChildFragmentManager(), "ModalBottomSheet");
+            closeKeyboard();
+        });
 
         audioManager = (AudioManager)requireContext().getSystemService(Context.AUDIO_SERVICE);
 
@@ -221,7 +222,7 @@ public class ExploreFragment extends Fragment implements MapEventsReceiver {
             GeoPoint baseCoords = stampSet.getStamps().get(0).getCoordinates();
             stampMarker.setPosition(baseCoords);
             map.getOverlays().add(stampMarker);
-            stampMarker.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.person, getResources().newTheme()));
+//            stampMarker.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.person, getResources().newTheme()));
             stampMarker.setOnMarkerClickListener((marker, view) -> {
                 new StampSheetDialogue(stampMarker.getStampSet()).show(getChildFragmentManager(), "ModalBottomSheet");
                 audioManager.playSoundEffect(AudioManager.FX_KEY_CLICK);
@@ -229,7 +230,15 @@ public class ExploreFragment extends Fragment implements MapEventsReceiver {
             });
             map.getOverlays().remove(compass);
             map.getOverlays().add(compass);
+            closeKeyboard();
         }
+    }
+
+    void closeKeyboard(){
+        InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
+        TextView view = searchBar.findViewById(androidx.appcompat.R.id.search_src_text);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        searchBar.clearFocus();
     }
 
     @Override

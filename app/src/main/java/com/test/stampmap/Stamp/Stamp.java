@@ -1,14 +1,12 @@
 package com.test.stampmap.Stamp;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.osmdroid.util.GeoPoint;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 public class Stamp implements Serializable {
     private final String name, address, location, imageLink;
@@ -16,7 +14,7 @@ public class Stamp implements Serializable {
     private final GeoPoint coordinates;
     private boolean isObtained;
     private boolean isOnWishlist;
-    private @Nullable String dateObtained;
+    private long dateObtained;
 
     public Stamp(String name, String address, String location, String imageLink, boolean isObtainable, GeoPoint coordinates) {
         this.name = name;
@@ -27,7 +25,7 @@ public class Stamp implements Serializable {
         this.coordinates = coordinates;
         this.isObtained = false;
         this.isOnWishlist = false;
-        this.dateObtained = null;
+        this.dateObtained = 0;
     }
 
     public String getName(){
@@ -62,13 +60,13 @@ public class Stamp implements Serializable {
         return this.isOnWishlist;
     }
 
-    public @Nullable String getDateObtained() {
+    public long getDateObtained() {
         return this.dateObtained;
     }
 
     protected void setObtained(boolean value) {
         this.isObtained = value;
-        this.dateObtained = value ? DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss").format(LocalDateTime.now()) : null;
+        this.dateObtained = value ? new Date().toInstant().toEpochMilli() : 0;
     }
 
     protected void setOnWishlist(boolean value) {

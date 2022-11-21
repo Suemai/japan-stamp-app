@@ -83,7 +83,6 @@ public class StampSheetDialogue extends BottomSheetDialogFragment {
                 ((TextView) view.findViewById(R.id.owned_drawer)).setText("Owned: " + (stamp.getIsObtained() ? "Yes" : "No"));
                 dataSet.get(position).put(keys[3], "Owned: " + (stamp.getIsObtained() ? "Yes" : "No"));
             });
-
             SwitchCompat onWishlist = new SwitchCompat(requireContext());
             onWishlist.setText("On Wishlist");
             onWishlist.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -92,11 +91,7 @@ public class StampSheetDialogue extends BottomSheetDialogFragment {
                 StampCollection.getInstance().setStampOnWishlist(stamp, stampSet, isChecked);
                 StampCollection.getInstance().saveMyStamps(requireContext());
             });
-            ll.addView(title);
-            ll.addView(obtained);
-            ll.addView(onWishlist);
-            popup.setView(ll);
-            popup.show();
+            ll.addView(title); ll.addView(obtained); ll.addView(onWishlist); popup.setView(ll); popup.show();
         });
         stampList.setAdapter(new SimpleAdapter(requireContext(), dataSet, R.layout.stamp_element, keys, ids));
         ImageView img = v.findViewById(R.id.stamp_image);
