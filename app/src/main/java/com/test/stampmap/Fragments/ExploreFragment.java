@@ -3,9 +3,11 @@ package com.test.stampmap.Fragments;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.*;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -48,39 +50,37 @@ import java.util.stream.Collectors;
 
 public class ExploreFragment extends Fragment implements MapEventsReceiver {
 
-    private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
+    public static final String TAG = "ExploreFrag";
     private MapView map = null;
     private SearchView searchBar = null;
-    public static List<IFilter> filters = new ArrayList<>();
     public static GpsMyLocationProvider locationProvider = null;
     public static float distanceSliderValue = 0;
-    Context ctx;
+    public static List<IFilter> filters = new ArrayList<>();
+    public MyLocationNewOverlay locationOverlay;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        Log.d(TAG,"onCreate");
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-
-        ctx = getContext().getApplicationContext();
-
         View view = inflater.inflate(R.layout.fragment_explore, container, false);
+        map = view.findViewById(R.id.mapView);
+        //map = new MapView(inflater.getContext());
+        Log.d(TAG,"onCreateView");
 
         //load stamp data
-        StampCollection.getInstance().load(ctx);
+        StampCollection.getInstance().load(getContext());
 
-        map = view.findViewById(R.id.mapView);
-        map.setTileSource(TileSourceFactory.MAPNIK);
+        addOverlays();
 
         //allow finger movement......it's not what ur thinking....
         //ZOOM man ZOOM
         map.setMultiTouchControls(true);
-
 
         //allow rotating movement
         RotationGestureOverlay rotationOverlay = new RotationGestureOverlay(map);
@@ -88,60 +88,54 @@ public class ExploreFragment extends Fragment implements MapEventsReceiver {
         map.setMultiTouchControls(true);
         map.getOverlays().add(rotationOverlay);
 
-        //remove zoom buttons
-        map.getZoomController().setVisibility(CustomZoomButtonsController.Visibility.NEVER);
 
         //set the starting point
         IMapController mapController = map.getController();
         mapController.setZoom(19.0);
 
-        /*
-        //not needed anymore
-        //GeoPoint startPoint = new GeoPoint(36.117052, 140.098735); //my dorm bitch
-        //Update: redundant line of code
-        //mapController.setCenter(startPoint);
-        */
 
-        //location marker - dunno if it works, but there's something
-        locationProvider = new GpsMyLocationProvider(ctx);
+        return view;
+    }
+
+
+    @Override
+    public boolean singleTapConfirmedHelper(GeoPoint p) {
+        return false;
+    }
+
+    @Override
+    public boolean longPressHelper(GeoPoint p) {
+        return false;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        map.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        map.onResume();
+        Configuration.getInstance().load(getContext(), PreferenceManager.getDefaultSharedPreferences(getContext()));
+    }
+
+    protected void addOverlays() {
+
+        View viewOver = View.inflate(getActivity(), R.layout.fragment_explore, null);
+
+        //GPS
+        locationProvider = new GpsMyLocationProvider(getContext());
         MyLocationNewOverlay locationOverlay = new MyLocationNewOverlay(locationProvider, map);
         locationOverlay.enableMyLocation();
         locationOverlay.enableFollowLocation();
         map.getOverlays().add(locationOverlay);
 
-
-        //button to get center your current location
-        ImageButton currentButton = view.findViewById(R.id.btn_passenger_current_location);
-        currentButton.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                locationOverlay.enableFollowLocation();
-                mapController.setZoom(19.5);
-                map.setMapOrientation(0);
-                return false;
-            }
-        });
-
-
-        //add marker to starting point
-        /*
-        //update: not needed anymore
-        Marker startMarker = new Marker(map);
-        startMarker.setPosition(startPoint);
-        startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER);
-        startMarker.setTitle("Ichinoya Building 35");
-
-        map.getOverlays().add(startMarker);
-        */
-
-        //marker off on short press
-        MapEventsOverlay mapEventsOverlay = new MapEventsOverlay(this);
-        map.getOverlays().add(0, mapEventsOverlay);
-
-
+        //Compass
         //adds compass (doesn't do compass work whilst rotating with map)
         // update: now we compassing
-        CompassOverlay compass = new CompassOverlay(ctx, new IOrientationProvider() {
+        CompassOverlay compass = new CompassOverlay(getContext(), new IOrientationProvider() {
             public boolean startOrientationProvider(IOrientationConsumer orientationConsumer) {
                 return true;
             }
@@ -168,7 +162,7 @@ public class ExploreFragment extends Fragment implements MapEventsReceiver {
         });
 
         //compass on rotate on touch
-        Button compassButton = view.findViewById(R.id.compassButton);
+        Button compassButton = viewOver.findViewById(R.id.compassButton);
         compassButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -179,9 +173,9 @@ public class ExploreFragment extends Fragment implements MapEventsReceiver {
         });
 
         //moving the compass location
-        compass.setCompassCenter(40, view.findViewById(R.id.toolbar).getBackground().getMinimumHeight());
+        compass.setCompassCenter(40, viewOver.findViewById(R.id.toolbar).getBackground().getMinimumHeight());
 
-        searchBar = view.findViewById(R.id.searchBar);
+        searchBar = viewOver.findViewById(R.id.searchBar);
         searchBar.setQueryHint("KNOBHEAD");
 
         TextView searchText = searchBar.findViewById(androidx.appcompat.R.id.search_src_text);
@@ -197,7 +191,27 @@ public class ExploreFragment extends Fragment implements MapEventsReceiver {
             return false;
         });
 
-        return inflater.inflate(R.layout.fragment_explore, container, false);
+        //set the starting point
+        IMapController mapController = map.getController();
+        mapController.setZoom(19.0);
+
+        //button to get center your current location
+        ImageButton currentButton = viewOver.findViewById(R.id.btn_passenger_current_location);
+        currentButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                locationOverlay.enableFollowLocation();
+                mapController.setZoom(19.5);
+                map.setMapOrientation(0);
+                return false;
+            }
+        });
+
+        //marker off on short press
+        MapEventsOverlay mapEventsOverlay = new MapEventsOverlay(this);
+        map.getOverlays().add(0, mapEventsOverlay);
+
+
     }
 
     public boolean performSearch(@Nullable String query) {
@@ -256,40 +270,5 @@ public class ExploreFragment extends Fragment implements MapEventsReceiver {
         map.getController().animateTo(new GeoPoint(coords[0] / 2, coords[1] / 2));
     }
 
-    @Override
-    public boolean singleTapConfirmedHelper(GeoPoint p) {
-        //InfoWindow.closeAllInfoWindowsOn(map);
-        //searchBar.clearFocus();
-        return true;
-    }
 
-    @Override
-    public boolean longPressHelper(GeoPoint p) {
-        //DO NOTHING FOR NOW:
-        return false;
-    }
-
-    @Override
-    public void onPause() {
-        if (map != null) {
-            map.onPause();
-        }
-        super.onPause();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (map != null) {
-            map.onResume();
-        }
-    }
-
-    //search bar
-    //@Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        //MenuInflater inflater = getMenuInflater();
-        //inflater.inflate(R.menu.search_options, menu);
-        return true;
-    }
 }

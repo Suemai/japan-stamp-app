@@ -81,6 +81,9 @@ public class MainActivity extends AppCompatActivity {
                 Manifest.permission.ACCESS_FINE_LOCATION,
         });
 
+        Context ctx = getApplicationContext();
+        Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
+
         setContentView(R.layout.activity_main);
 
         addBottomNavigation();
@@ -136,33 +139,34 @@ public class MainActivity extends AppCompatActivity {
 
     public void addBottomNavigation(){
 
-        BottomNavigationView bottomNav = findViewById(R.id.bottomNavigationView);
-
-        final FragmentManager navFragmentsManager = getSupportFragmentManager();
-
         Fragment exploreFrag = new ExploreFragment();
         Fragment myStampsFrag = new MyStampsFragment();
         Fragment settingsFrag = new SettingsFragment();
 
+        BottomNavigationView bottomNav = findViewById(R.id.bottomNavigationView);
+
+        final FragmentManager navFragmentsManager = getSupportFragmentManager();
+
+        getSupportFragmentManager().beginTransaction().replace(R.id.mainContainer,exploreFrag).commit();
+
         bottomNav.setOnItemSelectedListener(item -> {
             Fragment fragment;
             switch(item.getItemId()){
-                case R.id.explore:
-                    fragment = exploreFrag;
 
                 case R.id.myStamps:
                     fragment = myStampsFrag;
+                    break;
 
                 case R.id.settings:
                     fragment = settingsFrag;
+                    break;
 
                 default:
                     fragment = exploreFrag;
+                    break;
             }
-            if (fragment != null) {
-                navFragmentsManager.beginTransaction().replace(R.id.mainContainer, fragment).commit();
-            }
+            navFragmentsManager.beginTransaction().replace(R.id.mainContainer, fragment).commit();
             return true;
         });
-    };
-};
+    }
+}
