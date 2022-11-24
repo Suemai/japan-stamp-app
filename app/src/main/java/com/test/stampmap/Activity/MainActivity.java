@@ -1,68 +1,27 @@
 package com.test.stampmap.Activity;
 
-import android.app.Application;
-import android.content.Intent;
-import android.text.TextUtils;
-import android.util.Log;
-import android.view.inputmethod.EditorInfo;
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationBarView;
-import com.test.stampmap.Dialogues.FilterSheetDialogue;
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.preference.PreferenceManager;
-import android.view.*;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
-import androidx.appcompat.widget.SearchView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import com.test.stampmap.Dialogues.StampSheetDialogue;
-import com.test.stampmap.Filter.Filters;
 import com.test.stampmap.Fragments.ExploreFragment;
 import com.test.stampmap.Fragments.MyStampsFragment;
 import com.test.stampmap.Fragments.SettingsFragment;
 import com.test.stampmap.Interface.IFilter;
 import com.test.stampmap.R;
-import com.test.stampmap.Stamp.Stamp;
-import com.test.stampmap.Stamp.StampCollection;
-import com.test.stampmap.Stamp.StampMarker;
-import com.test.stampmap.Stamp.StampSet;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
-import org.osmdroid.events.MapEventsReceiver;
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
-import org.osmdroid.util.Distance;
-import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.CustomZoomButtonsController;
-import org.osmdroid.views.MapView;
-import org.osmdroid.views.overlay.MapEventsOverlay;
-import org.osmdroid.views.overlay.Marker;
-import org.osmdroid.views.overlay.compass.CompassOverlay;
-import org.osmdroid.views.overlay.compass.IOrientationConsumer;
-import org.osmdroid.views.overlay.compass.IOrientationProvider;
-import org.osmdroid.views.overlay.gestures.RotationGestureOverlay;
-import org.osmdroid.views.overlay.infowindow.InfoWindow;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
-import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
-import org.json.*;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.stream.Collectors;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class MainActivity extends AppCompatActivity {
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
@@ -147,25 +106,49 @@ public class MainActivity extends AppCompatActivity {
 
         final FragmentManager navFragmentsManager = getSupportFragmentManager();
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.mainContainer,exploreFrag).commit();
+        navFragmentsManager.beginTransaction()
+                .add(R.id.mainContainer, exploreFrag)
+                .add(R.id.mainContainer, myStampsFrag).hide(myStampsFrag)
+                .add(R.id.mainContainer, settingsFrag).hide(settingsFrag)
+                .commit();
+
+        AtomicReference<Fragment> fragment = new AtomicReference<>(exploreFrag);
 
         bottomNav.setOnItemSelectedListener(item -> {
-            Fragment fragment;
+
             switch(item.getItemId()){
 
                 case R.id.myStamps:
-                    fragment = myStampsFrag;
+                    int[] anims = fragment.get() instanceof ExploreFragment ?
+                            new int[]{R.anim.exit_to_left, R.anim.enter_from_right} :
+                            new int[]{R.anim.exit_to_right, R.anim.enter_from_left};
+                    navFragmentsManager.beginTransaction()
+                            .setCustomAnimations(anims[0], anims[0])
+                            .hide(fragment.get())
+                            .setCustomAnimations(anims[1], anims[1])
+                            .show(myStampsFrag).commit();
+                    fragment.set(myStampsFrag);
                     break;
 
                 case R.id.settings:
-                    fragment = settingsFrag;
+                    navFragmentsManager.beginTransaction()
+                            .setCustomAnimations(R.anim.exit_to_left, R.anim.exit_to_left)
+                            .hide(fragment.get())
+                            .setCustomAnimations(R.anim.enter_from_right, R.anim.enter_from_right)
+                            .show(settingsFrag).commit();
+                    fragment.set(settingsFrag);
+
                     break;
 
                 default:
-                    fragment = exploreFrag;
+                    navFragmentsManager.beginTransaction()
+                            .setCustomAnimations(R.anim.exit_to_right, R.anim.exit_to_right)
+                            .hide(fragment.get())
+                            .setCustomAnimations(R.anim.enter_from_left, R.anim.enter_from_left)
+                            .show(exploreFrag).commit();
+                    fragment.set(exploreFrag);
                     break;
             }
-            navFragmentsManager.beginTransaction().replace(R.id.mainContainer, fragment).commit();
             return true;
         });
     }
