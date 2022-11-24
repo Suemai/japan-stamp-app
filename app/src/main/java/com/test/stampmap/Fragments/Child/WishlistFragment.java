@@ -1,4 +1,4 @@
-package com.test.stampmap.Fragments;
+package com.test.stampmap.Fragments.Child;
 
 import android.os.Bundle;
 import android.widget.ListView;

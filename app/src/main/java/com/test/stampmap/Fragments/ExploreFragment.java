@@ -23,17 +23,15 @@ import com.test.stampmap.Settings.ConfigValue;
 import com.test.stampmap.Stamp.StampCollection;
 import com.test.stampmap.Stamp.StampMarker;
 import com.test.stampmap.Stamp.StampSet;
-import com.test.stampmap.Views.CustomMapView;
 import org.jetbrains.annotations.Nullable;
 import org.osmdroid.events.MapEventsReceiver;
 import org.osmdroid.events.MapListener;
 import org.osmdroid.events.ScrollEvent;
 import org.osmdroid.events.ZoomEvent;
-import org.osmdroid.tileprovider.MapTileProviderBasic;
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.Distance;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.CustomZoomButtonsController;
+import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.compass.CompassOverlay;
@@ -52,11 +50,9 @@ import java.util.stream.Collectors;
 public class ExploreFragment extends Fragment implements MapEventsReceiver {
     public static GpsMyLocationProvider locationProvider = null;
     public static float distanceSliderValue = 0;
-    private boolean firstActivation = true;
     private SearchView searchBar;
-    private View v;
     private AudioManager audioManager;
-    private CustomMapView map;
+    private MapView map;
     private CompassOverlay compass;
 
     @Override
@@ -64,8 +60,8 @@ public class ExploreFragment extends Fragment implements MapEventsReceiver {
         super.onCreate(savedInstanceState);
 
         //inflate and create a map
-        map = new CustomMapView(inflater.getContext());
-        v = inflater.inflate(R.layout.explore_fragment, container, false);
+        map = new MapView(inflater.getContext());
+        View v = inflater.inflate(R.layout.explore_fragment, container, false);
         ((RelativeLayout) v.findViewById(R.id.mapView)).addView(map);
 
         searchBar = v.findViewById(R.id.searchBar);
@@ -81,7 +77,7 @@ public class ExploreFragment extends Fragment implements MapEventsReceiver {
             return false;
         });
 
-        searchBar.setOnClickListener(v -> searchBar.setIconified(false));
+        searchBar.setOnClickListener(view -> searchBar.setIconified(false));
 
         ImageButton filterBottom = v.findViewById(R.id.filter);
         filterBottom.setOnClickListener(view -> {
@@ -91,11 +87,6 @@ public class ExploreFragment extends Fragment implements MapEventsReceiver {
 
         audioManager = (AudioManager)requireContext().getSystemService(Context.AUDIO_SERVICE);
 
-        return v;
-    }
-
-    private void loadMapData(){
-        //marker off on short press
         MapEventsOverlay mapEventsOverlay = new MapEventsOverlay(this);
         map.getOverlays().add(0, mapEventsOverlay);
 
@@ -103,10 +94,9 @@ public class ExploreFragment extends Fragment implements MapEventsReceiver {
         ExploreFragment.locationProvider = new GpsMyLocationProvider(requireContext());
         MyLocationNewOverlay locationOverlay = new MyLocationNewOverlay(ExploreFragment.locationProvider, map);
         locationOverlay.enableMyLocation();
-        if (firstActivation){
-            locationOverlay.enableFollowLocation();
-            map.getController().setZoom(19.5);
-        }
+        locationOverlay.enableFollowLocation();
+        map.getController().setZoom(19.5);
+
         map.getOverlays().add(locationOverlay);
 
         //button to get center your current location
@@ -166,6 +156,8 @@ public class ExploreFragment extends Fragment implements MapEventsReceiver {
         compass.setCompassCenter(40, v.findViewById(R.id.toolbar).getBackground().getMinimumHeight());
 
         loadMarkers();
+
+        return v;
     }
 
     public boolean performSearch(@Nullable String query) {
@@ -244,11 +236,7 @@ public class ExploreFragment extends Fragment implements MapEventsReceiver {
     @Override
     public void onResume() {
         super.onResume();
-        Log.i("SURPRISE", "ME");
         map.onResume();
-        map.setTileProvider(new MapTileProviderBasic(requireContext(), TileSourceFactory.MAPNIK));
-        loadMapData();
-        firstActivation = false;
     }
 
     @Override

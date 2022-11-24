@@ -1,6 +1,7 @@
-package com.test.stampmap.Fragments;
+package com.test.stampmap.Fragments.Child;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import androidx.fragment.app.Fragment;
@@ -55,6 +56,6 @@ public class ObtainedFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        adapter.notifyDataSetChanged();
+        if (adapter != null) adapter.notifyDataSetChanged();
     }
 }

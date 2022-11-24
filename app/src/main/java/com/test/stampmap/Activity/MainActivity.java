@@ -1,9 +1,7 @@
 package com.test.stampmap.Activity;
 
 import androidx.fragment.app.Fragment;
-import androidx.viewpager2.widget.ViewPager2;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.test.stampmap.Adapter.NavigationBarAdapter;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -24,14 +22,11 @@ import com.test.stampmap.Stamp.StampCollection;
 import org.osmdroid.config.Configuration;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class MainActivity extends AppCompatActivity {
     public static List<IFilter> filters = new ArrayList<>();
     public static float distanceSliderValue = 0;
-
-    ViewPager2 viewPager2;
-    NavigationBarAdapter mainFragmentsViewAdapter;
+    Fragment currentFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,33 +50,8 @@ public class MainActivity extends AppCompatActivity {
 
         //inflate and create a map
         setContentView(R.layout.activity_main);
-        List<Fragment> navigationFragments = Arrays.stream(new Fragment[]{new ExploreFragment(), new MyStampsFragment(), new SettingsFragment()}).collect(Collectors.toList());
-        viewPager2 = findViewById(R.id.mainFragmentViewer);
-        mainFragmentsViewAdapter = new NavigationBarAdapter(getSupportFragmentManager(), getLifecycle(), navigationFragments);
-        viewPager2.setAdapter(mainFragmentsViewAdapter);
-        viewPager2.setUserInputEnabled(false);
 
-        //bottom navigation
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
-        bottomNavigationView.setSelectedItemId(R.id.explore);
-
-        //perform listener
-        bottomNavigationView.setOnItemSelectedListener(item -> {
-            switch (item.getItemId()) {
-                case R.id.explore:
-                    viewPager2.setCurrentItem(0);
-                    return true;
-
-                case R.id.myStamps:
-                    viewPager2.setCurrentItem(1);
-                    return true;
-
-                case R.id.settings:
-                    viewPager2.setCurrentItem(2);
-                    return true;
-            }
-            return false;
-        });
+        addBottomNavigation();
     }
 
     @Override
@@ -111,6 +81,56 @@ public class MainActivity extends AppCompatActivity {
                     permissionsToRequest.toArray(new String[0]),
                     REQUEST_PERMISSIONS_REQUEST_CODE);
         }
+    }
+
+    public void addBottomNavigation(){
+
+        Fragment exploreFrag = new ExploreFragment();
+        Fragment myStampsFrag = new MyStampsFragment();
+        Fragment settingsFrag = new SettingsFragment();
+
+        BottomNavigationView bottomNav = findViewById(R.id.bottomNavigationView);
+
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.mainContainer, exploreFrag)
+                .add(R.id.mainContainer, myStampsFrag).hide(myStampsFrag)
+                .add(R.id.mainContainer, settingsFrag).hide(settingsFrag)
+                .commit();
+        currentFragment = exploreFrag;
+
+        bottomNav.setOnItemSelectedListener(item -> {
+
+            int[] leftAnimation = new int[]{R.anim.exit_to_left, R.anim.enter_from_right};
+            int[] rightAnimation = new int[]{R.anim.exit_to_right, R.anim.enter_from_left};
+
+            switch(item.getItemId()){
+
+                case R.id.myStamps:
+                    int[] animation = currentFragment == exploreFrag ? leftAnimation : rightAnimation;
+                    performTransaction(myStampsFrag, animation);
+                    break;
+
+                case R.id.settings:
+                    performTransaction(settingsFrag, leftAnimation);
+                    break;
+
+                default:
+                    performTransaction(exploreFrag, rightAnimation);
+                    break;
+            }
+            return true;
+        });
+    }
+
+    void performTransaction(Fragment fragment, int[] animation){
+        getSupportFragmentManager().beginTransaction()
+                .setCustomAnimations(animation[0], animation[0])
+                .hide(currentFragment)
+                .setCustomAnimations(animation[1], animation[1])
+                .show(fragment)
+                .commit();
+        currentFragment = fragment;
+        fragment.onResume();
     }
 
     void loadSharedPreferences(){

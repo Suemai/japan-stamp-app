@@ -1,17 +1,17 @@
 package com.test.stampmap.Fragments;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.test.stampmap.Adapter.MyStampsViewPageAdapter;
+import com.test.stampmap.Fragments.Child.NotObtainedFragment;
+import com.test.stampmap.Fragments.Child.ObtainedFragment;
+import com.test.stampmap.Fragments.Child.WishlistFragment;
 import com.test.stampmap.R;
-import com.test.stampmap.Stamp.StampCollection;
 
 import java.util.Arrays;
 import java.util.List;
@@ -32,8 +32,8 @@ public class MyStampsFragment extends Fragment {
 
         tabLayout = view.findViewById(R.id.myStampsTab);
         viewPager2 = view.findViewById(R.id.myStampsPageViewer);
-        List<Fragment> myStampFragments = Arrays.stream(
-                new Fragment[]{new ObtainedFragment(), new NotObtainedFragment(), new WishlistFragment()}).collect(Collectors.toList());
+        List<Fragment> myStampFragments = Arrays.stream(new Fragment[]{
+                new ObtainedFragment(), new NotObtainedFragment(), new WishlistFragment()}).collect(Collectors.toList());
         myStampsViewPageAdapter = new MyStampsViewPageAdapter(requireActivity(), myStampFragments);
         viewPager2.setAdapter(myStampsViewPageAdapter);
 
@@ -43,16 +43,8 @@ public class MyStampsFragment extends Fragment {
             public void onTabSelected(TabLayout.Tab tab) {
                 viewPager2.setCurrentItem(tab.getPosition());
             }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
+            public void onTabUnselected(TabLayout.Tab tab) {}
+            public void onTabReselected(TabLayout.Tab tab) {}
         });
 
 
