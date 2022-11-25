@@ -56,6 +56,14 @@ public class StampSet implements Iterable<Stamp>, Serializable {
         return this.stamps;
     }
 
+    public static boolean getIsObtained(Stamp stamp) {
+        return stamp.getIsObtained();
+    }
+
+    public static boolean getIsOnWishlist(Stamp stamp) {
+        return stamp.getIsOnWishlist();
+    }
+
     public static StampSet StampSetFromJSON(JSONObject JSONStampSet){
         List<Stamp> stamps = new ArrayList<>();
         String[] keyNames = new String[JSONStampSet.length()];
@@ -102,5 +110,12 @@ public class StampSet implements Iterable<Stamp>, Serializable {
         if (o == null || getClass() != o.getClass()) return false;
         StampSet that = (StampSet) o;
         return this.name.equals(that.name) && this.address.equals(that.address);
+    }
+
+    @Override
+    public int hashCode() {
+        int value;
+        value = name.hashCode() + address.hashCode();
+        return value;
     }
 }

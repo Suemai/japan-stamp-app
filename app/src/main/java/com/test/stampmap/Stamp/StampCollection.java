@@ -2,12 +2,14 @@ package com.test.stampmap.Stamp;
 
 import android.app.Activity;
 import android.content.Context;
+import com.test.stampmap.Interface.BoolMethod;
+import com.test.stampmap.Stamp.Receivers.Receiver;
 import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
+import java.util.*;
 
 public class StampCollection {
 
@@ -16,32 +18,28 @@ public class StampCollection {
 
     private static final StampCollection instance = new StampCollection();
 
-    private final ArrayList<StampSet> allStamps = new ArrayList<>();
-    private final ArrayList<StampSet> myStamps = new ArrayList<>();
+    private final HashMap<Integer, StampSet> allStamps = new HashMap<>();
+    private final HashMap<Integer, StampSet> myStamps = new HashMap<>();
+    private final HashMap<Integer, StampSet> wishlist = new HashMap<>();
     private final ArrayList<StampSet> currentFilteredStamps = new ArrayList<>();
 
-    private boolean refreshRequired;
+    private final ArrayList<Receiver.MyStampsUpdateReceiver> myStampsUpdateCallback = new ArrayList<>();
+    private final ArrayList<Receiver.WishlistUpdateReceiver> wishlistUpdateCallback = new ArrayList<>();
 
     public static StampCollection getInstance(){
         return instance;
     }
 
     public ArrayList<StampSet> getAllStamps(){
-        return allStamps;
+        return new ArrayList<>(allStamps.values());
     }
 
     public ArrayList<StampSet> getMyStamps(){
-        if (!refreshRequired) return myStamps;
-        myStamps.clear();
-        for (StampSet stampSet : allStamps){
-            for (Stamp stamp : stampSet){
-                if (stamp.getIsObtained()){
-                    myStamps.add(stampSet);
-                    break;
-                }
-            }
-        }
-        return myStamps;
+        return new ArrayList<>(myStamps.values());
+    }
+
+    public ArrayList<StampSet> getWishlist(){
+        return new ArrayList<>(wishlist.values());
     }
 
     public ArrayList<StampSet> getCurrentFilteredStamps(){
@@ -51,24 +49,21 @@ public class StampCollection {
     public void load(Context context){
         JSONArray stampList = loadJSONArrayFromAsset(context);
         allStamps.clear();
-        for (int i=0; i<stampList.length(); i++)
-            allStamps.add(StampSet.StampSetFromJSON(stampList.optJSONObject(i)));
-        if (getMyStamps().isEmpty()) loadMyStamps(context);
+        for (int i=0; i<stampList.length(); i++) {
+            StampSet stampSet = StampSet.StampSetFromJSON(stampList.optJSONObject(i));
+            allStamps.put(stampSet.hashCode(), stampSet);
+        }
+        loadCustomStampData(context);
     }
 
-    private void loadMyStamps(Context context){
+    private void loadCustomStampData(Context context){
         ObjectInputStream objIn;
         try (FileInputStream in = context.openFileInput(SAVE_FILE_NAME)){
             objIn = new ObjectInputStream(in);
-            this.myStamps.addAll((ArrayList<StampSet>) objIn.readObject());
-            for (StampSet myStamp : this.myStamps){
-                for (StampSet allStamp : this.allStamps){
-                    if (myStamp.equals(allStamp)){
-                        allStamps.set(allStamps.indexOf(allStamp), myStamp);
-                        break;
-                    }
-                }
-            }
+            this.myStamps.putAll((HashMap<Integer, StampSet>) objIn.readObject());
+            this.wishlist.putAll((HashMap<Integer, StampSet>) objIn.readObject());
+            allStamps.putAll(myStamps);
+            allStamps.putAll(wishlist);
         } catch (IOException | ClassNotFoundException ignored) {}
     }
 
@@ -76,21 +71,37 @@ public class StampCollection {
         ObjectOutputStream objOut;
         try (FileOutputStream out = context.openFileOutput(SAVE_FILE_NAME, Activity.MODE_PRIVATE)){
             objOut = new ObjectOutputStream(out);
-            objOut.writeObject(getMyStamps());
+            objOut.writeObject(this.myStamps);
+            objOut.writeObject(this.wishlist);
             out.getFD().sync();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        } catch (IOException ignored) {}
     }
 
-    public void setObtainedStamp(StampSet stampSet, int index, boolean value){
-        stampSet.getStamps().get(index).setObtained(value);
-        refreshRequired = true;
-    }
-
-    public void setObtainedStamp(Stamp stamp, boolean value){
+    public void setStampObtained(Stamp stamp, StampSet stampSet, boolean value){
         stamp.setObtained(value);
-        refreshRequired = true;
+        if (value) myStamps.put(stampSet.hashCode(), stampSet);
+        else removeIfNecessary(stampSet, StampSet::getIsObtained, myStamps);
+        for (Receiver.MyStampsUpdateReceiver callback : myStampsUpdateCallback) callback.onMyStampsUpdate();
+    }
+
+    public void setStampOnWishlist(Stamp stamp, StampSet stampSet, boolean value){
+        stamp.setOnWishlist(value);
+        if (value) wishlist.put(stampSet.hashCode(), stampSet);
+        else removeIfNecessary(stampSet, StampSet::getIsOnWishlist, wishlist);
+        for (Receiver.WishlistUpdateReceiver callback : wishlistUpdateCallback) callback.onWishlistUpdate();
+    }
+
+    public void addMyStampsUpdateEvent(Receiver.MyStampsUpdateReceiver receiver){
+        myStampsUpdateCallback.add(receiver);
+    }
+
+    public void addWishlistUpdateEvent(Receiver.WishlistUpdateReceiver receiver){
+        wishlistUpdateCallback.add(receiver);
+    }
+
+    private void removeIfNecessary(StampSet stampSet, BoolMethod method, HashMap<Integer, StampSet> listToRemoveFrom){
+        for (Stamp stamp : stampSet) if (method.hasMatch(stamp)) return;
+        listToRemoveFrom.remove(stampSet.hashCode());
     }
 
     /**

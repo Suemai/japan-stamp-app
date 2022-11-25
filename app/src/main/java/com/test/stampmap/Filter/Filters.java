@@ -2,6 +2,7 @@ package com.test.stampmap.Filter;
 
 import android.location.Location;
 import com.test.stampmap.Activity.MainActivity;
+import com.test.stampmap.Fragments.ExploreFragment;
 import com.test.stampmap.Interface.IFilter;
 import com.test.stampmap.Stamp.StampCollection;
 import com.test.stampmap.Stamp.StampSet;
@@ -183,7 +184,7 @@ public class Filters {
         @Override
         public boolean hasMatch(StampSet stampSet) {
             GeoPoint stampCoords = stampSet.getStamps().get(0).getCoordinates();
-            Location myLocation = MainActivity.locationProvider.getLastKnownLocation();
+            Location myLocation = ExploreFragment.locationProvider.getLastKnownLocation();
             Location stampLocation = new Location("NANI!!!");
             stampLocation.setLatitude(stampCoords.getLatitude());
             stampLocation.setLongitude(stampCoords.getLongitude());
