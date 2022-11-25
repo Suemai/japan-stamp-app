@@ -43,7 +43,7 @@ public class ObtainedFragment extends Fragment {
             for (Stamp stamp : stampSet) {
                 if (!stamp.getIsObtained()) continue;
                 HashMap<String, String> map = new HashMap<>();
-                map.put(keys[0], stampSet.getName());
+                map.put(keys[0], stamp.getName());
                 map.put(keys[1], "Address: " + stampSet.getAddress());
                 map.put(keys[2], "Difficulty: " + stampSet.getDifficulty());
                 map.put(keys[3], "Date Obtained: " + formatter.format(stamp.getDateObtained()));

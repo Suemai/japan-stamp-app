@@ -34,6 +34,7 @@ import org.osmdroid.views.CustomZoomButtonsController;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
+import org.osmdroid.views.overlay.Overlay;
 import org.osmdroid.views.overlay.compass.CompassOverlay;
 import org.osmdroid.views.overlay.compass.IOrientationConsumer;
 import org.osmdroid.views.overlay.compass.IOrientationProvider;
@@ -45,28 +46,32 @@ import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class ExploreFragment extends Fragment implements MapEventsReceiver {
     public static GpsMyLocationProvider locationProvider = null;
     public static float distanceSliderValue = 0;
     private SearchView searchBar;
-    private AudioManager audioManager;
     private MapView map;
-    private CompassOverlay compass;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //inflate and create a map
-        map = new MapView(inflater.getContext());
+        // the one line that has stood the test of time
         View v = inflater.inflate(R.layout.explore_fragment, container, false);
+
+        // hi i still do this programmatically lol
+        map = new MapView(inflater.getContext());
         ((RelativeLayout) v.findViewById(R.id.mapView)).addView(map);
 
+        // searchbar stuff knobhead innit
         searchBar = v.findViewById(R.id.searchBar);
         searchBar.setQueryHint("KNOBHEAD");
+        searchBar.setOnClickListener(view -> searchBar.setIconified(false));
 
+        // performs search when you click enter
         TextView searchText = searchBar.findViewById(androidx.appcompat.R.id.search_src_text);
         searchText.setOnEditorActionListener((view, actionId, event) -> {
             if (actionId == EditorInfo.IME_NULL) {
@@ -77,16 +82,14 @@ public class ExploreFragment extends Fragment implements MapEventsReceiver {
             return false;
         });
 
-        searchBar.setOnClickListener(view -> searchBar.setIconified(false));
-
+        // filter stuff innit
         ImageButton filterBottom = v.findViewById(R.id.filter);
         filterBottom.setOnClickListener(view -> {
             new FilterSheetDialogue().show(getChildFragmentManager(), "ModalBottomSheet");
             closeKeyboard();
         });
 
-        audioManager = (AudioManager)requireContext().getSystemService(Context.AUDIO_SERVICE);
-
+        // the usual bs
         MapEventsOverlay mapEventsOverlay = new MapEventsOverlay(this);
         map.getOverlays().add(0, mapEventsOverlay);
 
@@ -96,7 +99,6 @@ public class ExploreFragment extends Fragment implements MapEventsReceiver {
         locationOverlay.enableMyLocation();
         locationOverlay.enableFollowLocation();
         map.getController().setZoom(19.5);
-
         map.getOverlays().add(locationOverlay);
 
         //button to get center your current location
@@ -123,7 +125,7 @@ public class ExploreFragment extends Fragment implements MapEventsReceiver {
 
         //adds compass (doesn't do compass work whilst rotating with map)
         // update: now we compassing
-        compass = new CompassOverlay(requireContext(), new IOrientationProvider() {
+        CompassOverlay compass = new CompassOverlay(requireContext(), new IOrientationProvider() {
             public boolean startOrientationProvider(IOrientationConsumer orientationConsumer) {
                 return true;
             }
@@ -215,14 +217,17 @@ public class ExploreFragment extends Fragment implements MapEventsReceiver {
             stampMarker.setPosition(baseCoords);
             map.getOverlays().add(stampMarker);
 //            stampMarker.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.person, getResources().newTheme()));
+            AudioManager audioManager = (AudioManager)requireContext().getSystemService(Context.AUDIO_SERVICE);
             stampMarker.setOnMarkerClickListener((marker, view) -> {
                 new StampSheetDialogue(stampMarker.getStampSet()).show(getChildFragmentManager(), "ModalBottomSheet");
                 audioManager.playSoundEffect(AudioManager.FX_KEY_CLICK);
+                closeKeyboard();
                 return true;
             });
+            CompassOverlay compass = (CompassOverlay)map.getOverlays().stream()
+                    .filter(overlay -> overlay instanceof CompassOverlay).findFirst().orElse(null);
             map.getOverlays().remove(compass);
             map.getOverlays().add(compass);
-            closeKeyboard();
         }
     }
 
