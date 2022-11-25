@@ -5,13 +5,11 @@ import android.content.Context;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.*;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 import androidx.appcompat.widget.SearchView;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import com.test.stampmap.Activity.MainActivity;
 import com.test.stampmap.Dialogues.FilterSheetDialogue;
@@ -46,7 +44,6 @@ import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class ExploreFragment extends Fragment implements MapEventsReceiver {
@@ -54,46 +51,62 @@ public class ExploreFragment extends Fragment implements MapEventsReceiver {
     public static float distanceSliderValue = 0;
     private SearchView searchBar;
     private MapView map;
+    private View v;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         // the one line that has stood the test of time
-        View v = inflater.inflate(R.layout.explore_fragment, container, false);
+        v = inflater.inflate(R.layout.explore_fragment, container, false);
 
         // hi i still do this programmatically lol
-        map = new MapView(inflater.getContext());
-        ((RelativeLayout) v.findViewById(R.id.mapView)).addView(map);
+//        map = new MapView(inflater.getContext());
+//        ((RelativeLayout) v.findViewById(R.id.mapView)).addView(map);
 
-        // searchbar stuff knobhead innit
-        searchBar = v.findViewById(R.id.searchBar);
-        searchBar.setQueryHint("KNOBHEAD");
-        searchBar.setOnClickListener(view -> searchBar.setIconified(false));
-
-        // performs search when you click enter
-        TextView searchText = searchBar.findViewById(androidx.appcompat.R.id.search_src_text);
-        searchText.setOnEditorActionListener((view, actionId, event) -> {
-            if (actionId == EditorInfo.IME_NULL) {
-                closeKeyboard();
-                String queryText = searchBar.getQuery().toString();
-                return performSearch(TextUtils.getTrimmedLength(queryText) > 0 ? queryText : null);
-            }
-            return false;
-        });
-
-        // filter stuff innit
-        ImageButton filterBottom = v.findViewById(R.id.filter);
-        filterBottom.setOnClickListener(view -> {
-            new FilterSheetDialogue().show(getChildFragmentManager(), "ModalBottomSheet");
-            closeKeyboard();
-        });
+        //yeah, well this is better!
+        map = v.findViewById(R.id.mapView);
 
         // the usual bs
         MapEventsOverlay mapEventsOverlay = new MapEventsOverlay(this);
         map.getOverlays().add(0, mapEventsOverlay);
 
-        //location marker - dunno if it works, but there's something
+        //allow finger movement......it's not what ur thinking....
+        //ZOOM man ZOOM
+        map.setMultiTouchControls(true);
+
+        //allow rotating movement
+        RotationGestureOverlay rotationOverlay = new RotationGestureOverlay(map);
+        rotationOverlay.setEnabled(true);
+        map.setMultiTouchControls(true);
+        map.getOverlays().add(rotationOverlay);
+
+        //remove zoom buttons
+        map.getZoomController().setVisibility(CustomZoomButtonsController.Visibility.NEVER);
+
+
+        return v;
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        addOverlays();
+        loadMarkers();
+
+    }
+
+    // ======================
+    // Overlays and others
+    // ======================
+
+    public void addOverlays(){
+
+        // ================================
+        // GPS
+        // location marker - dunno if it works, but there's something
+        // ================================
         ExploreFragment.locationProvider = new GpsMyLocationProvider(requireContext());
         MyLocationNewOverlay locationOverlay = new MyLocationNewOverlay(ExploreFragment.locationProvider, map);
         locationOverlay.enableMyLocation();
@@ -110,20 +123,10 @@ public class ExploreFragment extends Fragment implements MapEventsReceiver {
         });
         currentButton.bringToFront();
 
-        //allow finger movement......it's not what ur thinking....
-        //ZOOM man ZOOM
-        map.setMultiTouchControls(true);
-
-        //allow rotating movement
-        RotationGestureOverlay rotationOverlay = new RotationGestureOverlay(map);
-        rotationOverlay.setEnabled(true);
-        map.setMultiTouchControls(true);
-        map.getOverlays().add(rotationOverlay);
-
-        //remove zoom buttons
-        map.getZoomController().setVisibility(CustomZoomButtonsController.Visibility.NEVER);
-
-        //adds compass (doesn't do compass work whilst rotating with map)
+        // ==========================================================
+        // Compass
+        // ==========================================================
+        // adds compass (doesn't do compass work whilst rotating with map)
         // update: now we compassing
         CompassOverlay compass = new CompassOverlay(requireContext(), new IOrientationProvider() {
             public boolean startOrientationProvider(IOrientationConsumer orientationConsumer) {
@@ -157,10 +160,35 @@ public class ExploreFragment extends Fragment implements MapEventsReceiver {
         //moving the compass location
         compass.setCompassCenter(40, v.findViewById(R.id.toolbar).getBackground().getMinimumHeight());
 
-        loadMarkers();
+        // ===============================
+        // searchbar stuff knobhead innit
+        // ===============================
 
-        return v;
+        searchBar = v.findViewById(R.id.searchBar);
+        searchBar.setQueryHint("KNOBHEAD");
+        searchBar.setOnClickListener(view -> searchBar.setIconified(false));
+
+        // performs search when you click enter
+        TextView searchText = searchBar.findViewById(androidx.appcompat.R.id.search_src_text);
+        searchText.setOnEditorActionListener((view, actionId, event) -> {
+            if (actionId == EditorInfo.IME_NULL) {
+                closeKeyboard();
+                String queryText = searchBar.getQuery().toString();
+                return performSearch(TextUtils.getTrimmedLength(queryText) > 0 ? queryText : null);
+            }
+            return false;
+        });
+
+        // ==========================
+        // filter stuff innit
+        // ==========================
+        ImageButton filterBottom = v.findViewById(R.id.filter);
+        filterBottom.setOnClickListener(view -> {
+            new FilterSheetDialogue().show(getChildFragmentManager(), "ModalBottomSheet");
+            closeKeyboard();
+        });
     }
+
 
     public boolean performSearch(@Nullable String query) {
         map.getOverlays().removeAll(map.getOverlays().stream().filter(item -> item instanceof Marker).collect(Collectors.toList()));
