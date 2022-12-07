@@ -23,13 +23,8 @@ import java.util.*;
 
 public class ObtainedFragment extends Fragment {
     private RecyclerView obtainedView;
-    private ArrayList<StampSet> stamps = new ArrayList<>();
-
-//    ListView stampList;
-//    SimpleAdapter adapter;
-//    String[] keys = {"num", "obtain", "location", "Owned"};
-//    int[] ids = {R.id.stampNo_drawer, R.id.obtainable_drawer, R.id.location_drawer, R.id.owned_drawer};
-//    ArrayList<HashMap<String, String>> dataSet = new ArrayList<>();
+    private final ArrayList<Stamp> stamps = new ArrayList<>();
+    obtainedRecViewAdapter adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -38,51 +33,34 @@ public class ObtainedFragment extends Fragment {
 
         obtainedView = v.findViewById(R.id.obtainedStampRecView);
 
-        for (StampSet stampSet : StampCollection.getInstance().getMyStamps()) {
-            for (Stamp stamp : stampSet) {
-                if (!stamp.getIsObtained()) continue;
-                stamps.add(stampSet);
-            }
-        }
+        setData();
 
         obtainedRecyclerView();
 
-//        stampList = v.findViewById(R.id.stamp_list);
-//        adapter = new SimpleAdapter(requireContext(), dataSet, R.layout.stamp_element, keys, ids);
-//        stampList.setAdapter(adapter);
-
-//        setData();
-//        StampCollection.getInstance().addMyStampsUpdateEvent(this::setData);
+        StampCollection.getInstance().addMyStampsUpdateEvent(this::setData);
 
         return v;
     }
 
-//    void setData(){
-//        dataSet.clear();
-//        DateFormat formatter = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.MEDIUM, Locale.JAPAN);
-//        for (StampSet stampSet : StampCollection.getInstance().getMyStamps()) {
-//            for (Stamp stamp : stampSet) {
-//                if (!stamp.getIsObtained()) continue;
-//                HashMap<String, String> map = new HashMap<>();
-//                map.put(keys[0], stamp.getName());
-//                map.put(keys[1], "Address: " + stampSet.getAddress());
-//                map.put(keys[2], "Difficulty: " + stampSet.getDifficulty());
-//                map.put(keys[3], "Date Obtained: " + formatter.format(stamp.getDateObtained()));
-//                dataSet.add(map);
-//            }
-//        }
-//        dataSet.sort((o1, o2) -> Objects.requireNonNull(o1.get(keys[3])).compareTo(Objects.requireNonNull(o2.get(keys[3]))));
-//    }
+    void setData(){
+        stamps.clear();
+        for (StampSet stampSet : StampCollection.getInstance().getMyStamps()) {
+            for (Stamp stamp : stampSet) {
+                if (!stamp.getIsObtained()) continue;
+                stamps.add(stamp);
+            }
+        }
+    }
 
     @Override
     public void onResume() {
         super.onResume();
-//        if (adapter != null) adapter.notifyDataSetChanged();
+        if (adapter != null) adapter.notifyDataSetChanged();
     }
 
     private void obtainedRecyclerView(){
 
-        obtainedRecViewAdapter adapter = new obtainedRecViewAdapter(this.getContext(), stamps);
+        adapter = new obtainedRecViewAdapter(this.getContext(), stamps);
         obtainedView.setAdapter(adapter);
 
         obtainedView.setLayoutManager(new GridLayoutManager(this.getContext(), 3));

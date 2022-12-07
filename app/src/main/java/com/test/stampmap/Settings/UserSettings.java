@@ -1,7 +1,11 @@
 package com.test.stampmap.Settings;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.SharedPreferences;
+import android.util.DisplayMetrics;
+import android.view.View;
+import com.test.stampmap.R;
 
 import java.util.Map;
 
@@ -29,5 +33,17 @@ public class UserSettings extends Application {
         SharedPreferences sharedPrefs = instance.getSharedPreferences(PREFERENCES, MODE_PRIVATE);
         if (sharedPrefs.getAll().get(configValue.getName()) == null) setConfigValue(configValue, configValue.getDefaultValue());
         return (T) sharedPrefs.getAll().get(configValue.getName());
+    }
+
+    public static int getStatusBarHeight() {
+        int resourceId = instance.getResources().getIdentifier("status_bar_height", "dimen", "android");
+        return instance.getResources().getDimensionPixelSize(resourceId);
+    }
+
+    public static void setStatusBarUI(Activity activity, boolean forceBlack){
+        int uiOptions = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
+        if (activity.getWindow().getStatusBarColor() == instance.getColor(R.color.transparent_white) || forceBlack)
+            uiOptions = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+        activity.getWindow().getDecorView().setSystemUiVisibility(uiOptions);
     }
 }

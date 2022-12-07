@@ -87,6 +87,11 @@
         <item>なし</item>
     </string-array>
 
+    <string-array name="disance_units">
+        <item>km</item>
+        <item>mi</item>
+    </string-array>
+
     <string-array name="entryfee">
         <item>無料</item>
         <item>入場料あり</item>

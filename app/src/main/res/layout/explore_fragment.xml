@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
     <org.osmdroid.views.MapView
             android:id="@+id/mapView"
@@ -12,48 +12,49 @@
             android:layout_height="match_parent"/>
 
     <RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <androidx.appcompat.widget.Toolbar
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginTop="10dp"
-            android:id="@+id/toolbar"
-            android:minHeight="?attr/actionBarSize"
+            android:id="@+id/explore_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:titleTextColor="@android:color/black"
-            android:background="@drawable/searchbar"
-            android:backgroundTint="#f5f3f0"
-            android:elevation="60dp">
+            android:layout_height="match_parent">
 
-        <LinearLayout
+        <androidx.appcompat.widget.Toolbar
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:id="@+id/toolbar"
+                android:minHeight="?attr/actionBarSize"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginEnd="10dp">
+                app:titleTextColor="@android:color/black"
+                android:background="@drawable/searchbar"
+                android:backgroundTint="#f5f3f0"
+                android:elevation="60dp">
 
-            <androidx.appcompat.widget.SearchView
+            <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/searchBar"
-                    android:layout_weight="0.9"
-            />
+                    android:orientation="horizontal"
+                    android:layout_marginEnd="10dp">
 
-            <ImageButton
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_gravity="center"
-                    android:layout_marginRight="15dp"
-                    android:id="@+id/filter"
-                    app:srcCompat="@drawable/filter_foreground"
-                    android:layout_weight="0.1"
-                    android:background="@null"
-            />
-        </LinearLayout>
+                <androidx.appcompat.widget.SearchView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/searchBar"
+                        android:layout_weight="0.9"
+                        app:searchHintIcon="@null"
+                />
 
-    </androidx.appcompat.widget.Toolbar>
+                <ImageButton
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="center"
+                        android:layout_marginRight="15dp"
+                        android:id="@+id/filter"
+                        app:srcCompat="@drawable/filter_foreground"
+                        android:layout_weight="0.1"
+                        android:background="@null"
+                />
+            </LinearLayout>
+
+        </androidx.appcompat.widget.Toolbar>
 
     <Button android:layout_width="45dp"
             android:layout_height="45dp"

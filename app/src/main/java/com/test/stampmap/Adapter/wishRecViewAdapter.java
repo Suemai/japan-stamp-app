@@ -9,7 +9,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.load.model.LazyHeaders;
 import com.test.stampmap.R;
+import com.test.stampmap.Stamp.Stamp;
 import com.test.stampmap.Stamp.StampSet;
 
 import java.util.ArrayList;
@@ -20,10 +24,10 @@ public class wishRecViewAdapter extends RecyclerView.Adapter<wishRecViewAdapter.
     // constructor
     // =================
     private View v;
-    private ArrayList<StampSet> stamps = new ArrayList<>();
-    private Context context;
+    private final ArrayList<Stamp> stamps;
+    private final Context context;
 
-    public wishRecViewAdapter(Context context, ArrayList<StampSet>stamps){
+    public wishRecViewAdapter(Context context, ArrayList<Stamp>stamps){
         this.context = context;
         this.stamps = stamps;
     }
@@ -31,8 +35,7 @@ public class wishRecViewAdapter extends RecyclerView.Adapter<wishRecViewAdapter.
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         v = LayoutInflater.from(parent.getContext()).inflate(R.layout.stamp_card, parent, false);
-        ViewHolder holder = new ViewHolder(v);
-        return holder;
+        return new ViewHolder(v);
     }
 
     @Override
@@ -41,13 +44,12 @@ public class wishRecViewAdapter extends RecyclerView.Adapter<wishRecViewAdapter.
 
         //the line to get the image
         //holder.stampImage.setImageResource(stamps.get(position).getStamps());
+        Glide.with(v).load(new GlideUrl(stamps.get(position).getImageLink(), new LazyHeaders.Builder()
+                .addHeader("referer", "https://stamp.funakiya.com/").build())).into(holder.stampImage);
 
-        holder.card.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                final int position = holder.getAdapterPosition();
-                Toast.makeText(context, stamps.get(position).getName() + " selected", Toast.LENGTH_SHORT).show();
-            }
+        holder.card.setOnClickListener(view -> {
+            final int position1 = holder.getAdapterPosition();
+            Toast.makeText(context, stamps.get(position1).getName() + " selected", Toast.LENGTH_SHORT).show();
         });
 
     }

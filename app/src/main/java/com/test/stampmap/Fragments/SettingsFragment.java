@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.bumptech.glide.Glide;
+import com.test.stampmap.Activity.MainActivity;
 import com.test.stampmap.R;
 import com.test.stampmap.Settings.ConfigValue;
 
@@ -23,6 +24,7 @@ public class SettingsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v =  inflater.inflate(R.layout.settings_fragment, container, false);
+        v.findViewById(R.id.settings_layout).setPadding(v.getPaddingLeft(), MainActivity.paddedStatusBarHeight, v.getPaddingRight(), v.getPaddingBottom());
         SwitchCompat clearFilters = v.findViewById(R.id.filterClear);
         clearFilters.setChecked(ConfigValue.CLEAR_FILTERS.getValue());
         clearFilters.setOnCheckedChangeListener((buttonView, isChecked) -> ConfigValue.CLEAR_FILTERS.setValue(isChecked));

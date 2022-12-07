@@ -2,6 +2,7 @@ package com.test.stampmap.Dialogues;
 
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,16 +10,19 @@ import android.view.ViewGroup;
 import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.slider.Slider;
 import com.test.stampmap.*;
 import com.test.stampmap.Activity.MainActivity;
 import com.test.stampmap.Filter.FilterAlertBox;
 import com.test.stampmap.Filter.FilterType;
+import com.test.stampmap.Fragments.ExploreFragment;
 import com.test.stampmap.Interface.IFilter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class FilterSheetDialogue extends BottomSheetDialogFragment {
@@ -40,9 +44,22 @@ public class FilterSheetDialogue extends BottomSheetDialogFragment {
         difficultyFilter.setOnClickListener(view -> new FilterAlertBox(requireContext(), difficultyFilter, FilterType.DIFFICULTY));
         entryfeeFilter.setOnClickListener(view -> new FilterAlertBox(requireContext(), entryfeeFilter, FilterType.ENTRYFEE));
 
-        distanceSlider.setValue(MainActivity.distanceSliderValue);
-        distanceSlider.addOnChangeListener((slider, value, fromUser) -> MainActivity.distanceSliderValue = value);
+        distanceSlider.setValue(ExploreFragment.distanceSliderValue);
+        distanceSlider.addOnChangeListener((slider, value, fromUser) -> ExploreFragment.distanceSliderValue = value);
 
+        Spinner spinner = v.findViewById(R.id.distance_unit);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(requireContext(), R.array.disance_units, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+
+        v.findViewById(R.id.filter_search).setOnClickListener(v1 -> requireActivity().getSupportFragmentManager().getFragments().stream().filter(fragment -> fragment instanceof ExploreFragment).findFirst().ifPresent(fragment -> ((ExploreFragment)fragment).performSearch(null)));
+        v.findViewById(R.id.clear_filters).setOnClickListener(v1 -> {
+            MainActivity.filters.clear();
+            setTexts(prefectureFilter, FilterType.PREFECTURE);
+            setTexts(difficultyFilter, FilterType.DIFFICULTY);
+            setTexts(entryfeeFilter, FilterType.ENTRYFEE);
+            dismiss();
+        });
         return v;
     }
 

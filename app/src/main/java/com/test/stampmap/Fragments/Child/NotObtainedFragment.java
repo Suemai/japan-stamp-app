@@ -26,7 +26,8 @@ import java.util.HashMap;
 public class NotObtainedFragment extends Fragment {
 
     private RecyclerView noStampsView;
-    private ArrayList<StampSet> stamps = new ArrayList<>();
+    private final ArrayList<Stamp> stamps = new ArrayList<>();
+    noStampsRecViewAdapter adapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -42,27 +43,34 @@ public class NotObtainedFragment extends Fragment {
 
         noStampsView = v.findViewById(R.id.noStampRecView);
 
-        for (StampSet stampSet : StampCollection.getInstance().getAllStamps()){
-            for (Stamp stamp : stampSet) {
-                if (!stamp.getIsObtained() && stamp.getIsObtainable()) {
-                    stamps.add(stampSet);
-                }
-            }
-        }
-
+        setData();
 
         noStampsRecyclerView();
+
+        StampCollection.getInstance().addMyStampsUpdateEvent(this::setData);
 
         return v;
     }
 
+    void setData(){
+        stamps.clear();
+        for (StampSet stampSet : StampCollection.getInstance().getAllStamps()){
+            for (Stamp stamp : stampSet) {
+                if (!stamp.getIsObtained() && stamp.getIsObtainable()) {
+                    stamps.add(stamp);
+                }
+            }
+        }
+    }
+
     @Override
-    public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onResume() {
+        super.onResume();
+        if (adapter != null) adapter.notifyDataSetChanged();
     }
 
     private void noStampsRecyclerView(){
-        noStampsRecViewAdapter adapter = new noStampsRecViewAdapter(this.getContext(), stamps);
+        adapter = new noStampsRecViewAdapter(this.getContext(), stamps);
         noStampsView.setAdapter(adapter);
 
         noStampsView.setLayoutManager(new GridLayoutManager(this.getContext(),3));

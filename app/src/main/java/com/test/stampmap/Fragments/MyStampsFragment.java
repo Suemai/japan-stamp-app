@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 import com.google.android.material.tabs.TabLayout;
+import com.test.stampmap.Activity.MainActivity;
 import com.test.stampmap.Adapter.MyStampsViewPageAdapter;
 import com.test.stampmap.Fragments.Child.NotObtainedFragment;
 import com.test.stampmap.Fragments.Child.ObtainedFragment;
@@ -29,6 +30,8 @@ public class MyStampsFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         View view = inflater.inflate(R.layout.my_stamps_fragment, container, false);
+
+        view.findViewById(R.id.my_stamps_layout).setPadding(view.getPaddingLeft(), MainActivity.paddedStatusBarHeight, view.getPaddingRight(), view.getPaddingBottom());
 
         tabLayout = view.findViewById(R.id.myStampsTab);
         viewPager2 = view.findViewById(R.id.myStampsPageViewer);

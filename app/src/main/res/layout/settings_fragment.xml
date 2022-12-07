@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
+        android:id="@+id/settings_layout"
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
@@ -12,7 +13,6 @@
             android:layout_height="wrap_content"
             android:text="Settings Page Bitch"
             android:textSize="25sp"
-            android:layout_marginTop="20dp"
             android:textAlignment="center"
 
     />
@@ -29,6 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Clear Image Cache"
+            android:backgroundTint="@color/design_default_color_secondary"
     />
 
 </LinearLayout>
