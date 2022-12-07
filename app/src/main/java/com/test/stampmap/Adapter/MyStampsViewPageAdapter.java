@@ -16,8 +16,6 @@ public class MyStampsViewPageAdapter extends FragmentStateAdapter {
         this.fragments = fragments;
     }
 
-    @NonNull
-    @NotNull
     @Override
     public Fragment createFragment(int position) {
         return fragments.get(position);
