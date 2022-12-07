@@ -59,6 +59,7 @@ import java.util.stream.Collectors;
 public class ExploreFragment extends Fragment implements MapEventsReceiver {
     public static GpsMyLocationProvider locationProvider = null;
     public static float distanceSliderValue = 0;
+    public static boolean isKilometres = true;
     private static final MapState mapState = new MapState();
     private int lastKnownRotation;
     public SearchView searchBar;
@@ -224,7 +225,7 @@ public class ExploreFragment extends Fragment implements MapEventsReceiver {
         map.getOverlays().removeAll(map.getOverlays().stream().filter(item -> item instanceof Marker).collect(Collectors.toList()));
         List<IFilter> clone = (List<IFilter>) ((ArrayList<IFilter>) MainActivity.filters).clone();
         if (query != null) clone.add(Filters.SearchType.ANY.set(query));
-        if (distanceSliderValue > 0) clone.add(Filters.Distance.KILOMETRES.set(distanceSliderValue));
+        if (distanceSliderValue > 0) clone.add(Filters.Distance.values()[isKilometres ? 0 : 1].set(distanceSliderValue));
         IFilter[] searchFilters = clone.toArray(new IFilter[0]);
         ArrayList<StampSet> filteredStamps = Filters.FilterStamps(searchFilters);
         loadMarkers();

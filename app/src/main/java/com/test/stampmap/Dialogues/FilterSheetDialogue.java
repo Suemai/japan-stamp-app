@@ -51,6 +51,14 @@ public class FilterSheetDialogue extends BottomSheetDialogFragment {
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(requireContext(), R.array.disance_units, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
+        spinner.setSelection(ExploreFragment.isKilometres ? 0 : 1);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                ExploreFragment.isKilometres = position == 0;
+            }
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
 
         v.findViewById(R.id.filter_search).setOnClickListener(v1 -> requireActivity().getSupportFragmentManager().getFragments().stream().filter(fragment -> fragment instanceof ExploreFragment).findFirst().ifPresent(fragment -> ((ExploreFragment)fragment).performSearch(null)));
         v.findViewById(R.id.clear_filters).setOnClickListener(v1 -> {
@@ -58,6 +66,7 @@ public class FilterSheetDialogue extends BottomSheetDialogFragment {
             setTexts(prefectureFilter, FilterType.PREFECTURE);
             setTexts(difficultyFilter, FilterType.DIFFICULTY);
             setTexts(entryfeeFilter, FilterType.ENTRYFEE);
+            ExploreFragment.distanceSliderValue = 0;
             dismiss();
         });
         return v;
