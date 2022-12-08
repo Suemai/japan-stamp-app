@@ -2,6 +2,11 @@ package com.test.stampmap.Stamp;
 
 import android.app.Activity;
 import android.content.Context;
+import android.view.View;
+import android.widget.ImageView;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.load.model.LazyHeaders;
 import com.test.stampmap.Interface.BoolMethod;
 import com.test.stampmap.Stamp.Receivers.Receiver;
 import org.json.JSONArray;
@@ -97,6 +102,11 @@ public class StampCollection {
 
     public void addWishlistUpdateEvent(Receiver.WishlistUpdateReceiver receiver){
         wishlistUpdateCallback.add(receiver);
+    }
+
+    public static void loadImage(View view, Stamp stamp, ImageView imageView){
+        Glide.with(view).load(new GlideUrl(stamp.getImageLink(), new LazyHeaders.Builder()
+                .addHeader("referer", "https://stamp.funakiya.com/").build())).into(imageView);
     }
 
     private void removeIfNecessary(StampSet stampSet, BoolMethod method, HashMap<Integer, StampSet> listToRemoveFrom){
