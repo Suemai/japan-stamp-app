@@ -55,25 +55,16 @@
                     android:textAlignment="center"
             />
 
-            <ImageView
-                    android:id="@+id/stamp_image"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"/>
-
             <com.google.android.material.divider.MaterialDivider
                     android:id="@+id/stampset_divider"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
             />
 
-            <ListView
+            <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/stamp_list"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:showDividers="middle|end"
-                    android:divider="@drawable/divider"
-                    android:nestedScrollingEnabled="true"
             />
 
         </LinearLayout>

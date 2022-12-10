@@ -1,45 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.cardview.widget.CardView
         xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/stamp_sheet_element"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        app:cardBackgroundColor="@android:color/transparent"
+        app:cardElevation="0dp">
 
-    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center_horizontal"
-            android:orientation="vertical"
-            android:paddingTop="12dp"
-            android:paddingBottom="16dp">
+    <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
-        <TextView
-                android:id="@+id/stampNo_drawer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"
+        <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/stamp_image"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_centerVertical="true"
+                app:shapeAppearanceOverlay="@style/circleImageView"
         />
 
-        <TextView
-                android:id="@+id/obtainable_drawer"
-                android:layout_width="wrap_content"
+        <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textAlignment="center"
-        />
+                android:orientation="vertical"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@id/stamp_image"
+                android:layout_marginStart="10dp">
 
-        <TextView
-                android:id="@+id/location_drawer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"
-        />
+            <TextView
+                    android:id="@+id/stampNo_drawer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+            />
 
-        <TextView
-                android:id="@+id/owned_drawer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"
-        />
+            <TextView
+                    android:id="@+id/obtainable_drawer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+            />
 
-    </LinearLayout>
+            <TextView
+                    android:id="@+id/location_drawer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+            />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                    android:id="@+id/owned_drawer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+            />
+        </LinearLayout>
+
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>
