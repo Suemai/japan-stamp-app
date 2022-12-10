@@ -9,13 +9,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.test.stampmap.Adapter.StampRecViewAdapter;
+import com.test.stampmap.Adapter.StampRecyclerAdapter;
 import com.test.stampmap.R;
 import com.test.stampmap.Stamp.Stamp;
 import com.test.stampmap.Stamp.StampCollection;
 import com.test.stampmap.Stamp.StampSet;
-import com.test.stampmap.ViewHolders.MyStampsViewHolder;
-import com.test.stampmap.ViewHolders.StampViewHolder;
 
 import java.util.*;
 
@@ -23,7 +21,7 @@ import java.util.*;
 public class ObtainedFragment extends Fragment {
     private RecyclerView obtainedView;
     private final ArrayList<Stamp> stamps = new ArrayList<>();
-    StampRecViewAdapter<MyStampsViewHolder> adapter;
+    StampRecyclerAdapter adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -45,8 +43,7 @@ public class ObtainedFragment extends Fragment {
         stamps.clear();
         for (StampSet stampSet : StampCollection.getInstance().getMyStamps()) {
             for (Stamp stamp : stampSet) {
-                if (!stamp.getIsObtained()) continue;
-                stamps.add(stamp);
+                if (stamp.getIsObtained()) stamps.add(stamp);
             }
         }
         stamps.sort(Comparator.comparingLong(Stamp::getDateObtained));
@@ -59,17 +56,27 @@ public class ObtainedFragment extends Fragment {
     }
 
     private void obtainedRecyclerView(){
-        adapter = new StampRecViewAdapter<>(stamps, MyStampsViewHolder.class, this::onBindViewHolder);
+        // adapter constructor just takes the stamps list, the layout the ViewHolder will use, and the onBindViewHolder method
+        adapter = new StampRecyclerAdapter(stamps, R.layout.stamp_card, this::onBindViewHolder);
         obtainedView.setAdapter(adapter);
         obtainedView.setLayoutManager(new GridLayoutManager(this.getContext(), 3));
     }
 
-    public void onBindViewHolder(MyStampsViewHolder holder, int position){
-        holder.stampName.setText(stamps.get(position).getName());
-        StampCollection.loadImage(holder.itemView, stamps.get(position), holder.stampImage);
-        holder.card.setOnClickListener(view -> {
+    // this is quite cool since you can define your own onBindViewHolder function and then pass it into the constructor of the adapter
+    // it can also just be a lambda which I've done for the other stamp fragments
+    public void onBindViewHolder(StampRecyclerAdapter.ViewHolder holder, int position){
+
+        // get ur views from the thingy innit
+        TextView stampName = holder.itemView.findViewById(R.id.stamp_name);
+        ImageView stampImage = holder.itemView.findViewById(R.id.stamp_image);
+        CardView card = holder.itemView.findViewById(R.id.obtained_parent);
+
+        // do the fancies to your stuff
+        stampName.setText(stamps.get(position).getName());
+        StampCollection.loadImage(holder.itemView, stamps.get(position), stampImage);
+        card.setOnClickListener(view -> {
             final int position1 = holder.getAdapterPosition();
-            Toast.makeText(requireContext(), stamps.get(position1).getName() + " selected boi", Toast.LENGTH_SHORT).show();
+            Toast.makeText(holder.itemView.getContext(), stamps.get(position1).getName() + " selected boi", Toast.LENGTH_SHORT).show();
         });
     }
 }

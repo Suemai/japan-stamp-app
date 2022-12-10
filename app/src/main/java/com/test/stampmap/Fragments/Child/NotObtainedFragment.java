@@ -1,19 +1,21 @@
 package com.test.stampmap.Fragments.Child;
 
 import android.os.Bundle;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.test.stampmap.Adapter.StampRecViewAdapter;
+import com.test.stampmap.Adapter.StampRecyclerAdapter;
 import com.test.stampmap.R;
 import com.test.stampmap.Stamp.Stamp;
 import com.test.stampmap.Stamp.StampCollection;
 import com.test.stampmap.Stamp.StampSet;
-import com.test.stampmap.ViewHolders.MyStampsViewHolder;
 
 import java.util.ArrayList;
 
@@ -22,7 +24,7 @@ public class NotObtainedFragment extends Fragment {
 
     private RecyclerView noStampsView;
     private final ArrayList<Stamp> stamps = new ArrayList<>();
-    StampRecViewAdapter<MyStampsViewHolder> adapter;
+    StampRecyclerAdapter adapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -65,10 +67,19 @@ public class NotObtainedFragment extends Fragment {
     }
 
     private void noStampsRecyclerView(){
-        adapter = new StampRecViewAdapter<>(stamps, MyStampsViewHolder.class, (holder, position) -> {
-            holder.stampName.setText(stamps.get(position).getName());
-            StampCollection.loadImage(holder.itemView, stamps.get(position), holder.stampImage);
-            holder.card.setOnClickListener(view -> {
+        // this is the lambda example of the constructor
+        // works exactly the same except the code is now all in one block instead of split up
+        adapter = new StampRecyclerAdapter(stamps, R.layout.stamp_card, (holder, position) -> {
+
+            // get ur views from the thingy innit
+            TextView stampName = holder.itemView.findViewById(R.id.stamp_name);
+            ImageView stampImage = holder.itemView.findViewById(R.id.stamp_image);
+            CardView card = holder.itemView.findViewById(R.id.obtained_parent);
+
+            // do the fancies to your stuff
+            stampName.setText(stamps.get(position).getName());
+            StampCollection.loadImage(holder.itemView, stamps.get(position), stampImage);
+            card.setOnClickListener(view -> {
                 final int position1 = holder.getAdapterPosition();
                 Toast.makeText(requireContext(), stamps.get(position1).getName() + " selected boi", Toast.LENGTH_SHORT).show();
             });
