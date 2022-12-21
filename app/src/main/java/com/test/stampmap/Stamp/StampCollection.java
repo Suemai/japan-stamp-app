@@ -26,6 +26,7 @@ public class StampCollection {
     private final HashMap<Integer, StampSet> allStamps = new HashMap<>();
     private final HashMap<Integer, StampSet> myStamps = new HashMap<>();
     private final HashMap<Integer, StampSet> wishlist = new HashMap<>();
+    private final HashMap<Integer, StampSet> customStamps = new HashMap<>();
     private final ArrayList<StampSet> currentFilteredStamps = new ArrayList<>();
 
     private final ArrayList<Receiver.MyStampsUpdateReceiver> myStampsUpdateCallback = new ArrayList<>();
@@ -45,6 +46,10 @@ public class StampCollection {
 
     public ArrayList<StampSet> getWishlist(){
         return new ArrayList<>(wishlist.values());
+    }
+
+    public ArrayList<StampSet> getCustomStamps(){
+        return new ArrayList<>(customStamps.values());
     }
 
     public ArrayList<StampSet> getCurrentFilteredStamps(){
@@ -67,8 +72,10 @@ public class StampCollection {
             objIn = new ObjectInputStream(in);
             this.myStamps.putAll((HashMap<Integer, StampSet>) objIn.readObject());
             this.wishlist.putAll((HashMap<Integer, StampSet>) objIn.readObject());
+            this.wishlist.putAll((HashMap<Integer, StampSet>) objIn.readObject());
             allStamps.putAll(myStamps);
             allStamps.putAll(wishlist);
+            allStamps.putAll(customStamps);
         } catch (IOException | ClassNotFoundException ignored) {}
     }
 
@@ -78,6 +85,7 @@ public class StampCollection {
             objOut = new ObjectOutputStream(out);
             objOut.writeObject(this.myStamps);
             objOut.writeObject(this.wishlist);
+            objOut.writeObject(this.customStamps);
             out.getFD().sync();
         } catch (IOException ignored) {}
     }

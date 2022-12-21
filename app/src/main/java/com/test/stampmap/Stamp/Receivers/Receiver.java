@@ -9,4 +9,8 @@ public class Receiver {
     public interface WishlistUpdateReceiver {
         void onWishlistUpdate();
     }
+
+    public interface CustomStampsUpdateReceiver {
+        void onCustomStampsUpdate();
+    }
 }

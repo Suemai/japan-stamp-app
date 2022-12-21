@@ -65,7 +65,6 @@ public class StampSheetDialogue extends BottomSheetDialogFragment {
             StampCollection.loadImage(holder.itemView, stamp, stampImage);
 
             card.setOnClickListener(v1 -> {
-                AlertDialog.Builder popup = new AlertDialog.Builder(requireContext());
                 View popupView = LayoutInflater.from(requireContext()).inflate(R.layout.stamp_sheet_popup, null, false);
                 ((TextView)popupView.findViewById(R.id.stamp_name)).setText(stamp.getName());
                 SwitchCompat obtained = popupView.findViewById(R.id.obtained_switch);
@@ -81,7 +80,8 @@ public class StampSheetDialogue extends BottomSheetDialogFragment {
                     StampCollection.getInstance().setStampOnWishlist(stamp, stampSet, isChecked);
                     StampCollection.getInstance().saveMyStamps(requireContext());
                 });
-                popup.setView(popupView); popup.show();
+
+                new AlertDialog.Builder(requireContext()).setView(popupView).show();
             });
         });
 
