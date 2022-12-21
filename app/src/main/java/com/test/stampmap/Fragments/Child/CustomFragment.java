@@ -31,7 +31,7 @@ public class CustomFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
-        View v =  inflater.inflate(R.layout.fragment_not_obtained, container, false);
+        View v =  inflater.inflate(R.layout.fragment_custom, container, false);
 
         customView = v.findViewById(R.id.customRecView);
 
@@ -45,6 +45,6 @@ public class CustomFragment extends Fragment {
 
         //not done, need to do stuff first before anything else
         //customView.setAdapter(adapter);
-        customView.setLayoutManager(new GridLayoutManager(this.getContext(), 3));
+        //customView.setLayoutManager(new GridLayoutManager(this.getContext(), 3));
     }
 }

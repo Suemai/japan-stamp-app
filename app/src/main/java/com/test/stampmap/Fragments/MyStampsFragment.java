@@ -9,6 +9,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.google.android.material.tabs.TabLayout;
 import com.test.stampmap.Activity.MainActivity;
 import com.test.stampmap.Adapter.MyStampsViewPageAdapter;
+import com.test.stampmap.Fragments.Child.CustomFragment;
 import com.test.stampmap.Fragments.Child.NotObtainedFragment;
 import com.test.stampmap.Fragments.Child.ObtainedFragment;
 import com.test.stampmap.Fragments.Child.WishlistFragment;
@@ -36,7 +37,8 @@ public class MyStampsFragment extends Fragment {
         tabLayout = view.findViewById(R.id.myStampsTab);
         viewPager2 = view.findViewById(R.id.myStampsPageViewer);
         List<Fragment> myStampFragments = Arrays.stream(new Fragment[]{
-                new ObtainedFragment(), new NotObtainedFragment(), new WishlistFragment()}).collect(Collectors.toList());
+                new ObtainedFragment(), new NotObtainedFragment(), new WishlistFragment(), new CustomFragment()})
+                .collect(Collectors.toList());
         myStampsViewPageAdapter = new MyStampsViewPageAdapter(requireActivity(), myStampFragments);
         viewPager2.setAdapter(myStampsViewPageAdapter);
 
