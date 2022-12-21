@@ -127,18 +127,18 @@
                     android:padding="5dp"
                     android:textColor="@color/design_default_color_on_secondary"/>
 
-                <RadioGroup
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center"
-                        android:id="@+id/newObtainable">
+            <RadioGroup
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:id="@+id/newObtainable">
 
                 <RadioButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="NO" />
+                        android:text="NO"/>
 
                 <RadioButton
                         android:layout_width="wrap_content"
@@ -146,10 +146,36 @@
                         android:layout_weight="1"
                         android:text="YES"/>
 
-                </RadioGroup>
+            </RadioGroup>
 
             <!--Image-->
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Upload Image"
+                    android:padding="5dp"
+                    android:textColor="@color/design_default_color_on_secondary"/>
 
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                <ImageButton
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:id="@+id/newStampImage"/>
+
+                <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="upload"
+                        android:id="@+id/uploadedButton"
+                        android:layout_weight="1"
+                        android:layout_gravity="center"
+                />
+
+            </LinearLayout>
 
             <Button
                     android:id="@+id/add_new_stamp"
