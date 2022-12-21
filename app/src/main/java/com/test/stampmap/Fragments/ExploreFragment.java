@@ -218,6 +218,14 @@ public class ExploreFragment extends Fragment implements MapEventsReceiver {
             new FilterSheetDialogue().show(getChildFragmentManager(), "ModalBottomSheet");
             closeKeyboard();
         });
+
+        // ==========================================================
+        // Add stamps button
+        // ==========================================================
+        ImageButton addStamps = v.findViewById(R.id.addStamps_btn);
+        addStamps.setOnClickListener(view -> {
+
+                });
     }
 
 

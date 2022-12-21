@@ -101,4 +101,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="wishlist">Wishlist</string>
     <string name="stamp_name">stamp name</string>
+    <string name="custom">custom</string>
+    <string name="Custom">Custom</string>
 </resources>

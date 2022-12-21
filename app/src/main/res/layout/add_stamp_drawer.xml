@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+    <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Add Stamp"
+                    android:textSize="25sp"/>
+
+            <!--Name-->
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Name"
+                    android:padding="5dp"
+                    android:textColor="@color/design_default_color_on_secondary"/>
+            <EditText
+                    android:id="@+id/newStampName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:drawable/editbox_background"
+                    android:drawablePadding="16dp"
+                    android:hint="Name"
+                    android:padding="12dp"
+                    android:inputType="text"
+                    android:textColor="@color/design_default_color_on_secondary"/>
+
+            <!--Location-->
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Location"
+                    android:padding="5dp"
+                    android:textColor="@color/design_default_color_on_secondary"
+            />
+            <EditText
+                    android:id="@+id/newStampLocation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:drawable/editbox_background"
+                    android:drawablePadding="16dp"
+                    android:hint="Location"
+                    android:padding="12dp"
+                    android:inputType="text"
+                    android:textColor="@color/design_default_color_on_secondary"/>
+
+            <!--Difficulty-->
+
+            <!--Opening Hours-->
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Opening Hours"
+                    android:padding="5dp"
+                    android:textColor="@color/design_default_color_on_secondary"/>
+
+            <EditText
+                    android:id="@+id/newStampHours"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:drawable/editbox_background"
+                    android:drawablePadding="16dp"
+                    android:hint="Describe"
+                    android:padding="12dp"
+                    android:inputType="text"
+                    android:textColor="@color/design_default_color_on_secondary"/>
+
+            <!--Holiday-->
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Holiday (if known)"
+                    android:padding="5dp"
+                    android:textColor="@color/design_default_color_on_secondary"/>
+
+
+            <EditText
+                    android:id="@+id/newStampHoliday"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:drawable/editbox_background"
+                    android:drawablePadding="16dp"
+                    android:hint="Holiday"
+                    android:padding="12dp"
+                    android:textColor="@color/design_default_color_on_secondary"
+                    android:inputType="text"/>
+
+
+            <!--Fee-->
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Fee"
+                    android:padding="5dp"
+                    android:textColor="@color/design_default_color_on_secondary"/>
+
+
+            <EditText
+                    android:id="@+id/newStampFees"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:drawable/editbox_background"
+                    android:drawablePadding="16dp"
+                    android:hint="Fee"
+                    android:padding="12dp"
+                    android:textColor="@color/design_default_color_on_secondary"
+                    android:inputType="number"/>
+
+            <!--Is Obtainable?-->
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Is Obtainable"
+                    android:padding="5dp"
+                    android:textColor="@color/design_default_color_on_secondary"/>
+
+                <RadioGroup
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center"
+                        android:id="@+id/newObtainable">
+
+                <RadioButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="NO" />
+
+                <RadioButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="YES"/>
+
+                </RadioGroup>
+
+            <!--Image-->
+
+
+            <Button
+                    android:id="@+id/add_new_stamp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Add"
+                    android:backgroundTint="@color/design_default_color_secondary"
+            />
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
