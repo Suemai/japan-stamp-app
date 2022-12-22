@@ -5,7 +5,6 @@ import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.media.AudioManager;
-import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -18,6 +17,7 @@ import android.widget.*;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import com.test.stampmap.Activity.MainActivity;
+import com.test.stampmap.Dialogues.AddStampSetDialogue;
 import com.test.stampmap.Dialogues.FilterSheetDialogue;
 import com.test.stampmap.Dialogues.StampSheetDialogue;
 import com.test.stampmap.Filter.Filters;
@@ -35,7 +35,6 @@ import org.osmdroid.events.MapEventsReceiver;
 import org.osmdroid.events.MapListener;
 import org.osmdroid.events.ScrollEvent;
 import org.osmdroid.events.ZoomEvent;
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.Distance;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.CustomZoomButtonsController;
@@ -360,6 +359,7 @@ public class ExploreFragment extends Fragment implements MapEventsReceiver {
     @Override
     public boolean longPressHelper(GeoPoint p) {
         //DO NOTHING FOR NOW:
+        new AddStampSetDialogue(p).show(getChildFragmentManager(), "ModalBottomSheet");
         return false;
     }
 }

@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
         requestPermissionsIfNecessary(new String[]{
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.READ_EXTERNAL_STORAGE,
                 //get current location
                 Manifest.permission.ACCESS_FINE_LOCATION,
         });

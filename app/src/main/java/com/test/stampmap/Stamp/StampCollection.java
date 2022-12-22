@@ -2,6 +2,8 @@ package com.test.stampmap.Stamp;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.View;
 import android.widget.ImageView;
 import com.bumptech.glide.Glide;
@@ -11,6 +13,7 @@ import com.test.stampmap.Interface.BoolMethod;
 import com.test.stampmap.Stamp.Receivers.Receiver;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.osmdroid.util.GeoPoint;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -31,6 +34,7 @@ public class StampCollection {
 
     private final ArrayList<Receiver.MyStampsUpdateReceiver> myStampsUpdateCallback = new ArrayList<>();
     private final ArrayList<Receiver.WishlistUpdateReceiver> wishlistUpdateCallback = new ArrayList<>();
+    private final ArrayList<Receiver.CustomStampsUpdateReceiver> customStampsUpdateCallback = new ArrayList<>();
 
     public static StampCollection getInstance(){
         return instance;
@@ -72,7 +76,7 @@ public class StampCollection {
             objIn = new ObjectInputStream(in);
             this.myStamps.putAll((HashMap<Integer, StampSet>) objIn.readObject());
             this.wishlist.putAll((HashMap<Integer, StampSet>) objIn.readObject());
-            this.wishlist.putAll((HashMap<Integer, StampSet>) objIn.readObject());
+            this.customStamps.putAll((HashMap<Integer, StampSet>) objIn.readObject());
             allStamps.putAll(myStamps);
             allStamps.putAll(wishlist);
             allStamps.putAll(customStamps);
@@ -104,6 +108,13 @@ public class StampCollection {
         for (Receiver.WishlistUpdateReceiver callback : wishlistUpdateCallback) callback.onWishlistUpdate();
     }
 
+    public void addCustomStampSet(StampSet stampSet, Context context){
+        customStamps.put(stampSet.hashCode(), stampSet);
+        allStamps.putAll(customStamps);
+        saveMyStamps(context);
+        for (Receiver.CustomStampsUpdateReceiver callback : customStampsUpdateCallback) callback.onCustomStampsUpdate();
+    }
+
     public void addMyStampsUpdateEvent(Receiver.MyStampsUpdateReceiver receiver){
         myStampsUpdateCallback.add(receiver);
     }
@@ -112,9 +123,22 @@ public class StampCollection {
         wishlistUpdateCallback.add(receiver);
     }
 
+    public void addCustomStampsUpdateEvent(Receiver.CustomStampsUpdateReceiver receiver){
+        customStampsUpdateCallback.add(receiver);
+    }
+
     public static void loadImage(View view, Stamp stamp, ImageView imageView){
-        Glide.with(view).load(new GlideUrl(stamp.getImageLink(), new LazyHeaders.Builder()
-                .addHeader("referer", "https://stamp.funakiya.com/").build())).into(imageView);
+        if (stamp.getIsCustom()) loadImage(stamp.getImageLink(), imageView);
+        else {
+            Glide.with(view).load(new GlideUrl(stamp.getImageLink(), new LazyHeaders.Builder()
+                    .addHeader("referer", "https://stamp.funakiya.com/").build())).into(imageView);
+        }
+    }
+
+    public static void loadImage(String base64, ImageView imageView){
+        byte[] decodedString = Base64.getDecoder().decode(base64);
+        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+        imageView.setImageBitmap(decodedByte);
     }
 
     private void removeIfNecessary(StampSet stampSet, BoolMethod method, HashMap<Integer, StampSet> listToRemoveFrom){

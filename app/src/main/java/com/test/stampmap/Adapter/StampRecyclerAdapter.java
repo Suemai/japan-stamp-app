@@ -11,11 +11,11 @@ import java.util.List;
 
 public class StampRecyclerAdapter extends RecyclerView.Adapter<StampRecyclerAdapter.ViewHolder>{
 
-    private final List<Stamp> dataSet;
+    private final List<?> dataSet;
     private final ViewHolderBinder viewBinder;
     private final int layout;
 
-    public StampRecyclerAdapter(List<Stamp> dataSet, int layout, ViewHolderBinder onHolderBind){
+    public StampRecyclerAdapter(List<?> dataSet, int layout, ViewHolderBinder onHolderBind){
         this.dataSet = dataSet;
         this.viewBinder = onHolderBind;
         this.layout = layout;
@@ -37,6 +37,10 @@ public class StampRecyclerAdapter extends RecyclerView.Adapter<StampRecyclerAdap
     @Override
     public int getItemCount() {
         return dataSet.size();
+    }
+
+    public List<?> getDataSet(){
+        return this.dataSet;
     }
 
     // this is the cool magic thingy that allows us to pass in the methods through the constructor

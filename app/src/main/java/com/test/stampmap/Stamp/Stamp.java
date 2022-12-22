@@ -12,17 +12,19 @@ public class Stamp implements Serializable {
     private final String name, address, location, imageLink;
     private final boolean isObtainable;
     private final GeoPoint coordinates;
+    private final boolean isCustom;
     private boolean isObtained;
     private boolean isOnWishlist;
     private long dateObtained;
 
-    public Stamp(String name, String address, String location, String imageLink, boolean isObtainable, GeoPoint coordinates) {
+    public Stamp(String name, String address, String location, String imageLink, boolean isObtainable, GeoPoint coordinates, boolean isCustom) {
         this.name = name;
         this.address = address;
         this.location = location;
         this.imageLink = imageLink;
         this.isObtainable = isObtainable;
         this.coordinates = coordinates;
+        this.isCustom = isCustom;
         this.isObtained = false;
         this.isOnWishlist = false;
         this.dateObtained = 0;
@@ -52,6 +54,10 @@ public class Stamp implements Serializable {
         return this.coordinates;
     }
 
+    public boolean getIsCustom() {
+        return isCustom;
+    }
+
     public boolean getIsObtained(){
         return this.isObtained;
     }
@@ -79,7 +85,7 @@ public class Stamp implements Serializable {
             coords = JSONStamp.getJSONArray("経緯度").join(",");
         } catch (JSONException ignored) {}
         GeoPoint position = GeoPoint.fromDoubleString(coords, ',');
-        return new Stamp(JSONStamp.optString("名前"), JSONStamp.optString("所在地"), JSONStamp.optString("設置場所"), JSONStamp.optString("リンク"), JSONStamp.optBoolean("存在"), position);
+        return new Stamp(JSONStamp.optString("名前"), JSONStamp.optString("所在地"), JSONStamp.optString("設置場所"), JSONStamp.optString("リンク"), JSONStamp.optBoolean("存在"), position, false);
     }
 
     @NotNull
