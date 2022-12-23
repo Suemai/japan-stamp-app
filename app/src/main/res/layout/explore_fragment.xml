@@ -76,6 +76,7 @@
                 android:layout_alignParentBottom="true"
                 android:background="@drawable/ic_menu_mylocation"/>
 
+        <!--
         <ImageButton
                 android:id="@+id/addStamps_btn"
                 android:layout_width="50dp"
@@ -84,7 +85,7 @@
                 android:layout_above="@+id/btn_passenger_current_location"
                 android:layout_marginRight="10dp"
                 android:background="@drawable/add_foreground"/>
-
+        -->
     </RelativeLayout>
 </FrameLayout>
 

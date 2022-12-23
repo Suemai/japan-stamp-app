@@ -1,6 +1,8 @@
 package com.test.stampmap.Fragments;
 
 import android.os.Bundle;
+import android.widget.TextView;
+import android.widget.Toast;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
@@ -29,6 +31,17 @@ public class SettingsFragment extends Fragment {
         clearFilters.setChecked(ConfigValue.CLEAR_FILTERS.getValue());
         clearFilters.setOnCheckedChangeListener((buttonView, isChecked) -> ConfigValue.CLEAR_FILTERS.setValue(isChecked));
         v.findViewById(R.id.cache_clear).setOnClickListener(v1 -> Executors.newSingleThreadExecutor().execute(() -> Glide.get(requireContext()).clearDiskCache()));
+
+        //testing cus why not
+        TextView about = v.findViewById(R.id.aboutPage);
+        about.setOnClickListener(view ->
+                Toast.makeText(about.getContext(), "Cyke! Not even implememted yet!", Toast.LENGTH_SHORT).show());
+
+        TextView help = v.findViewById(R.id.helpPage);
+        about.setOnClickListener(view ->
+                Toast.makeText(help.getContext(), "Cyke! Not even implememted yet!", Toast.LENGTH_SHORT).show());
+
        return v;
     }
+
 }

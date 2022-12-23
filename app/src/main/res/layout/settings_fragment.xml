@@ -8,14 +8,22 @@
         android:orientation="vertical"
         tools:context=".Fragments.Child.NotObtainedFragment">
 
+
     <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Settings Page Bitch"
+            android:text="Settings"
             android:textSize="25sp"
             android:textAlignment="center"
+            android:padding="10dp"
 
     />
+
+    <com.google.android.material.divider.MaterialDivider
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+    />
+
     <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/filterClear"
             android:text="Clear Filters on Search Cunt"
@@ -30,6 +38,27 @@
             android:layout_height="wrap_content"
             android:text="Clear Image Cache"
             android:backgroundTint="@color/design_default_color_secondary"
+    />
+
+    <com.google.android.material.divider.MaterialDivider
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+    />
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="About"
+            android:textSize="20dp"
+            android:padding="10dp"
+            android:id="@+id/aboutPage"
+    />
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Help"
+            android:textSize="20dp"
+            android:padding="10dp"
+            android:id="@+id/helpPage"
     />
 
 </LinearLayout>
