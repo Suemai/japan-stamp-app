@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //load stamp data
-        StampCollection.getInstance().load(ctx);
+        StampCollection.getInstance().load(getApplication());
 
         //inflate and create a map
         setContentView(R.layout.activity_main);

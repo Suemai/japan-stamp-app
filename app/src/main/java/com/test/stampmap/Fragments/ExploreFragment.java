@@ -228,12 +228,11 @@ public class ExploreFragment extends Fragment implements MapEventsReceiver {
 
 
     public boolean performSearch(@Nullable String query) {
-        map.getOverlays().removeAll(map.getOverlays().stream().filter(item -> item instanceof Marker).collect(Collectors.toList()));
         List<IFilter> clone = (List<IFilter>) ((ArrayList<IFilter>) MainActivity.filters).clone();
         if (query != null) clone.add(Filters.SearchType.ANY.set(query));
         if (distanceSliderValue > 0) clone.add(Filters.Distance.values()[isKilometres ? 0 : 1].set(distanceSliderValue));
         IFilter[] searchFilters = clone.toArray(new IFilter[0]);
-        ArrayList<StampSet> filteredStamps = Filters.FilterStamps(searchFilters);
+        ArrayList<StampSet> filteredStamps = (ArrayList<StampSet>) Filters.FilterStamps(searchFilters);
         loadMarkers();
         handleMapMovementAndZoom(filteredStamps);
         if (ConfigValue.CLEAR_FILTERS.getValue()) {
@@ -275,7 +274,8 @@ public class ExploreFragment extends Fragment implements MapEventsReceiver {
         map.getController().animateTo(new GeoPoint(coords[0] / 2, coords[1] / 2));
     }
 
-    private void loadMarkers(){
+    public void loadMarkers(){
+        map.getOverlays().removeAll(map.getOverlays().stream().filter(item -> item instanceof Marker).collect(Collectors.toList()));
         HashSet<Double> potentialOverlaps = new HashSet<>();
         for (StampSet stampSet : StampCollection.getInstance().getCurrentFilteredStamps()) {
             StampMarker stampMarker = new StampMarker(map, stampSet);
@@ -301,11 +301,12 @@ public class ExploreFragment extends Fragment implements MapEventsReceiver {
             });
             map.getOverlays().remove(compass);
             map.getOverlays().add(compass);
+            map.invalidate();
         }
     }
 
     void closeKeyboard(){
-        InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
+        InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         TextView view = searchBar.findViewById(androidx.appcompat.R.id.search_src_text);
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         searchBar.clearFocus();

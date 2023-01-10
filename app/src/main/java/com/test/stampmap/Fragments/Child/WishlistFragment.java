@@ -43,6 +43,7 @@ public class WishlistFragment extends Fragment {
     }
 
     void setData(){
+        stamps.clear();
         for (StampSet stampSet : StampCollection.getInstance().getWishlist()){
             for (Stamp stamp: stampSet){
                 if (stamp.getIsOnWishlist()) stamps.add(stamp);

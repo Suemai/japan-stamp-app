@@ -209,11 +209,11 @@ public class Filters {
         }
     }
 
-    public static ArrayList<StampSet> FilterStamps(String searchTerm) {
+    public static List<StampSet> FilterStamps(String searchTerm) {
         return FilterStamps(new IFilter[]{SearchType.ANY.set(searchTerm)});
     }
 
-    public static ArrayList<StampSet> FilterStamps(IFilter[] filters) {
+    public static List<StampSet> FilterStamps(IFilter[] filters) {
         StampCollection.getInstance().getCurrentFilteredStamps().clear();
         Set<Integer> filterTypes = Arrays.stream(filters).mapToInt(IFilter::filterType).boxed().collect(Collectors.toSet());
         if (filterTypes.isEmpty()) return StampCollection.getInstance().getCurrentFilteredStamps();

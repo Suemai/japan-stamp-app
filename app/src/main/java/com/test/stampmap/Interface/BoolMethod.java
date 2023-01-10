@@ -1,7 +1,7 @@
 package com.test.stampmap.Interface;
 
-import com.test.stampmap.Stamp.Stamp;
+import com.test.stampmap.Stamp.StampSet;
 
 public interface BoolMethod {
-    boolean hasMatch(Stamp value);
+    boolean hasMatch(StampSet value);
 }

@@ -2,15 +2,11 @@ package com.test.stampmap.Dialogues;
 
 
 import android.os.Bundle;
-import android.util.Log;
-import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.slider.Slider;
 import com.test.stampmap.*;
@@ -19,10 +15,8 @@ import com.test.stampmap.Filter.FilterAlertBox;
 import com.test.stampmap.Filter.FilterType;
 import com.test.stampmap.Fragments.ExploreFragment;
 import com.test.stampmap.Interface.IFilter;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class FilterSheetDialogue extends BottomSheetDialogFragment {

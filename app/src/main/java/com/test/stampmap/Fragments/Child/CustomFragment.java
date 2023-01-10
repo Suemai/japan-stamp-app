@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.test.stampmap.Adapter.StampRecyclerAdapter;
+import com.test.stampmap.Dialogues.StampDeleteAlertDialogue;
 import com.test.stampmap.R;
 import com.test.stampmap.Stamp.Stamp;
 import com.test.stampmap.Stamp.StampCollection;
@@ -58,6 +59,7 @@ public class CustomFragment extends Fragment {
                 }
             }
         }
+        if (adapter != null && !this.isHidden()) adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -81,6 +83,10 @@ public class CustomFragment extends Fragment {
             card.setOnClickListener(view -> {
                 final int position1 = holder.getAdapterPosition();
                 Toast.makeText(requireContext(), stamps.get(position1).getName() + " selected boi", Toast.LENGTH_SHORT).show();
+            });
+            card.setOnLongClickListener(v -> {
+                new StampDeleteAlertDialogue(requireContext(), stamps.get(position), null);
+                return false;
             });
         });
         customStampsView.setAdapter(adapter);

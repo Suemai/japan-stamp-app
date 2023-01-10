@@ -56,12 +56,24 @@ public class StampSet implements Iterable<Stamp>, Serializable {
         return this.stamps;
     }
 
-    public static boolean getIsObtained(Stamp stamp) {
-        return stamp.getIsObtained();
+    public static boolean getContainsObtained(StampSet stampSet){
+        for (Stamp stamp : stampSet) if (stamp.getIsObtained()) return true;
+        return false;
     }
 
-    public static boolean getIsOnWishlist(Stamp stamp) {
-        return stamp.getIsOnWishlist();
+    public static boolean getContainsWishlist(StampSet stampSet) {
+        for (Stamp stamp : stampSet) if (stamp.getIsOnWishlist()) return true;
+        return false;
+    }
+
+    public static boolean getContainsCustom(StampSet stampSet) {
+        for (Stamp stamp : stampSet) if (stamp.getIsCustom()) return true;
+        return false;
+    }
+
+    public static boolean getContainsCustomData(StampSet stampSet){
+        for (Stamp stamp : stampSet) if (stamp.getIsCustom() || stamp.getIsObtained() || stamp.getIsOnWishlist()) return true;
+        return false;
     }
 
     public static StampSet StampSetFromJSON(JSONObject JSONStampSet){

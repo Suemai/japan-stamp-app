@@ -54,6 +54,24 @@
                     android:text="Entry fee"
                     android:textAlignment="center"
             />
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal">
+
+            <ImageButton
+                    android:id="@+id/addStamp_btn"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@drawable/add_foreground"/>
+
+            <ImageButton
+                    android:id="@+id/deleteStamp_btn"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@drawable/delete_foreground"/>
+        </LinearLayout>
 
             <com.google.android.material.divider.MaterialDivider
                     android:id="@+id/stampset_divider"

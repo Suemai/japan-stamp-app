@@ -1,6 +1,7 @@
 package com.test.stampmap.Stamp;
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -13,11 +14,12 @@ import com.test.stampmap.Interface.BoolMethod;
 import com.test.stampmap.Stamp.Receivers.Receiver;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.osmdroid.util.GeoPoint;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 public class StampCollection {
 
@@ -27,92 +29,124 @@ public class StampCollection {
     private static final StampCollection instance = new StampCollection();
 
     private final HashMap<Integer, StampSet> allStamps = new HashMap<>();
-    private final HashMap<Integer, StampSet> myStamps = new HashMap<>();
-    private final HashMap<Integer, StampSet> wishlist = new HashMap<>();
-    private final HashMap<Integer, StampSet> customStamps = new HashMap<>();
+    private final HashMap<Integer, StampSet> userStampData = new HashMap<>();
     private final ArrayList<StampSet> currentFilteredStamps = new ArrayList<>();
 
     private final ArrayList<Receiver.MyStampsUpdateReceiver> myStampsUpdateCallback = new ArrayList<>();
     private final ArrayList<Receiver.WishlistUpdateReceiver> wishlistUpdateCallback = new ArrayList<>();
     private final ArrayList<Receiver.CustomStampsUpdateReceiver> customStampsUpdateCallback = new ArrayList<>();
 
+    private Application app;
+
     public static StampCollection getInstance(){
         return instance;
     }
 
-    public ArrayList<StampSet> getAllStamps(){
+    public List<StampSet> getAllStamps(){
         return new ArrayList<>(allStamps.values());
     }
 
-    public ArrayList<StampSet> getMyStamps(){
-        return new ArrayList<>(myStamps.values());
+    public List<StampSet> getMyStamps(){
+        return userStampData.values().stream().filter(StampSet::getContainsObtained).collect(Collectors.toList());
     }
 
-    public ArrayList<StampSet> getWishlist(){
-        return new ArrayList<>(wishlist.values());
+    public List<StampSet> getWishlist(){
+        return userStampData.values().stream().filter(StampSet::getContainsWishlist).collect(Collectors.toList());
     }
 
-    public ArrayList<StampSet> getCustomStamps(){
-        return new ArrayList<>(customStamps.values());
+    public List<StampSet> getCustomStamps(){
+        return userStampData.values().stream().filter(StampSet::getContainsCustom).collect(Collectors.toList());
     }
 
-    public ArrayList<StampSet> getCurrentFilteredStamps(){
+    public List<StampSet> getCurrentFilteredStamps(){
         return currentFilteredStamps;
     }
 
-    public void load(Context context){
-        JSONArray stampList = loadJSONArrayFromAsset(context);
+    public void load(Application application){
+        this.app = application;
+        JSONArray stampList = loadJSONArrayFromAsset(application.getApplicationContext());
         allStamps.clear();
         for (int i=0; i<stampList.length(); i++) {
             StampSet stampSet = StampSet.StampSetFromJSON(stampList.optJSONObject(i));
             allStamps.put(stampSet.hashCode(), stampSet);
         }
-        loadCustomStampData(context);
+        loadCustomStampData();
     }
 
-    private void loadCustomStampData(Context context){
+    private void loadCustomStampData(){
         ObjectInputStream objIn;
-        try (FileInputStream in = context.openFileInput(SAVE_FILE_NAME)){
+        try (FileInputStream in = app.getApplicationContext().openFileInput(SAVE_FILE_NAME)){
             objIn = new ObjectInputStream(in);
-            this.myStamps.putAll((HashMap<Integer, StampSet>) objIn.readObject());
-            this.wishlist.putAll((HashMap<Integer, StampSet>) objIn.readObject());
-            this.customStamps.putAll((HashMap<Integer, StampSet>) objIn.readObject());
-            allStamps.putAll(myStamps);
-            allStamps.putAll(wishlist);
-            allStamps.putAll(customStamps);
+            this.userStampData.putAll((HashMap<Integer, StampSet>) objIn.readObject());
+            allStamps.putAll(userStampData);
         } catch (IOException | ClassNotFoundException ignored) {}
     }
 
-    public void saveMyStamps(Context context){
-        ObjectOutputStream objOut;
-        try (FileOutputStream out = context.openFileOutput(SAVE_FILE_NAME, Activity.MODE_PRIVATE)){
-            objOut = new ObjectOutputStream(out);
-            objOut.writeObject(this.myStamps);
-            objOut.writeObject(this.wishlist);
-            objOut.writeObject(this.customStamps);
-            out.getFD().sync();
-        } catch (IOException ignored) {}
+    public void saveMyStamps(){
+        Executors.newSingleThreadExecutor().execute(() -> {
+            ObjectOutputStream objOut;
+            try (FileOutputStream out = app.getApplicationContext().openFileOutput(SAVE_FILE_NAME, Activity.MODE_PRIVATE)){
+                objOut = new ObjectOutputStream(out);
+                objOut.writeObject(this.userStampData);
+                out.getFD().sync();
+            } catch (IOException ignored) {}
+        });
     }
 
     public void setStampObtained(Stamp stamp, StampSet stampSet, boolean value){
         stamp.setObtained(value);
-        if (value) myStamps.put(stampSet.hashCode(), stampSet);
-        else removeIfNecessary(stampSet, StampSet::getIsObtained, myStamps);
+        if (value) userStampData.put(stampSet.hashCode(), stampSet);
+        else removeIfNecessary(stampSet, StampSet::getContainsCustomData);
+        saveMyStamps();
         for (Receiver.MyStampsUpdateReceiver callback : myStampsUpdateCallback) callback.onMyStampsUpdate();
     }
 
     public void setStampOnWishlist(Stamp stamp, StampSet stampSet, boolean value){
         stamp.setOnWishlist(value);
-        if (value) wishlist.put(stampSet.hashCode(), stampSet);
-        else removeIfNecessary(stampSet, StampSet::getIsOnWishlist, wishlist);
+        if (value) userStampData.put(stampSet.hashCode(), stampSet);
+        else removeIfNecessary(stampSet, StampSet::getContainsCustomData);
+        saveMyStamps();
         for (Receiver.WishlistUpdateReceiver callback : wishlistUpdateCallback) callback.onWishlistUpdate();
     }
 
-    public void addCustomStampSet(StampSet stampSet, Context context){
-        customStamps.put(stampSet.hashCode(), stampSet);
-        allStamps.putAll(customStamps);
-        saveMyStamps(context);
+    public void addCustomStampSet(StampSet stampSet){
+        allStamps.put(stampSet.hashCode(), stampSet);
+        userStampData.put(stampSet.hashCode(), stampSet);
+        saveMyStamps();
         for (Receiver.CustomStampsUpdateReceiver callback : customStampsUpdateCallback) callback.onCustomStampsUpdate();
+    }
+
+    public void addCustomStamp(Stamp stamp, StampSet stampSet){
+        stampSet.getStamps().add(stamp);
+        userStampData.put(stampSet.hashCode(), stampSet);
+        saveMyStamps();
+        for (Receiver.CustomStampsUpdateReceiver callback : customStampsUpdateCallback) callback.onCustomStampsUpdate();
+    }
+
+    public void deleteCustomStamp(Stamp stamp){
+        StampSet parentSet = userStampData.values().stream().filter(stampSet -> {
+            for (Stamp stamp2 : stampSet) if (stamp2.equals(stamp)) return true;
+            return false;
+        }).findFirst().orElse(null);
+        if (parentSet != null) {
+            parentSet.getStamps().remove(stamp);
+            if (parentSet.getStamps().isEmpty()) {
+                deleteStampSet(parentSet);
+                return;
+            }
+            saveMyStamps();
+            announceAllUpdateReceivers();
+        }
+    }
+
+    public void deleteStampSet(StampSet stampSet){
+        for (Stamp stamp : stampSet) if (!stamp.getIsCustom()) return;
+        userStampData.remove(stampSet.hashCode(), stampSet);
+        allStamps.remove(stampSet.hashCode(), stampSet);
+        currentFilteredStamps.remove(stampSet);
+        stampSet.getStamps().clear();
+        saveMyStamps();
+        announceAllUpdateReceivers();
     }
 
     public void addMyStampsUpdateEvent(Receiver.MyStampsUpdateReceiver receiver){
@@ -125,6 +159,12 @@ public class StampCollection {
 
     public void addCustomStampsUpdateEvent(Receiver.CustomStampsUpdateReceiver receiver){
         customStampsUpdateCallback.add(receiver);
+    }
+
+    public void announceAllUpdateReceivers() {
+        for (Receiver.CustomStampsUpdateReceiver callback : customStampsUpdateCallback) callback.onCustomStampsUpdate();
+        for (Receiver.WishlistUpdateReceiver callback : wishlistUpdateCallback) callback.onWishlistUpdate();
+        for (Receiver.MyStampsUpdateReceiver callback : myStampsUpdateCallback) callback.onMyStampsUpdate();
     }
 
     public static void loadImage(View view, Stamp stamp, ImageView imageView){
@@ -141,9 +181,9 @@ public class StampCollection {
         imageView.setImageBitmap(decodedByte);
     }
 
-    private void removeIfNecessary(StampSet stampSet, BoolMethod method, HashMap<Integer, StampSet> listToRemoveFrom){
-        for (Stamp stamp : stampSet) if (method.hasMatch(stamp)) return;
-        listToRemoveFrom.remove(stampSet.hashCode());
+    private void removeIfNecessary(StampSet stampSet, BoolMethod method){
+        if (method.hasMatch(stampSet)) return;
+        userStampData.remove(stampSet.hashCode());
     }
 
     /**
