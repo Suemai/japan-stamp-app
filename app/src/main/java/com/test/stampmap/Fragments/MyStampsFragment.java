@@ -9,10 +9,10 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.google.android.material.tabs.TabLayout;
 import com.test.stampmap.Activity.MainActivity;
 import com.test.stampmap.Adapter.MyStampsViewPageAdapter;
-import com.test.stampmap.Fragments.Child.CustomFragment;
-import com.test.stampmap.Fragments.Child.NotObtainedFragment;
-import com.test.stampmap.Fragments.Child.ObtainedFragment;
-import com.test.stampmap.Fragments.Child.WishlistFragment;
+import com.test.stampmap.Fragments.MyStampsChild.CustomFragment;
+import com.test.stampmap.Fragments.MyStampsChild.NotObtainedFragment;
+import com.test.stampmap.Fragments.MyStampsChild.ObtainedFragment;
+import com.test.stampmap.Fragments.MyStampsChild.WishlistFragment;
 import com.test.stampmap.R;
 
 import java.util.Arrays;

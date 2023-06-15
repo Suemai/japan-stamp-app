@@ -2,6 +2,7 @@ package com.test.stampmap.Fragments;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.media.AudioManager;
@@ -39,6 +40,7 @@ import org.osmdroid.util.Distance;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.CustomZoomButtonsController;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.CopyrightOverlay;
 import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.compass.CompassOverlay;
@@ -224,6 +226,18 @@ public class ExploreFragment extends Fragment implements MapEventsReceiver {
         //ImageButton addStamps = v.findViewById(R.id.addStamps_btn);
         //addStamps.setOnClickListener(view -> {
         //});
+
+        // ==========================================================
+        // Licencing
+        // ==========================================================
+        CopyrightOverlay copyrightOverlay = new CopyrightOverlay(getActivity());
+        copyrightOverlay.setTextColor(Color.GREEN);
+        copyrightOverlay.setTextSize(20);
+        copyrightOverlay.setAlignRight(false);
+        copyrightOverlay.setAlignBottom(true);
+        copyrightOverlay.setOffset(20, 65);
+        map.getOverlays().add(copyrightOverlay);
+
     }
 
 

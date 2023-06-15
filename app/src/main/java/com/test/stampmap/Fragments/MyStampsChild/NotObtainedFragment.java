@@ -1,4 +1,4 @@
-package com.test.stampmap.Fragments.Child;
+package com.test.stampmap.Fragments.MyStampsChild;
 
 import android.os.Bundle;
 import android.widget.ImageView;
@@ -20,33 +20,42 @@ import com.test.stampmap.Stamp.StampSet;
 import java.util.ArrayList;
 
 
-public class WishlistFragment extends Fragment {
+public class NotObtainedFragment extends Fragment {
 
-    private RecyclerView wishView;
+    private RecyclerView noStampsView;
     private final ArrayList<Stamp> stamps = new ArrayList<>();
     StampRecyclerAdapter adapter;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View v =  inflater.inflate(R.layout.fragment_wishlist, container, false);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-        wishView = v.findViewById(R.id.wishRecView);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View v =  inflater.inflate(R.layout.fragment_not_obtained, container, false);
+
+        noStampsView = v.findViewById(R.id.noStampRecView);
 
         setData();
 
-        wishRecyclerView();
+        noStampsRecyclerView();
 
-        StampCollection.getInstance().addWishlistUpdateEvent(this::setData);
+        StampCollection.getInstance().addMyStampsUpdateEvent(this::setData);
 
         return v;
     }
 
     void setData(){
         stamps.clear();
-        for (StampSet stampSet : StampCollection.getInstance().getWishlist()){
-            for (Stamp stamp: stampSet){
-                if (stamp.getIsOnWishlist()) stamps.add(stamp);
+        for (StampSet stampSet : StampCollection.getInstance().getAllStamps()){
+            for (Stamp stamp : stampSet) {
+                if (!stamp.getIsObtained() && stamp.getIsObtainable()) {
+                    stamps.add(stamp);
+                }
             }
         }
     }
@@ -54,10 +63,12 @@ public class WishlistFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        adapter.notifyDataSetChanged();
+        if (adapter != null) adapter.notifyDataSetChanged();
     }
 
-    private void wishRecyclerView(){
+    private void noStampsRecyclerView(){
+        // this is the lambda example of the constructor
+        // works exactly the same except the code is now all in one block instead of split up
         adapter = new StampRecyclerAdapter(stamps, R.layout.stamp_card, (holder, position) -> {
 
             // get ur views from the thingy innit
@@ -73,7 +84,7 @@ public class WishlistFragment extends Fragment {
                 Toast.makeText(requireContext(), stamps.get(position1).getName() + " selected boi", Toast.LENGTH_SHORT).show();
             });
         });
-        wishView.setAdapter(adapter);
-        wishView.setLayoutManager(new GridLayoutManager(this.getContext(), 3));
+        noStampsView.setAdapter(adapter);
+        noStampsView.setLayoutManager(new GridLayoutManager(this.getContext(),3));
     }
 }

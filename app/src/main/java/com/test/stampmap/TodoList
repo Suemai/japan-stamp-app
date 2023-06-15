@@ -2,10 +2,12 @@ Todo list
 
 
 Main Activity
-- Add new pins
-- after searching zoom to see all maps
+- Add new pins                              DONE
+- after searching zoom to see all maps      DONE
 - whole interactive search bar              DONE
 - directional view on current location
+- stamp dialogue / fragment
+- Filter custom stamps
 
 
 
@@ -18,7 +20,12 @@ Settings
 - New theme
 - Language
 - Clear filters after search                DONE
+- updates
+- about page
+- contact us page
 
+Other
+- Licencing                                 TESTING NEEDED
 
 
 Notes

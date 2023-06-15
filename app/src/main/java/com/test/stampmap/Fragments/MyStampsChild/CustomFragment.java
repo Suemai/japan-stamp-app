@@ -1,4 +1,4 @@
-package com.test.stampmap.Fragments.Child;
+package com.test.stampmap.Fragments.MyStampsChild;
 
 import android.os.Bundle;
 import android.widget.ImageView;
@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.test.stampmap.Adapter.StampRecyclerAdapter;
+import com.test.stampmap.Dialogues.StampDeleteAlertDialogue;
 import com.test.stampmap.R;
 import com.test.stampmap.Stamp.Stamp;
 import com.test.stampmap.Stamp.StampCollection;
@@ -19,10 +20,9 @@ import com.test.stampmap.Stamp.StampSet;
 
 import java.util.ArrayList;
 
+public class CustomFragment extends Fragment {
 
-public class NotObtainedFragment extends Fragment {
-
-    private RecyclerView noStampsView;
+    private RecyclerView customStampsView;
     private final ArrayList<Stamp> stamps = new ArrayList<>();
     StampRecyclerAdapter adapter;
 
@@ -36,28 +36,30 @@ public class NotObtainedFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v =  inflater.inflate(R.layout.fragment_not_obtained, container, false);
+        View v =  inflater.inflate(R.layout.fragment_custom, container, false);
 
-        noStampsView = v.findViewById(R.id.noStampRecView);
+        customStampsView = v.findViewById(R.id.customRecView);
 
         setData();
 
-        noStampsRecyclerView();
+        customStampsRecyclerView();
 
-        StampCollection.getInstance().addMyStampsUpdateEvent(this::setData);
+        // TODO: add an event for custom stamps probably
+        StampCollection.getInstance().addCustomStampsUpdateEvent(this::setData);
 
         return v;
     }
 
     void setData(){
         stamps.clear();
-        for (StampSet stampSet : StampCollection.getInstance().getAllStamps()){
+        for (StampSet stampSet : StampCollection.getInstance().getCustomStamps()){
             for (Stamp stamp : stampSet) {
-                if (!stamp.getIsObtained() && stamp.getIsObtainable()) {
+                if (stamp.getIsCustom()) {
                     stamps.add(stamp);
                 }
             }
         }
+        if (adapter != null && !this.isHidden()) adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -66,9 +68,8 @@ public class NotObtainedFragment extends Fragment {
         if (adapter != null) adapter.notifyDataSetChanged();
     }
 
-    private void noStampsRecyclerView(){
-        // this is the lambda example of the constructor
-        // works exactly the same except the code is now all in one block instead of split up
+    private void customStampsRecyclerView(){
+
         adapter = new StampRecyclerAdapter(stamps, R.layout.stamp_card, (holder, position) -> {
 
             // get ur views from the thingy innit
@@ -83,8 +84,12 @@ public class NotObtainedFragment extends Fragment {
                 final int position1 = holder.getAdapterPosition();
                 Toast.makeText(requireContext(), stamps.get(position1).getName() + " selected boi", Toast.LENGTH_SHORT).show();
             });
+            card.setOnLongClickListener(v -> {
+                new StampDeleteAlertDialogue(requireContext(), stamps.get(position), null);
+                return false;
+            });
         });
-        noStampsView.setAdapter(adapter);
-        noStampsView.setLayoutManager(new GridLayoutManager(this.getContext(),3));
+        customStampsView.setAdapter(adapter);
+        customStampsView.setLayoutManager(new GridLayoutManager(this.getContext(),3));
     }
 }

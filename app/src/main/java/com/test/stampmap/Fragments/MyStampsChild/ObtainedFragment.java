@@ -1,4 +1,4 @@
-package com.test.stampmap.Fragments.Child;
+package com.test.stampmap.Fragments.MyStampsChild;
 
 import android.os.Bundle;
 import android.widget.*;
