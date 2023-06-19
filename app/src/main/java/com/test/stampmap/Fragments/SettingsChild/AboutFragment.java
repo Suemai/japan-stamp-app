@@ -15,10 +15,6 @@ public class AboutFragment extends Fragment {
 
     ImageButton email_btn, github_btn, discord_btn, back_btn;
 
-    public AboutFragment() {
-        // Required empty public constructor
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,8 +36,12 @@ public class AboutFragment extends Fragment {
 
 
         back_btn.setOnClickListener(view1 -> {
-            FragmentManager manager = getParentFragmentManager();
-            manager.popBackStack();
+            if(getParentFragmentManager().getBackStackEntryCount()>0){
+                getParentFragmentManager().popBackStack();
+            }
+            else{
+                requireActivity().onBackPressed();
+            }
         });
 
 //      I'll link them to stuff later

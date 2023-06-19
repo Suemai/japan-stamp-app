@@ -78,15 +78,16 @@ public class SettingsFragment extends Fragment {
     }
 
     private void switchFragment(Fragment fragment){
-        childFragmentManager = getChildFragmentManager();
+        childFragmentManager = getParentFragmentManager();
         FragmentTransaction transaction = childFragmentManager.beginTransaction();
 
         transaction.replace(R.id.settings_frag_container, fragment)
                 .addToBackStack(null)
                 .commit();
+
 //        // Hide the parent fragment's view
 //        settingsLayout.setVisibility(View.GONE);
-
     }
 
 }
+
