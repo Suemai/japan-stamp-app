@@ -1,64 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-        android:id="@+id/settings_layout"
+<FrameLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        tools:context=".Fragments.MyStampsChild.NotObtainedFragment">
+        android:id="@+id/settings_frag_container">
 
-
-    <TextView
+    <LinearLayout
+            android:id="@+id/settings_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Settings"
-            android:textSize="25sp"
-            android:textAlignment="center"
-            android:padding="10dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            tools:context=".Fragments.MyStampsChild.NotObtainedFragment">
 
-    />
 
-    <com.google.android.material.divider.MaterialDivider
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-    />
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Settings"
+                android:textSize="25sp"
+                android:textAlignment="center"
+                android:padding="10dp"
 
-    <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/filterClear"
-            android:text="Clear Filters on Search Cunt"
-            android:layout_marginLeft="10dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-    />
-    <Button
-            android:id="@+id/cache_clear"
-            android:layout_marginLeft="10dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Clear Image Cache"
-            android:backgroundTint="@color/design_default_color_secondary"
-    />
+        />
 
-    <com.google.android.material.divider.MaterialDivider
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-    />
-    <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="About"
-            android:textSize="20dp"
-            android:padding="10dp"
-            android:id="@+id/aboutPage"
-    />
-    <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Help"
-            android:textSize="20dp"
-            android:padding="10dp"
-            android:id="@+id/helpPage"
-    />
+        <com.google.android.material.divider.MaterialDivider
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+        />
 
-</LinearLayout>
+        <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/filterClear"
+                android:text="Clear Filters on Search Cunt"
+                android:layout_marginLeft="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+        />
+        <Button
+                android:id="@+id/cache_clear"
+                android:layout_marginLeft="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Clear Image Cache"
+                android:backgroundTint="@color/design_default_color_secondary"
+        />
+
+        <com.google.android.material.divider.MaterialDivider
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+        />
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="About"
+                android:textSize="20dp"
+                android:padding="10dp"
+                android:id="@+id/aboutPage"
+        />
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Help"
+                android:textSize="20dp"
+                android:padding="10dp"
+                android:id="@+id/helpPage"
+        />
+
+    </LinearLayout>
+
+</FrameLayout>

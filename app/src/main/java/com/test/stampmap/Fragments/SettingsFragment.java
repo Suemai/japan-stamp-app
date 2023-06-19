@@ -1,6 +1,7 @@
 package com.test.stampmap.Fragments;
 
 import android.os.Bundle;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -14,7 +15,6 @@ import androidx.fragment.app.FragmentTransaction;
 import com.bumptech.glide.Glide;
 import com.test.stampmap.Activity.MainActivity;
 import com.test.stampmap.Fragments.SettingsChild.AboutFragment;
-import com.test.stampmap.Fragments.SettingsChild.HelpFragment;
 import com.test.stampmap.R;
 import com.test.stampmap.Settings.ConfigValue;
 
@@ -23,9 +23,10 @@ import java.util.concurrent.Executors;
 
 public class SettingsFragment extends Fragment {
 
-    private Fragment aboutFrag, helpFrag;
-    private FragmentManager childFragmentManager;
-    private LinearLayout fragmentContainer;
+    Fragment aboutFrag, helpFrag;
+    FragmentManager childFragmentManager;
+    FrameLayout settingsFrag;
+    LinearLayout settingsLayout;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -37,12 +38,13 @@ public class SettingsFragment extends Fragment {
 
         View v =  inflater.inflate(R.layout.settings_fragment, container, false);
 
-        //initialize the child fragments
+        //Initiazing the fragments
         aboutFrag = new AboutFragment();
-//        helpFrag = new HelpFragment();
 
-        //Initialize child fragment manager
-        childFragmentManager = getChildFragmentManager();
+
+        //get fragment container layout
+        settingsFrag = v.findViewById(R.id.settings_frag_container);
+        settingsLayout = v.findViewById(R.id.settings_layout);
 
 
         //filters settings bit.... i think....
@@ -57,11 +59,9 @@ public class SettingsFragment extends Fragment {
 //        TextView help = v.findViewById(R.id.helpPage);
 //        help.setOnClickListener(view -> switchFragment(helpFrag));
 
+
         TextView about = v.findViewById(R.id.aboutPage);
         about.setOnClickListener(view -> switchFragment(aboutFrag));
-
-        //get fragment container layout
-        fragmentContainer = v.findViewById(R.id.settings_layout);
 
 
         //testing cus why not
@@ -78,17 +78,15 @@ public class SettingsFragment extends Fragment {
     }
 
     private void switchFragment(Fragment fragment){
+        childFragmentManager = getChildFragmentManager();
         FragmentTransaction transaction = childFragmentManager.beginTransaction();
 
-        //remove existing fragment
-        Fragment currentFragment = childFragmentManager.findFragmentById(R.id.settings_layout);
-        if (currentFragment != null){
-            transaction.remove(currentFragment);
-        }
+        transaction.replace(R.id.settings_frag_container, fragment)
+                .addToBackStack(null)
+                .commit();
+//        // Hide the parent fragment's view
+//        settingsLayout.setVisibility(View.GONE);
 
-        //Add the new fragment to the container
-        transaction.add(R.id.settings_layout, fragment);
-        transaction.commit();
+    }
 
-        }
 }

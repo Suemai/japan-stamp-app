@@ -1,65 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent">
 
+<LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:paddingLeft="10dp"
+        android:paddingTop="32dp">
+        <!-- (UP) The not so elegant way of making it under the notch. -->
 
+    <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        
+        <ImageButton
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/back_btn"
+                android:id="@+id/about_back"/>
 
-    <LinearLayout
-            android:orientation="vertical"
+    <TextView
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:text="@string/about_us"
+            android:textSize="25sp"
+            android:padding="10dp"/>
 
-        <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/about_us"
-                android:textSize="40dp"
-        />
+    </RelativeLayout>
 
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="20dp"
-                android:text="@string/about_us_intro"
-                android:gravity="center"
-        />
-        <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="30dp"
+            android:text="@string/about_us_intro"
+            android:gravity="center"
+    />
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="20dp">
 
-            <Button
-                    android:text="Github"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/button3"
-                    android:padding="5dp"
-                    android:layout_weight="1"
-                    />
+        <ImageButton
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/gmail"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:layout_weight="1"
+                android:id="@+id/gmail_btn"/>
 
-            <Button
-                    android:text="Email"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/button2"
-                    android:padding="5dp"
-                    android:layout_weight="1"
-            />
+        <ImageButton
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/github"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:layout_weight="1"
+                android:id="@+id/github_btn"/>
 
-            <Button
-                    android:text="Discord"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/button"
-                    android:padding="5dp"
-                    android:layout_weight="1"
-            />
-        </LinearLayout>
-
+        <ImageButton
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/discord"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:layout_weight="1"
+                android:id="@+id/discord_btn"/>
 
     </LinearLayout>
 
-</FrameLayout>
+</LinearLayout>
+
+<!-- ############ Notes #######################-->
+<!--To make the vector backgrounds invisible, this is the code for it:-->
+<!--android:background="#0000"-->
