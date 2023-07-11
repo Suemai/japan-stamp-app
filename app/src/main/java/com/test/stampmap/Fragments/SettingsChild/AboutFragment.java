@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.fragment.app.FragmentManager;
+import androidx.navigation.Navigation;
 import com.test.stampmap.R;
 
 
@@ -35,14 +36,7 @@ public class AboutFragment extends Fragment {
         discord_btn = view.findViewById(R.id.discord_btn);
 
 
-        back_btn.setOnClickListener(view1 -> {
-            if(getParentFragmentManager().getBackStackEntryCount()>0){
-                getParentFragmentManager().popBackStack();
-            }
-            else{
-                requireActivity().onBackPressed();
-            }
-        });
+        back_btn.setOnClickListener(view1 -> Navigation.findNavController(view).navigate(R.id.nav_to_settings));
 
 //      I'll link them to stuff later
 //        email_btn.setOnClickListener(new View.OnClickListener() {

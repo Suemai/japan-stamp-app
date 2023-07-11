@@ -2,17 +2,17 @@
 <menu xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:android="http://schemas.android.com/apk/res/android">
     <item
             android:title="Explore"
-            android:id="@+id/explore"
+            android:id="@+id/exploreFragment"
             android:icon="@drawable/explore_foreground"
     />
     <item
             android:title="My Stamps"
-            android:id="@+id/myStamps"
+            android:id="@+id/myStampsFragment"
             android:icon="@drawable/mystamps_foreground"
     />
     <item
             android:title="Settings"
-            android:id="@+id/settings"
+            android:id="@+id/settingsFragment"
             android:icon="@drawable/settings_foreground"
     />
 </menu>

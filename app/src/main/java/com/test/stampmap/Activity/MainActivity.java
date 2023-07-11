@@ -9,6 +9,10 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.ui.NavigationUI;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import android.Manifest;
 import android.content.Context;
@@ -61,7 +65,8 @@ public class MainActivity extends AppCompatActivity {
         //inflate and create a map
         setContentView(R.layout.activity_main);
 
-        addBottomNavigation();
+        bottomNavigation();
+        //addBottomNavigation();
         UserSettings.setStatusBarUI(this, false);
         int density = getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT;
         paddedStatusBarHeight = UserSettings.getStatusBarHeight() + density * 8;
@@ -96,81 +101,16 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void addBottomNavigation(){
-        Fragment exploreFrag = getFragment(ExploreFragment.class);
-        Fragment myStampsFrag = getFragment(MyStampsFragment.class);
-        Fragment settingsFrag = getFragment(SettingsFragment.class);
-
-        if (getSupportFragmentManager().getFragments().isEmpty()){
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.mainContainer, exploreFrag)
-                    .add(R.id.mainContainer, myStampsFrag).hide(myStampsFrag)
-                    .add(R.id.mainContainer, settingsFrag).hide(settingsFrag)
-                    .commit();
-            currentFragment = exploreFrag;
-            getSupportFragmentManager().executePendingTransactions();
-        }
-        else currentFragment = getShownFragment();
-
+    public void bottomNavigation(){
         BottomNavigationView bottomNav = findViewById(R.id.bottomNavigationView);
+        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+        NavController navController = navHostFragment.getNavController();
+        NavigationUI.setupWithNavController(bottomNav, navController);
 
-        bottomNav.setOnItemSelectedListener(item -> {
-
-            int[] leftAnimation = {R.anim.exit_to_left, R.anim.enter_from_right};
-            int[] rightAnimation = {R.anim.exit_to_right, R.anim.enter_from_left};
-
-            switch(item.getItemId()){
-
-                case R.id.myStamps:
-                    int[] animation = currentFragment == exploreFrag ? leftAnimation : rightAnimation;
-                    performTransaction(myStampsFrag, animation);
-                    break;
-
-                case R.id.settings:
-                    performTransaction(settingsFrag, leftAnimation);
-                    break;
-
-                default:
-                    performTransaction(exploreFrag, rightAnimation);
-                    break;
-            }
-            return true;
-        });
-    }
-
-    void performTransaction(Fragment fragment, int[] animation){
-        getSupportFragmentManager().beginTransaction()
-                .setCustomAnimations(animation[0], animation[0])
-                .hide(currentFragment)
-                .setCustomAnimations(animation[1], animation[1])
-                .show(fragment)
-                .commit();
-        currentFragment.onPause();
-        currentFragment = fragment;
-        getSupportFragmentManager().executePendingTransactions();
-        fragment.onResume();
     }
 
     void loadSharedPreferences(){
         for (ConfigValue configValue : ConfigValue.values()) configValue.getValue();
-    }
-
-    @NonNull Fragment getFragment(Class<? extends Fragment> klass) throws NullPointerException {
-        for (Fragment fragment : getSupportFragmentManager().getFragments()){
-            if (fragment.getClass() == klass) return fragment;
-        }
-        try{ return klass.newInstance(); }
-        catch (Exception ignore){}
-        throw new NullPointerException("Unable to create Fragment");
-    }
-
-    Fragment getShownFragment(){
-        return getSupportFragmentManager().getFragments()
-                .stream()
-                .filter(fragment -> !fragment.isHidden())
-                .findFirst()
-                .orElse(null);
-
     }
 
 }

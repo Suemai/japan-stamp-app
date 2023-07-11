@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/stamp_nav"
+            app:startDestination="@id/exploreFragment">
+
+    <fragment android:id="@+id/exploreFragment"
+              android:name="com.test.stampmap.Fragments.ExploreFragment"
+              android:label="ExploreFragment"/>
+
+    <fragment android:id="@+id/myStampsFragment"
+              android:name="com.test.stampmap.Fragments.MyStampsFragment"
+              android:label="MyStampsFragment"/>
+
+    <fragment android:id="@+id/settingsFragment"
+              android:name="com.test.stampmap.Fragments.SettingsFragment"
+              android:label="SettingsFragment">
+        <action android:id="@+id/nav_to_help"
+                app:destination="@id/helpFragment"/>
+        <action android:id="@+id/nav_to_about"
+                app:destination="@id/aboutFragment"/>
+    </fragment>
+    <fragment android:id="@+id/helpFragment"
+              android:name="com.test.stampmap.Fragments.SettingsChild.HelpFragment"
+              android:label="HelpFragment">
+        <action android:id="@+id/nav_to_settings"
+                app:destination="@id/settingsFragment"/>
+    </fragment>
+    <fragment android:id="@+id/aboutFragment"
+              android:name="com.test.stampmap.Fragments.SettingsChild.AboutFragment"
+              android:label="AboutFragment">
+        <action android:id="@+id/nav_to_settings"
+                app:destination="@id/settingsFragment"/>
+    </fragment>
+</navigation>

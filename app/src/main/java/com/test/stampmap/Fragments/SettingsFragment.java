@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.Navigation;
 import com.bumptech.glide.Glide;
 import com.test.stampmap.Activity.MainActivity;
 import com.test.stampmap.Fragments.SettingsChild.AboutFragment;
@@ -61,7 +62,7 @@ public class SettingsFragment extends Fragment {
 
 
         TextView about = v.findViewById(R.id.aboutPage);
-        about.setOnClickListener(view -> switchFragment(aboutFrag));
+        about.setOnClickListener(view -> Navigation.findNavController(view).navigate(R.id.nav_to_about));
 
 
         //testing cus why not
@@ -77,17 +78,6 @@ public class SettingsFragment extends Fragment {
        return v;
     }
 
-    private void switchFragment(Fragment fragment){
-        childFragmentManager = getParentFragmentManager();
-        FragmentTransaction transaction = childFragmentManager.beginTransaction();
-
-        transaction.replace(R.id.settings_frag_container, fragment)
-                .addToBackStack(null)
-                .commit();
-
-//        // Hide the parent fragment's view
-//        settingsLayout.setVisibility(View.GONE);
-    }
 
 }
 
