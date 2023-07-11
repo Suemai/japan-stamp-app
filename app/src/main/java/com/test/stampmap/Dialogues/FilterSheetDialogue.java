@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.slider.Slider;
 import com.test.stampmap.*;
@@ -54,7 +55,10 @@ public class FilterSheetDialogue extends BottomSheetDialogFragment {
             public void onNothingSelected(AdapterView<?> parent) {}
         });
 
-        v.findViewById(R.id.filter_search).setOnClickListener(v1 -> requireActivity().getSupportFragmentManager().getFragments().stream().filter(fragment -> fragment instanceof ExploreFragment).findFirst().ifPresent(fragment -> ((ExploreFragment)fragment).performSearch(null)));
+        v.findViewById(R.id.filter_search).setOnClickListener(v1 -> {
+            Fragment host = requireActivity().getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+            host.getChildFragmentManager().getFragments().stream().filter(ExploreFragment.class::isInstance).findFirst().ifPresent(fragment -> ((ExploreFragment)fragment).performSearch(null));
+        });
         v.findViewById(R.id.clear_filters).setOnClickListener(v1 -> {
             MainActivity.filters.clear();
             setTexts(prefectureFilter, FilterType.PREFECTURE);
