@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/help_card"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:padding="10dp"
+        app:cardCornerRadius="2dp"
+        app:cardElevation="2dp">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/help_title"
+                android:textSize="15sp"
+                android:layout_marginBottom="5dp"
+                />
+
+        <TextView android:layout_width="match_parent"
+                  android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+
+</androidx.cardview.widget.CardView>
+
+<!--<RelativeLayout-->
+<!--android:layout_width="wrap_content"-->
+<!--android:layout_height="wrap_content">-->
+
+<!--<ImageView-->
+<!--        android:id="@+id/stamp_image"-->
+<!--        android:layout_width="100dp"-->
+<!--        android:layout_height="100dp"-->
+<!--        android:layout_centerHorizontal="true"-->
+<!--        android:layout_marginTop="5dp"-->
+<!--/>-->
+
+<!--<TextView-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_below="@+id/stamp_image"-->
+<!--        android:textAlignment="center"-->
+<!--        android:text="@string/stamp_name"-->
+<!--        android:textSize="15dp"-->
+<!--        android:id="@+id/stamp_name"-->
+<!--        android:layout_marginBottom="5dp"-->
+<!--/>-->
+
+
+<!--</RelativeLayout>-->

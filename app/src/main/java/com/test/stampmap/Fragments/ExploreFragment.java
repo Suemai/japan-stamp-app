@@ -17,6 +17,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 import com.test.stampmap.Activity.MainActivity;
 import com.test.stampmap.Dialogues.AddStampSetDialogue;
 import com.test.stampmap.Dialogues.FilterSheetDialogue;
@@ -215,10 +216,9 @@ public class ExploreFragment extends Fragment implements MapEventsReceiver {
         // filter stuff innit
         // ==========================
         ImageButton filterBottom = v.findViewById(R.id.filter);
-        filterBottom.setOnClickListener(view -> {
-            new FilterSheetDialogue().show(getChildFragmentManager(), "ModalBottomSheet");
-            closeKeyboard();
-        });
+        filterBottom.setOnClickListener(view -> Navigation.findNavController(view).navigate(R.id.nav_to_filter)
+            //closeKeyboard();
+        );
 
         // ==========================================================
         // Add stamps button

@@ -19,9 +19,6 @@ public class HelpFragment extends Fragment {
     List<help> helplist;
     private View v;
 
-    public HelpFragment() {
-        // Required empty public constructor
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

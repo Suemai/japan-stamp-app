@@ -29,14 +29,14 @@ public class AboutFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_about, container, false);
 
-        back_btn = view.findViewById(R.id.about_back);
 
         email_btn = view.findViewById(R.id.gmail_btn);
         github_btn = view.findViewById(R.id.github_btn);
         discord_btn = view.findViewById(R.id.discord_btn);
 
 
-        back_btn.setOnClickListener(view1 -> Navigation.findNavController(view).navigate(R.id.nav_to_settings));
+        //not necessarily needed since u can swipe back
+        //back_btn.setOnClickListener(view1 -> Navigation.findNavController(view).navigate(R.id.nav_to_settings));
 
 //      I'll link them to stuff later
 //        email_btn.setOnClickListener(new View.OnClickListener() {

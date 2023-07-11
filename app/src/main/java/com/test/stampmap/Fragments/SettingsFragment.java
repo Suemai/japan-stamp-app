@@ -57,12 +57,11 @@ public class SettingsFragment extends Fragment {
 
 
         //listener for buttons
-//        TextView help = v.findViewById(R.id.helpPage);
-//        help.setOnClickListener(view -> switchFragment(helpFrag));
-
-
         TextView about = v.findViewById(R.id.aboutPage);
         about.setOnClickListener(view -> Navigation.findNavController(view).navigate(R.id.nav_to_about));
+
+//        TextView help = v.findViewById(R.id.helpPage);
+//        help.setOnClickListener(view -> Navigation.findNavController(view).navigate(R.id.nav_to_help));
 
 
         //testing cus why not
@@ -70,9 +69,9 @@ public class SettingsFragment extends Fragment {
 //        about.setOnClickListener(view ->
 //                Toast.makeText(about.getContext(), "Cyke! Not even implememted yet!", Toast.LENGTH_SHORT).show());
 
-        TextView help = v.findViewById(R.id.helpPage);
-        help.setOnClickListener(view ->
-                Toast.makeText(help.getContext(), "Cyke! Not even implememted yet!", Toast.LENGTH_SHORT).show());
+//        TextView help = v.findViewById(R.id.helpPage);
+//        help.setOnClickListener(view ->
+//                Toast.makeText(help.getContext(), "Cyke! Not even implememted yet!", Toast.LENGTH_SHORT).show());
 
 
        return v;

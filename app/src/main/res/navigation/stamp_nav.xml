@@ -6,7 +6,10 @@
 
     <fragment android:id="@+id/exploreFragment"
               android:name="com.test.stampmap.Fragments.ExploreFragment"
-              android:label="ExploreFragment"/>
+              android:label="ExploreFragment">
+        <action android:id="@+id/nav_to_filter"
+                app:destination="@id/filterSheetDialogue"/>
+    </fragment>
 
     <fragment android:id="@+id/myStampsFragment"
               android:name="com.test.stampmap.Fragments.MyStampsFragment"
@@ -32,4 +35,11 @@
         <action android:id="@+id/nav_to_settings"
                 app:destination="@id/settingsFragment"/>
     </fragment>
+
+    <dialog android:id="@+id/filterSheetDialogue"
+            android:name="com.test.stampmap.Dialogues.FilterSheetDialogue"
+            android:label="FilterSheetDialogue">
+        <action android:id="@+id/nav_to_explore"
+                app:destination="@id/exploreFragment"/>
+    </dialog>
 </navigation>
