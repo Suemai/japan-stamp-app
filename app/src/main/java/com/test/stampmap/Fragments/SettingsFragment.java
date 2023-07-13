@@ -60,8 +60,8 @@ public class SettingsFragment extends Fragment {
         TextView about = v.findViewById(R.id.aboutPage);
         about.setOnClickListener(view -> Navigation.findNavController(view).navigate(R.id.nav_to_about));
 
-//        TextView help = v.findViewById(R.id.helpPage);
-//        help.setOnClickListener(view -> Navigation.findNavController(view).navigate(R.id.nav_to_help));
+        TextView help = v.findViewById(R.id.helpPage);
+        help.setOnClickListener(view -> Navigation.findNavController(view).navigate(R.id.nav_to_help));
 
 
         //testing cus why not

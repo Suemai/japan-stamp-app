@@ -5,7 +5,9 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.test.stampmap.Adapter.HelpRecyclerAdapter;
 import com.test.stampmap.Class.help;
 import com.test.stampmap.R;
 
@@ -17,28 +19,38 @@ public class HelpFragment extends Fragment {
 
     RecyclerView recyclerView;
     List<help> helplist;
+
+    HelpRecyclerAdapter adapter;
     private View v;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        recyclerView = v.findViewById(R.id.help_rec);
-
-        innitData();
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_help, container, false);
+
+        v = inflater.inflate(R.layout.fragment_help, container, false);
+        recyclerView = v.findViewById(R.id.help_rec);
+
+        helplist = new ArrayList<>();
+        innitData();
+        recyclerView();
+
+        return v;
+    }
+
+    public void recyclerView(){
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(layoutManager);
+        adapter = new HelpRecyclerAdapter(helplist);
+        recyclerView.setAdapter(adapter);
     }
 
     public void innitData(){
-        helplist = new ArrayList<>();
         helplist.add(new help("Things to note", "1. The stamps in question are different to the shrine/temple " +
                 "seals that are available at temples and shrines. If you do plan to collect them, again you can use the " +
                 "app to make a record of them, if you so wish. \n" +
@@ -68,7 +80,7 @@ public class HelpFragment extends Fragment {
                 "1. Tourist information centres \n" +
                 "2. Museums \n" +
                 "3. Castles \n" +
-                "4. Airports" +
+                "4. Airports \n" +
                 "5. Train stations \n" +
                 "6. Roadside stations \n" +
                 "7. Observation towers \n" +
