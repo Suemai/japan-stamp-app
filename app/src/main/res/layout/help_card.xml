@@ -57,7 +57,8 @@
                       android:text="@string/help_description"
                       android:textSize="15sp"
                       android:padding="5sp"
-                      android:id="@+id/help_text"/>
+                      android:id="@+id/help_text"
+                      android:autoLink="web"/>
         </RelativeLayout>
 
     </LinearLayout>

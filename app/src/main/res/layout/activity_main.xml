@@ -26,7 +26,8 @@
             app:navGraph="@navigation/stamp_nav"
             app:defaultNavHost="true"
             android:id="@+id/nav_host_fragment"
-            tools:layout="@layout/explore_fragment"/>
+            tools:layout="@layout/explore_fragment"
+            android:layout_above="@id/bottomNavigationView"/>
 
 </RelativeLayout>
 

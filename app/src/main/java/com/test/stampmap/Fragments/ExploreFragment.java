@@ -231,11 +231,11 @@ public class ExploreFragment extends Fragment implements MapEventsReceiver {
         // Licencing
         // ==========================================================
         CopyrightOverlay copyrightOverlay = new CopyrightOverlay(getActivity());
-        copyrightOverlay.setTextColor(Color.GREEN);
-        copyrightOverlay.setTextSize(20);
+        copyrightOverlay.setTextColor(Color.GRAY);
+        copyrightOverlay.setTextSize(13);
         copyrightOverlay.setAlignRight(false);
         copyrightOverlay.setAlignBottom(true);
-        copyrightOverlay.setOffset(20, 65);
+        copyrightOverlay.setOffset(50, 30);
         map.getOverlays().add(copyrightOverlay);
 
     }
