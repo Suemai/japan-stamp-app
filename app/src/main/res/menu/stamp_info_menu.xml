@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+            android:title="Fees"
+            android:id="@+id/fee_btn"
+            android:te
+    />
+    <item
+            android:title="Availability"
+            android:id="@+id/availability_btn"
+            android:icon="@drawable/cross_foreground"
+    />
+    <item
+            android:title="Obtained"
+            android:id="@+id/obtained_btn"
+            android:icon="@drawable/checkbox_foreground"
+    />
+    <item
+            android:title="Wishlist"
+            android:id="@+id/wishlist_btn"
+            android:icon="@drawable/wishlist_star_outline"
+    />
+</menu>

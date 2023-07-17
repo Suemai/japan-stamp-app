@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+        <ImageButton
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:id="@+id/stamp_back_button"
+                android:src="@drawable/back_btn"
+                android:paddingBottom="10dp"
+                android:contentDescription="back"/>
+
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            <ImageView
+                    android:layout_width="200dp"
+                    android:layout_height="200dp"
+                    android:id="@+id/stamp_image_for_card"
+                    android:padding="10dp"/>
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/stamp_name"
+                    android:layout_alignParentEnd="true"
+                    android:id="@+id/stamp_name_for_card"
+                    android:layout_toEndOf="@+id/stamp_image_for_card"
+                    android:textSize="30dp"
+                    android:gravity="center"/>
+
+            <!-- Address Location row -->
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/addressTxt"
+                    android:layout_toEndOf="@+id/stamp_image_for_card"
+                    android:layout_marginBottom="@+id/stamp_name_for_card"
+                    android:layout_below="@+id/stamp_name_for_card"
+                    android:textSize="20dp"
+                    android:layout_marginStart="10dp"
+                    android:text="Address"
+                    android:gravity="center"/>
+
+            <!-- Location row -->
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/locationTitle"
+                    android:layout_toEndOf="@+id/stamp_image_for_card"
+                    android:layout_marginBottom="@+id/stamp_name_for_card"
+                    android:layout_below="@+id/addressTxt"
+                    android:textSize="20dp"
+                    android:layout_marginLeft="10dp"
+                    android:text="Location: "/>
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/addressTxt"
+                    android:textSize="20dp"
+                    android:text="location"
+                    android:id="@+id/locationTxt"
+                    android:layout_toEndOf="@+id/locationTitle"
+                    android:layout_alignParentEnd="true"/>
+
+            <!-- Opening times row -->
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/locationTxt"
+                    android:layout_marginLeft="10dp"
+                    android:textSize="20dp"
+                    android:text="Opening hours: "
+                    android:id="@+id/openingTitle"
+                    android:layout_toEndOf="@+id/stamp_image_for_card"
+                    android:gravity="center"
+                    android:layout_alignParentEnd="true"/>
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/openingTitle"
+                    android:textSize="20dp"
+                    android:text="opening times"
+                    android:id="@+id/openingTxt"
+                    android:layout_toEndOf="@+id/stamp_image_for_card"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="center"/>
+
+            <!-- Holiday row -->
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/holidayTitle"
+                    android:layout_toEndOf="@+id/stamp_image_for_card"
+                    android:layout_marginBottom="@+id/stamp_name_for_card"
+                    android:layout_below="@+id/openingTxt"
+                    android:textSize="20dp"
+                    android:layout_marginLeft="10dp"
+                    android:text="Holiday: "/>
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/openingTxt"
+                    android:textSize="20dp"
+                    android:text="holiday days"
+                    android:id="@+id/holidayTxt"
+                    android:layout_toEndOf="@+id/holidayTitle"
+                    android:layout_alignParentEnd="true"/>
+
+
+        </RelativeLayout>
+
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="10dp">
+
+            <!-- Fees column -->
+            <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:layout_weight="1"
+                    android:id="@+id/fee_btn"
+                    android:layout_gravity="center">
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Actual Price"
+                        android:id="@+id/prices"
+                        android:gravity="center"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_above="@+id/static_price_txt"/>
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Fee"
+                        android:id="@+id/static_price_txt"
+                        android:gravity="center"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentStart="true" />
+            </RelativeLayout>
+
+            <!-- Availability column -->
+            <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:id="@+id/availability_btn">
+
+                <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:src="@drawable/cross_foreground"
+                        android:layout_gravity="center"
+                        android:id="@+id/not_available_img"/>
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Availibility"
+                        android:layout_gravity="center"
+                        android:id="@+id/available_txt"/>
+
+            </LinearLayout>
+
+            <!-- Obtained column -->
+            <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:id="@+id/obtained_btn">
+
+                <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:src="@drawable/checkbox_foreground"
+                        android:layout_gravity="center"
+                        android:id="@+id/obtained_img"/>
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Obtained"
+                        android:layout_gravity="center"
+                        android:id="@+id/obtained_txt"/>
+
+            </LinearLayout>
+
+            <!-- Wishlist column -->
+            <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:id="@+id/wishlist_btn">
+
+                <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:src="@drawable/wishlist_star_outline"
+                        android:layout_gravity="center"
+                        android:id="@+id/wishlist_img"/>
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Wishlist"
+                        android:layout_gravity="center"
+                        android:id="@+id/wishlist_txt"/>
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Dates row -->
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Date obtained:"
+                    android:padding="10dp"
+                    android:layout_marginStart="10dp"
+                    android:id="@+id/date_txt"/>
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="date"
+                    android:padding="10dp"
+                    android:id="@+id/static_date"
+                    android:layout_toEndOf="@+id/date_txt"/>
+
+            <ImageButton
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/calendar"
+                    android:background="@android:color/transparent"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="10dp"
+                    android:layout_centerVertical="true"/>
+
+
+        </RelativeLayout>
+
+        <!-- Notes column -->
+        <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Notes"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                style="@style/Widget.Material3.TextInputEditText.OutlinedBox">
+
+            <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textMultiLine"
+                    android:lines="6"
+                    android:gravity="top"
+                    android:overScrollMode="always"
+                    android:scrollbars="vertical"
+                    android:scrollbarStyle="insideInset"
+                    android:scrollHorizontally="false"
+                    android:background="@android:color/transparent"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </LinearLayout>
+</ScrollView>
