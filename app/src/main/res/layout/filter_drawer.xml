@@ -91,6 +91,17 @@
                     android:textColor="@color/design_default_color_on_secondary"
                     app:drawableRightCompat="@android:drawable/arrow_down_float"/>
 
+            <TextView
+                    android:id="@+id/stamptype_filter"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:drawable/editbox_background"
+                    android:drawablePadding="16dp"
+                    android:hint="Select Stamp Type"
+                    android:padding="12dp"
+                    android:textColor="@color/design_default_color_on_secondary"
+                    app:drawableRightCompat="@android:drawable/arrow_down_float"/>
+
             <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

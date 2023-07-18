@@ -208,6 +208,42 @@ public class Filters {
             return this;
         }
     }
+    public enum StampType implements IFilter {
+        OWNED("owned"),
+        NOTOWNED("notowned"),
+        ONWISHLIST("onwishlist"),
+        CUSTOM("custom"),
+        ANY("");
+
+        public final String value;
+
+        StampType(String value) {
+            this.value = value;
+        }
+        @Override
+        public boolean hasMatch(StampSet stampSet){
+            switch (this.ordinal()){
+                case 0:
+                    return StampCollection.getInstance().getMyStamps().contains(stampSet);
+                case 1:
+                    return !StampCollection.getInstance().getMyStamps().contains(stampSet);
+                case 2:
+                    return StampCollection.getInstance().getWishlist().contains(stampSet);
+                case 3:
+                    return StampCollection.getInstance().getCustomStamps().contains(stampSet);
+                default:
+                    return true;
+            }
+        }
+        @Override
+        public int filterType(){
+            return FilterType.STAMPTYPE.ordinal();
+        }
+        @Override
+        public String getValue() {
+            return this.value;
+        }
+    }
 
     public static List<StampSet> FilterStamps(String searchTerm) {
         return FilterStamps(new IFilter[]{SearchType.ANY.set(searchTerm)});

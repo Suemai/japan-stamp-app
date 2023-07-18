@@ -29,15 +29,18 @@ public class FilterSheetDialogue extends BottomSheetDialogFragment {
         TextView prefectureFilter = v.findViewById(R.id.prefecture_filter);
         TextView difficultyFilter = v.findViewById(R.id.difficulty_filter);
         TextView entryfeeFilter = v.findViewById(R.id.entryfee_filter);
+        TextView stamptypeFilter = v.findViewById(R.id.stamptype_filter);
         Slider distanceSlider = v.findViewById(R.id.distance_slider);
 
         setTexts(prefectureFilter, FilterType.PREFECTURE);
         setTexts(difficultyFilter, FilterType.DIFFICULTY);
         setTexts(entryfeeFilter, FilterType.ENTRYFEE);
+        setTexts(stamptypeFilter, FilterType.STAMPTYPE);
 
         prefectureFilter.setOnClickListener(view -> new FilterAlertBox(requireContext(), prefectureFilter, FilterType.PREFECTURE));
         difficultyFilter.setOnClickListener(view -> new FilterAlertBox(requireContext(), difficultyFilter, FilterType.DIFFICULTY));
         entryfeeFilter.setOnClickListener(view -> new FilterAlertBox(requireContext(), entryfeeFilter, FilterType.ENTRYFEE));
+        stamptypeFilter.setOnClickListener(view -> new FilterAlertBox(requireContext(), stamptypeFilter, FilterType.STAMPTYPE));
 
         distanceSlider.setValue(ExploreFragment.distanceSliderValue);
         distanceSlider.addOnChangeListener((slider, value, fromUser) -> ExploreFragment.distanceSliderValue = value);
@@ -64,6 +67,7 @@ public class FilterSheetDialogue extends BottomSheetDialogFragment {
             setTexts(prefectureFilter, FilterType.PREFECTURE);
             setTexts(difficultyFilter, FilterType.DIFFICULTY);
             setTexts(entryfeeFilter, FilterType.ENTRYFEE);
+            setTexts(stamptypeFilter, FilterType.STAMPTYPE);
             ExploreFragment.distanceSliderValue = 0;
             dismiss();
         });
