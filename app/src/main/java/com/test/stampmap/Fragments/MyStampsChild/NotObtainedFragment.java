@@ -25,6 +25,8 @@ public class NotObtainedFragment extends Fragment {
 
     private RecyclerView noStampsView;
     private final ArrayList<Stamp> stamps = new ArrayList<>();
+
+    private Stamp stampInfo;
     StampRecyclerAdapter adapter;
 
     @Override
@@ -78,12 +80,16 @@ public class NotObtainedFragment extends Fragment {
             CardView card = holder.itemView.findViewById(R.id.obtained_parent);
 
             // do the fancies to your stuff
+            stampInfo = stamps.get(position);
+            Bundle args = new Bundle();
+            args.putSerializable("stamp",stampInfo);
+
             stampName.setText(stamps.get(position).getName());
             StampCollection.loadImage(holder.itemView, stamps.get(position), stampImage);
             card.setOnClickListener(view -> {
                 final int position1 = holder.getAdapterPosition();
                 Toast.makeText(requireContext(), stamps.get(position1).getName() + " selected boi", Toast.LENGTH_SHORT).show();
-                Navigation.findNavController(view).navigate(R.id.myStamp_to_stampInfo);
+                Navigation.findNavController(view).navigate(R.id.myStamp_to_stampInfo, args);
             });
         });
         noStampsView.setAdapter(adapter);

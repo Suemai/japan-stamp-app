@@ -285,7 +285,8 @@
                     android:scrollbars="vertical"
                     android:scrollbarStyle="insideInset"
                     android:scrollHorizontally="false"
-                    android:background="@android:color/transparent"/>
+                    android:background="@android:color/transparent"
+                    android:id="@+id/extra_notes"/>
         </com.google.android.material.textfield.TextInputLayout>
 
     </LinearLayout>
