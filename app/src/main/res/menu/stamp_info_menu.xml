@@ -4,7 +4,6 @@
     <item
             android:title="Fees"
             android:id="@+id/fee_btn"
-            android:te
     />
     <item
             android:title="Availability"

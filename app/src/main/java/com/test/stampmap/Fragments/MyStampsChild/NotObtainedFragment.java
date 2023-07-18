@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.test.stampmap.Adapter.StampRecyclerAdapter;
@@ -82,6 +83,7 @@ public class NotObtainedFragment extends Fragment {
             card.setOnClickListener(view -> {
                 final int position1 = holder.getAdapterPosition();
                 Toast.makeText(requireContext(), stamps.get(position1).getName() + " selected boi", Toast.LENGTH_SHORT).show();
+                Navigation.findNavController(view).navigate(R.id.myStamp_to_stampInfo);
             });
         });
         noStampsView.setAdapter(adapter);

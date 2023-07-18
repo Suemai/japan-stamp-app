@@ -21,6 +21,7 @@ import java.util.*;
 public class ObtainedFragment extends Fragment {
     private RecyclerView obtainedView;
     private final ArrayList<Stamp> stamps = new ArrayList<>();
+
     StampRecyclerAdapter adapter;
 
     @Override
@@ -79,4 +80,6 @@ public class ObtainedFragment extends Fragment {
             Toast.makeText(holder.itemView.getContext(), stamps.get(position1).getName() + " selected boi", Toast.LENGTH_SHORT).show();
         });
     }
+
+
 }

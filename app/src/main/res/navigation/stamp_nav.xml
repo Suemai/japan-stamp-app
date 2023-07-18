@@ -13,7 +13,10 @@
 
     <fragment android:id="@+id/myStampsFragment"
               android:name="com.test.stampmap.Fragments.MyStampsFragment"
-              android:label="MyStampsFragment"/>
+              android:label="MyStampsFragment">
+        <action android:id="@+id/myStamp_to_stampInfo"
+                app:destination="@id/stampInfoFragment"/>
+    </fragment>
 
     <fragment android:id="@+id/settingsFragment"
               android:name="com.test.stampmap.Fragments.SettingsFragment"
@@ -42,4 +45,10 @@
         <action android:id="@+id/nav_to_explore"
                 app:destination="@id/exploreFragment"/>
     </dialog>
+    <fragment android:id="@+id/stampInfoFragment"
+              android:name="com.test.stampmap.Fragments.MyStampsChild.StampInfoFragment"
+              android:label="StampInfoFragment">
+        <action android:id="@+id/stampInfo_to_myStamp"
+                app:destination="@id/myStampsFragment"/>
+    </fragment>
 </navigation>

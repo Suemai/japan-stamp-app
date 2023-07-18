@@ -3,7 +3,8 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        xmlns:app="http://schemas.android.com/apk/res-auto">
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:paddingTop="32dp">
 
     <LinearLayout
             android:layout_width="match_parent"
@@ -11,11 +12,12 @@
             android:orientation="vertical">
 
         <ImageButton
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:id="@+id/stamp_back_button"
                 android:src="@drawable/back_btn"
                 android:paddingBottom="10dp"
+                android:layout_marginStart="10dp"
                 android:contentDescription="back"/>
 
         <RelativeLayout
@@ -23,10 +25,11 @@
                 android:layout_height="wrap_content">
 
             <ImageView
-                    android:layout_width="200dp"
-                    android:layout_height="200dp"
+                    android:layout_width="180dp"
+                    android:layout_height="180dp"
                     android:id="@+id/stamp_image_for_card"
-                    android:padding="10dp"/>
+                    android:padding="10dp"
+                    android:layout_marginStart="10dp"/>
 
             <TextView
                     android:layout_width="wrap_content"
@@ -35,7 +38,7 @@
                     android:layout_alignParentEnd="true"
                     android:id="@+id/stamp_name_for_card"
                     android:layout_toEndOf="@+id/stamp_image_for_card"
-                    android:textSize="30dp"
+                    android:textSize="25dp"
                     android:gravity="center"/>
 
             <!-- Address Location row -->
@@ -44,9 +47,8 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/addressTxt"
                     android:layout_toEndOf="@+id/stamp_image_for_card"
-                    android:layout_marginBottom="@+id/stamp_name_for_card"
                     android:layout_below="@+id/stamp_name_for_card"
-                    android:textSize="20dp"
+                    android:textSize="15dp"
                     android:layout_marginStart="10dp"
                     android:text="Address"
                     android:gravity="center"/>
@@ -57,9 +59,8 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/locationTitle"
                     android:layout_toEndOf="@+id/stamp_image_for_card"
-                    android:layout_marginBottom="@+id/stamp_name_for_card"
                     android:layout_below="@+id/addressTxt"
-                    android:textSize="20dp"
+                    android:textSize="15dp"
                     android:layout_marginLeft="10dp"
                     android:text="Location: "/>
 
@@ -67,7 +68,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/addressTxt"
-                    android:textSize="20dp"
+                    android:textSize="15dp"
                     android:text="location"
                     android:id="@+id/locationTxt"
                     android:layout_toEndOf="@+id/locationTitle"
@@ -79,7 +80,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/locationTxt"
                     android:layout_marginLeft="10dp"
-                    android:textSize="20dp"
+                    android:textSize="15dp"
                     android:text="Opening hours: "
                     android:id="@+id/openingTitle"
                     android:layout_toEndOf="@+id/stamp_image_for_card"
@@ -90,7 +91,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/openingTitle"
-                    android:textSize="20dp"
+                    android:textSize="15dp"
                     android:text="opening times"
                     android:id="@+id/openingTxt"
                     android:layout_toEndOf="@+id/stamp_image_for_card"
@@ -104,9 +105,8 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/holidayTitle"
                     android:layout_toEndOf="@+id/stamp_image_for_card"
-                    android:layout_marginBottom="@+id/stamp_name_for_card"
                     android:layout_below="@+id/openingTxt"
-                    android:textSize="20dp"
+                    android:textSize="15dp"
                     android:layout_marginLeft="10dp"
                     android:text="Holiday: "/>
 
@@ -114,7 +114,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/openingTxt"
-                    android:textSize="20dp"
+                    android:textSize="15dp"
                     android:text="holiday days"
                     android:id="@+id/holidayTxt"
                     android:layout_toEndOf="@+id/holidayTitle"
@@ -127,7 +127,6 @@
         <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
                 android:paddingBottom="10dp">
 
             <!-- Fees column -->
@@ -255,13 +254,14 @@
                     android:layout_toEndOf="@+id/date_txt"/>
 
             <ImageButton
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
                     android:src="@drawable/calendar"
                     android:background="@android:color/transparent"
                     android:layout_alignParentEnd="true"
-                    android:layout_marginEnd="10dp"
-                    android:layout_centerVertical="true"/>
+                    android:layout_marginEnd="15dp"
+                    android:layout_centerVertical="true"
+                    android:id="@+id/calendar_btn"/>
 
 
         </RelativeLayout>
@@ -277,7 +277,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:inputType="textMultiLine"
                     android:lines="6"
                     android:gravity="top"

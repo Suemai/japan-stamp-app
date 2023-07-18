@@ -76,4 +76,5 @@ public class WishlistFragment extends Fragment {
         wishView.setAdapter(adapter);
         wishView.setLayoutManager(new GridLayoutManager(this.getContext(), 3));
     }
+
 }
