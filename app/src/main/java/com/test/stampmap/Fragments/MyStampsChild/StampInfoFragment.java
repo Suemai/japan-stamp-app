@@ -96,7 +96,7 @@ public class StampInfoFragment extends Fragment {
 
         // TODO cus I dumb お願いね
         // notes stuff
-        notes.findViewById(R.id.extra_notes);
+        notes = view.findViewById(R.id.extra_notes);
 
         return view;
     }
