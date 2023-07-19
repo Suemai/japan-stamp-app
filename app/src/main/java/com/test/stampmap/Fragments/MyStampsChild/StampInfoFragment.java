@@ -2,20 +2,20 @@ package com.test.stampmap.Fragments.MyStampsChild;
 
 
 import android.app.DatePickerDialog;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 import com.google.android.material.textfield.TextInputEditText;
 import com.test.stampmap.R;
 import com.test.stampmap.Stamp.Stamp;
 import com.test.stampmap.Stamp.StampCollection;
-import com.test.stampmap.Stamp.StampSet;
 
 import java.util.Calendar;
 
@@ -41,7 +41,7 @@ public class StampInfoFragment extends Fragment {
         backBtn.setOnClickListener(view1 -> Navigation.findNavController(view).popBackStack());
 
         // Retrieve the arguments
-        Stamp stamp = (Stamp)getArguments().get("stamp");
+        Stamp stamp = (Stamp) getArguments().get("stamp");
 
         //Stamp information
         stampName = view.findViewById(R.id.stamp_name_for_card);
@@ -62,26 +62,43 @@ public class StampInfoFragment extends Fragment {
 
         // Images
         availability = view.findViewById(R.id.not_available_img);
-        availability_btn = view.findViewById(R.id.availability_btn);
-        availability_btn.setOnClickListener(view12 -> {
-            if(stamp.getIsObtainable()){
-                availability.setImageResource(R.drawable.available_check_foreground);
-            }
-        });
+        if (stamp.getIsObtainable()) {
+            availability.setImageResource(R.drawable.available_check_foreground);
+        }
 
         obtained = view.findViewById(R.id.obtained_img);
         obtained_btn = view.findViewById(R.id.obtained_btn);
+        //default is not obtained
+        if (stamp.getIsObtained()){
+            obtained.setImageResource(R.drawable.checkbox_obtained_foreground);
+            // do ur stuff
+        }
+
         obtained_btn.setOnClickListener(view13 -> {
-            if (stamp.getIsObtained()){
+            if (!stamp.getIsObtained()) {
+                obtained.setImageResource(R.drawable.checkbox_foreground);
+                // do ur stuff
+            }else{
                 obtained.setImageResource(R.drawable.checkbox_obtained_foreground);
+                // do ur stuff
             }
         });
 
         wishlist = view.findViewById(R.id.wishlist_img);
         wishlist_btn = view.findViewById(R.id.wishlist_btn);
+        //default is not in wishlist
+        if (stamp.getIsOnWishlist()){
+            wishlist.setImageResource(R.drawable.in_wishlist_star);
+            // do some stuff
+        }
+
         wishlist_btn.setOnClickListener(view14 -> {
-            if (stamp.getIsOnWishlist()){
+            if (!stamp.getIsOnWishlist()) {
+                wishlist.setImageResource(R.drawable.wishlist_star_outline);
+                // do some stuff
+            }else{
                 wishlist.setImageResource(R.drawable.in_wishlist_star);
+                // do more stuff
             }
         });
 
@@ -112,7 +129,7 @@ public class StampInfoFragment extends Fragment {
                 android.R.style.Widget_Holo_CalendarView,
                 (view, year1, month1, day1) -> {
                     // Handle the selected date here
-                    String selectedDate = day1  + "/" + (month1 + 1) + "/" + year1;
+                    String selectedDate = day1 + "/" + (month1 + 1) + "/" + year1;
                     staticDate.setText(selectedDate);
                 },
                 year, month, day
