@@ -3,15 +3,14 @@ plugins {
 }
 
 android {
-    compileSdkVersion 33
+    compileSdk 33
     buildToolsVersion "30.0.3"
 
     defaultConfig {
-        applicationId "com.test.stampmap"
         minSdkVersion 28
         targetSdkVersion 33
         versionCode 1
-        versionName "1.0"
+        versionName "0.0.3"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -26,6 +25,9 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+}
+android{
+    namespace 'com.test.stampmap'
 }
 
 gradle.projectsEvaluated {

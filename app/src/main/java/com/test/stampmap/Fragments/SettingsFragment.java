@@ -10,24 +10,27 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.Navigation;
 import com.bumptech.glide.Glide;
+import com.google.android.material.snackbar.Snackbar;
 import com.test.stampmap.Activity.MainActivity;
-import com.test.stampmap.Fragments.SettingsChild.AboutFragment;
 import com.test.stampmap.R;
 import com.test.stampmap.Settings.ConfigValue;
+import com.test.stampmap.Settings.UpdateManager;
+import okhttp3.*;
+import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.util.concurrent.Executors;
 
 
 public class SettingsFragment extends Fragment {
 
-    Fragment aboutFrag, helpFrag;
-    FragmentManager childFragmentManager;
     FrameLayout settingsFrag;
     LinearLayout settingsLayout;
+
+    TextView about, help, updates;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -38,10 +41,6 @@ public class SettingsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View v =  inflater.inflate(R.layout.settings_fragment, container, false);
-
-        //Initiazing the fragments
-        aboutFrag = new AboutFragment();
-
 
         //get fragment container layout
         settingsFrag = v.findViewById(R.id.settings_frag_container);
@@ -57,26 +56,20 @@ public class SettingsFragment extends Fragment {
 
 
         //listener for buttons
-        TextView about = v.findViewById(R.id.aboutPage);
+        about = v.findViewById(R.id.aboutPage);
         about.setOnClickListener(view -> Navigation.findNavController(view).navigate(R.id.nav_to_about));
 
-        TextView help = v.findViewById(R.id.helpPage);
+        help = v.findViewById(R.id.helpPage);
         help.setOnClickListener(view -> Navigation.findNavController(view).navigate(R.id.nav_to_help));
 
-
-        //testing cus why not
-//        TextView about = v.findViewById(R.id.aboutPage);
-//        about.setOnClickListener(view ->
-//                Toast.makeText(about.getContext(), "Cyke! Not even implememted yet!", Toast.LENGTH_SHORT).show());
-
-//        TextView help = v.findViewById(R.id.helpPage);
-//        help.setOnClickListener(view ->
-//                Toast.makeText(help.getContext(), "Cyke! Not even implememted yet!", Toast.LENGTH_SHORT).show());
-
-
+        //updates
+        updates = v.findViewById(R.id.update_btn);
+        updates.setOnClickListener(view -> {
+            UpdateManager updateManager = new UpdateManager(requireContext());
+            updateManager.checkForUpdates();
+        });
        return v;
     }
-
 
 }
 
