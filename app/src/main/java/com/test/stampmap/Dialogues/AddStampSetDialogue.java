@@ -61,7 +61,7 @@ public class AddStampSetDialogue extends BottomSheetDialogFragment {
                 RadioButton selectedButton = obtainable.findViewById(obtainable.getCheckedRadioButtonId());
                 boolean isObtainable = selectedButton.getText().toString().equals("YES");
                 for (List<String> info : data) {
-                    newStampList.add(new Stamp(info.get(0), "不明", newStampLocation.getText().toString(), info.get(1), isObtainable, AddStampSetDialogue.coordinates, true));
+                    newStampList.add(new Stamp(info.get(0), "不明", newStampLocation.getText().toString(), info.get(1), isObtainable, AddStampSetDialogue.coordinates, true, false, false, 0, ""));
                 }
                 StampSet newStampSet = new StampSet(newStampName.getText().toString(), "不明", "ベリベリレア", newStampHours.getText().toString(), newStampHoliday.getText().toString(), newStampFee.getText().toString(), newStampList);
                 StampCollection.getInstance().addCustomStampSet(newStampSet);

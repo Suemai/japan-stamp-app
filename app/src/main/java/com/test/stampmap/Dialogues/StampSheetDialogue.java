@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,11 +20,16 @@ import com.google.android.material.imageview.ShapeableImageView;
 import com.test.stampmap.Adapter.StampRecyclerAdapter;
 import com.test.stampmap.Fragments.ExploreFragment;
 import com.test.stampmap.R;
+import com.test.stampmap.Stamp.SerialisableStamp;
 import com.test.stampmap.Stamp.Stamp;
 import com.test.stampmap.Stamp.StampCollection;
 import com.test.stampmap.Stamp.StampSet;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.function.Consumer;
+
+import static com.test.stampmap.Stamp.SerialisableStamp.deserialise;
 
 public class StampSheetDialogue extends BottomSheetDialogFragment {
 
@@ -102,7 +108,7 @@ public class StampSheetDialogue extends BottomSheetDialogFragment {
     }
 
     public void addStampResult(String name, String image){
-        Stamp stamp = new Stamp(name, stampSet.getAddress(), stampSet.getStamps().get(0).getLocation(), image, true, stampSet.getStamps().get(0).getCoordinates(), true);
+        Stamp stamp = new Stamp(name, stampSet.getAddress(), stampSet.getStamps().get(0).getLocation(), image, true, stampSet.getStamps().get(0).getCoordinates(), true, false, false, 0, "");
         StampCollection.getInstance().addCustomStamp(stamp, stampSet);
         if (adapter != null) adapter.notifyDataSetChanged();
     }

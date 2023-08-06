@@ -3,9 +3,12 @@ package com.test.stampmap.Fragments.MyStampsChild;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.util.Log;
+import android.view.*;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -16,6 +19,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.test.stampmap.R;
 import com.test.stampmap.Stamp.Stamp;
 import com.test.stampmap.Stamp.StampCollection;
+import com.test.stampmap.Stamp.StampSet;
 
 import java.util.Calendar;
 
@@ -41,7 +45,9 @@ public class StampInfoFragment extends Fragment {
         backBtn.setOnClickListener(view1 -> Navigation.findNavController(view).popBackStack());
 
         // Retrieve the arguments
-        Stamp stamp = (Stamp) getArguments().get("stamp");
+        int[] hashes = getArguments().getIntArray("stamp");
+        StampSet parentStampSet = StampCollection.getInstance().getStampSetByHash(hashes[0]);
+        Stamp stamp = parentStampSet.getStamps().stream().filter(s -> s.hashCode() == hashes[1]).findFirst().orElse(null);
 
         //Stamp information
         stampName = view.findViewById(R.id.stamp_name_for_card);
@@ -55,33 +61,29 @@ public class StampInfoFragment extends Fragment {
 
         // TODO cus I dumb お願いね
         opening = view.findViewById(R.id.openingTxt);
+        opening.setText(parentStampSet.getOpenHours());
 
         holiday = view.findViewById(R.id.holidayTxt);
+        holiday.setText(parentStampSet.getHoliday());
 
         fees = view.findViewById(R.id.prices);
+        fees.setText(parentStampSet.getEntryFee());
 
         // Images
         availability = view.findViewById(R.id.not_available_img);
-        if (stamp.getIsObtainable()) {
-            availability.setImageResource(R.drawable.available_check_foreground);
-        }
+        if (stamp.getIsObtainable()) availability.setImageResource(R.drawable.available_check_foreground);
+
 
         obtained = view.findViewById(R.id.obtained_img);
         obtained_btn = view.findViewById(R.id.obtained_btn);
         //default is not obtained
-        if (stamp.getIsObtained()){
-            obtained.setImageResource(R.drawable.checkbox_obtained_foreground);
-            // do ur stuff
-        }
+        if (stamp.getIsObtained()) obtained.setImageResource(R.drawable.checkbox_obtained_foreground);
+
 
         obtained_btn.setOnClickListener(view13 -> {
-            if (!stamp.getIsObtained()) {
-                obtained.setImageResource(R.drawable.checkbox_foreground);
-                // do ur stuff
-            }else{
-                obtained.setImageResource(R.drawable.checkbox_obtained_foreground);
-                // do ur stuff
-            }
+            StampCollection.getInstance().setStampObtained(stamp, parentStampSet, !stamp.getIsObtained());
+            if (!stamp.getIsObtained()) obtained.setImageResource(R.drawable.checkbox_foreground);
+            else obtained.setImageResource(R.drawable.checkbox_obtained_foreground);
         });
 
         wishlist = view.findViewById(R.id.wishlist_img);
@@ -93,6 +95,7 @@ public class StampInfoFragment extends Fragment {
         }
 
         wishlist_btn.setOnClickListener(view14 -> {
+            StampCollection.getInstance().setStampOnWishlist(stamp, parentStampSet, !stamp.getIsOnWishlist());
             if (!stamp.getIsOnWishlist()) {
                 wishlist.setImageResource(R.drawable.wishlist_star_outline);
                 // do some stuff
@@ -111,10 +114,20 @@ public class StampInfoFragment extends Fragment {
         calendar = view.findViewById(R.id.calendar_btn);
         calendar.setOnClickListener(view1 -> datePicker());
 
-        // TODO cus I dumb お願いね
+        // TODO i hate this textbox stuff will have to have another mess around with it
         // notes stuff
         notes = view.findViewById(R.id.extra_notes);
-
+        notes.setText(stamp.getNotes());
+        notes.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                StampCollection.getInstance().setStampNotes(stamp, parentStampSet, s.toString());
+            }
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
         return view;
     }
 

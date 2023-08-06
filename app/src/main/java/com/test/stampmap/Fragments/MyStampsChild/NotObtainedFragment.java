@@ -61,6 +61,7 @@ public class NotObtainedFragment extends Fragment {
                 }
             }
         }
+        if (adapter != null && !this.isHidden()) adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -81,14 +82,13 @@ public class NotObtainedFragment extends Fragment {
 
             // do the fancies to your stuff
             stampInfo = stamps.get(position);
+            StampSet parent = stampInfo.getParentStampSet();
             Bundle args = new Bundle();
-            args.putSerializable("stamp",stampInfo);
+            args.putIntArray("stamp", new int[]{parent.hashCode(), stampInfo.hashCode()});
 
             stampName.setText(stamps.get(position).getName());
             StampCollection.loadImage(holder.itemView, stamps.get(position), stampImage);
             card.setOnClickListener(view -> {
-                final int position1 = holder.getAdapterPosition();
-                Toast.makeText(requireContext(), stamps.get(position1).getName() + " selected boi", Toast.LENGTH_SHORT).show();
                 Navigation.findNavController(view).navigate(R.id.myStamp_to_stampInfo, args);
             });
         });

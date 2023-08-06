@@ -8,7 +8,7 @@ import org.json.JSONObject;
 import java.io.Serializable;
 import java.util.*;
 
-public class StampSet implements Iterable<Stamp>, Serializable {
+public class StampSet implements Iterable<Stamp>, Serializable, SerialisableStamp {
     private final String name, address, difficulty, openHours, holiday, entryFee;
     private final List<Stamp> stamps;
 
@@ -72,7 +72,7 @@ public class StampSet implements Iterable<Stamp>, Serializable {
     }
 
     public static boolean getContainsCustomData(StampSet stampSet){
-        for (Stamp stamp : stampSet) if (stamp.getIsCustom() || stamp.getIsObtained() || stamp.getIsOnWishlist()) return true;
+        for (Stamp stamp : stampSet) if (stamp.getIsCustom() || stamp.getIsObtained() || stamp.getIsOnWishlist() || !stamp.getNotes().isEmpty()) return true;
         return false;
     }
 

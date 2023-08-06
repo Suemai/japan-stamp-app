@@ -222,14 +222,14 @@ public class Filters {
         }
         @Override
         public boolean hasMatch(StampSet stampSet){
-            switch (this.ordinal()){
-                case 0:
+            switch (this.value){
+                case "owned":
                     return StampCollection.getInstance().getMyStamps().contains(stampSet);
-                case 1:
+                case "nowowned":
                     return !StampCollection.getInstance().getMyStamps().contains(stampSet);
-                case 2:
+                case "onwishlist":
                     return StampCollection.getInstance().getWishlist().contains(stampSet);
-                case 3:
+                case "custom":
                     return StampCollection.getInstance().getCustomStamps().contains(stampSet);
                 default:
                     return true;

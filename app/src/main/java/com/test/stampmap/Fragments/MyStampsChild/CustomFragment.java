@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.test.stampmap.Adapter.StampRecyclerAdapter;
@@ -78,11 +79,15 @@ public class CustomFragment extends Fragment {
             CardView card = holder.itemView.findViewById(R.id.obtained_parent);
 
             // do the fancies to your stuff
+            Stamp stampInfo = stamps.get(position);
+            StampSet parent = stampInfo.getParentStampSet();
+            Bundle args = new Bundle();
+            args.putIntArray("stamp", new int[]{parent.hashCode(), stampInfo.hashCode()});
+
             stampName.setText(stamps.get(position).getName());
             StampCollection.loadImage(holder.itemView, stamps.get(position), stampImage);
             card.setOnClickListener(view -> {
-                final int position1 = holder.getAdapterPosition();
-                Toast.makeText(requireContext(), stamps.get(position1).getName() + " selected boi", Toast.LENGTH_SHORT).show();
+                Navigation.findNavController(view).navigate(R.id.myStamp_to_stampInfo, args);
             });
             card.setOnLongClickListener(v -> {
                 new StampDeleteAlertDialogue(requireContext(), stamps.get(position), null);
