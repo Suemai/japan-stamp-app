@@ -6,8 +6,9 @@ Main Activity
 - after searching zoom to see all maps      DONE
 - whole interactive search bar              DONE
 - directional view on current location
-- stamp dialogue / fragment
-- Filter custom stamps
+- stamp dialogue / fragment                 DONE
+- Filter custom stamps                      DONE
+- filter by wishlist                        DONE
 
 
 
@@ -29,17 +30,3 @@ Other
 - Licencing                                 DONE
 - New map markers
 
-
-Notes
-Name
-Location
-Fee
-Difficulty
-Opening hours
-Holiday
-Image
-IsObtainable - yes/no
-
-
-Ideas
-- filter by wishlist

@@ -1,16 +1,19 @@
 package com.test.stampmap.Settings;
 
 import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
+import android.app.DownloadManager;
+import android.content.*;
 import android.net.ConnectivityManager;
 import android.net.Network;
+import android.net.Uri;
+import android.os.Environment;
 import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 import com.test.stampmap.BuildConfig;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -23,7 +26,7 @@ public class UpdateManager {
     private Context context;
     private String currentVersion;
     private JSONObject latest;
-
+    private JSONArray assets;
     private Handler handler = new Handler(Looper.getMainLooper());
 
 
@@ -37,10 +40,6 @@ public class UpdateManager {
         }
         else {
             Toast.makeText(context, "Searching for updates", Toast.LENGTH_SHORT).show();
-
-            // Use your preferred method to fetch the latest version from GitHub
-            // You can use libraries like OkHttp or Retrofit to make the HTTP request
-            // and parse the JSON response to get the latest version information
 
             //Checking on GitHub
             String gitHubUrl = "https://api.github.com/repos/Suemai/japan-stamp-app/releases/latest";
@@ -105,6 +104,11 @@ public class UpdateManager {
             public void onClick(DialogInterface dialog, int which) {
                 // Trigger the APK download and installation here
                 // Implement the download and install APK logic
+                try {
+                    downloadAndInstall();
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
         builder.setNegativeButton("Install Later", new DialogInterface.OnClickListener() {
@@ -163,5 +167,30 @@ public class UpdateManager {
         }
         // The version with more parts is considered greater
         return Integer.compare(latestParts.length, currentParts.length);
+    }
+
+    private void downloadAndInstall() throws JSONException {
+
+        assets = latest.getJSONArray("assets");
+        // First asset contains the APK file
+        JSONObject asset = assets.getJSONObject(0);
+        String latestApk = asset.getString("browser_download_url");
+        String apkTitle = asset.getString("name");
+        Log.d("apk url: ", latestApk);
+        Log.d("apk name: ", apkTitle);
+
+        // Create a DownloadManager.Request with the APK download URL
+        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(latestApk));
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,apkTitle);
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+
+        // Get the DownloadManager service and enqueue the download request
+        DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
+        downloadManager.enqueue(request);
+
+        Toast.makeText(context,"Downloading...",Toast.LENGTH_SHORT).show();
+
+        //installing
+
     }
 }
