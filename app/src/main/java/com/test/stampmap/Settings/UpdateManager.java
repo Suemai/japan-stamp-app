@@ -1,11 +1,14 @@
 package com.test.stampmap.Settings;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DownloadManager;
 import android.content.*;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.os.Looper;
 import android.util.Log;
@@ -28,6 +31,8 @@ public class UpdateManager {
     private JSONObject latest;
     private JSONArray assets;
     private Handler handler = new Handler(Looper.getMainLooper());
+    //The number here means the error code you arbitrarily choose
+    private static final int REQUEST_CODE_INSTALL_APK = 1001;
 
 
     public UpdateManager(Context context){
@@ -57,6 +62,7 @@ public class UpdateManager {
 
                 @Override
                 public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                    assert response.body() != null;
                     String jsonResponse = response.body().string();
 
                     //Just to test and make sure I'm getting the right response
@@ -105,7 +111,7 @@ public class UpdateManager {
                 // Trigger the APK download and installation here
                 // Implement the download and install APK logic
                 try {
-                    downloadAndInstall();
+                    download();
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
@@ -169,7 +175,7 @@ public class UpdateManager {
         return Integer.compare(latestParts.length, currentParts.length);
     }
 
-    private void downloadAndInstall() throws JSONException {
+    private void download() throws JSONException {
 
         assets = latest.getJSONArray("assets");
         // First asset contains the APK file
@@ -186,11 +192,49 @@ public class UpdateManager {
 
         // Get the DownloadManager service and enqueue the download request
         DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
-        downloadManager.enqueue(request);
+        long downloadId = downloadManager.enqueue(request);
 
         Toast.makeText(context,"Downloading...",Toast.LENGTH_SHORT).show();
 
-        //installing
+        // Listen for download completion and install the APK
+        IntentFilter filter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
+        context.registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                long id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
+                if (id == downloadId) {
+                    // Get the APK URI using the DownloadManager's download id
+                    Uri apkUri = downloadManager.getUriForDownloadedFile(downloadId);
+                    // Check permissions and install or download
+                    checkPermissions(context, apkUri);
+                }
+            }
+        }, filter);
+    }
 
+    private void checkPermissions(Context context, Uri apkUri) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            // For Android 11 and above, use PackageInstaller directly
+            install(context, apkUri);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // On Android Oreo and above, we need to request permission to install APKs from unknown sources
+            if (context.getPackageManager().canRequestPackageInstalls()) {
+                install(context, apkUri);
+            } else {
+                // Request the permission to install APKs
+
+            }
+        } else {
+            // On pre-Android Oreo devices, no permission checks needed
+            install(context, apkUri);
+        }
+    }
+
+    private void install(Context context, Uri apkUri){
+        Intent installIntent = new Intent(Intent.ACTION_VIEW);
+        installIntent.setData(apkUri);
+        installIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        installIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        context.startActivity(installIntent);
     }
 }
