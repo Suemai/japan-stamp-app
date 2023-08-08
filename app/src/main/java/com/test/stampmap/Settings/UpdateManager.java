@@ -20,6 +20,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import android.os.Handler;
@@ -216,17 +217,22 @@ public class UpdateManager {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             // For Android 11 and above, use PackageInstaller directly
             install(context, apkUri);
+            deleteAPK(context, apkUri);
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // On Android Oreo and above, we need to request permission to install APKs from unknown sources
             if (context.getPackageManager().canRequestPackageInstalls()) {
                 install(context, apkUri);
+                deleteAPK(context, apkUri);
             } else {
                 // Request the permission to install APKs
-
+                AlertDialog.Builder permissions = new AlertDialog.Builder(context);
+                permissions.setTitle("Permissions not accepted");
+                permissions.setMessage("Without permissions, you can't update >_<");
             }
         } else {
             // On pre-Android Oreo devices, no permission checks needed
             install(context, apkUri);
+            deleteAPK(context, apkUri);
         }
     }
 
@@ -236,5 +242,18 @@ public class UpdateManager {
         installIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         installIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         context.startActivity(installIntent);
+    }
+
+    private void deleteAPK(Context context, Uri apkUri) {
+        File apkFile = new File(apkUri.getPath());
+        if (apkFile.exists()) {
+            if (apkFile.delete()) {
+                Log.d("APK Deletion", "APK file deleted successfully.");
+            } else {
+                Log.e("APK Deletion", "Failed to delete APK file.");
+            }
+        } else {
+            Log.e("APK Deletion", "APK file not found.");
+        }
     }
 }
