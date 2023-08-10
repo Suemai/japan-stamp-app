@@ -56,8 +56,9 @@ public class HelpFragment extends Fragment {
                 "app to make a record of them, if you so wish. \n" +
                 "However, there are no current or future plans to implement them into the app. \n" +
                 "2. Due to the nature of the app and the source of the data, you must search in Japanese Kanji. \n" +
-                "3. Updates may come incredibly slow, so bare with us. \n" +
-                "4. This app is by no means a full compulsory list of stamps, meaning that not all stamps available will be on the app."));
+                "3. Due to the nature of the app and the source of the data, information will mostly if not be fully displayed in Japanese. Therefore it is recommended that if you do not know Japanese, have a translator handy. \n" +
+                "4. Updates may come incredibly slow, so bare with us. \n" +
+                "5. This app is by no means a full compulsory list of stamps, meaning that not all stamps available will be on the app."));
         helplist.add(new help("How to search on the app", "Due to the nature of the app, you must search in Kanji. \n" +
                 "This can be done by pressing the search bar and typing the location, alternatively you can search via filtering. \n \n" +
                 "To use filtering to search: \n" +
@@ -65,6 +66,13 @@ public class HelpFragment extends Fragment {
                 "2. Choose your filter or filters. You can have more than one filter. \n" +
                 "3. Once filters are chosen, press Filter Search. \n" +
                 "If you want to filter search again, make sure to press Clear Filters before filtering your search again."));
+        helplist.add(new help("The difficulty star system",
+                "You may have noticed the difficulty star system that is in the app. \n" +
+                "Well, this is due to various factors, such as availability of the stamp, location of the stamp (e.g. on the way up to Mt Fuji), " +
+                        "whether there are train station staff are available at specific hours, (I experienced this one the hard way) or other " +
+                        "requirements. \n"+
+                        "Honestly, not 100% sure here, since this was due to the difficulty scaling from our source website, but that's what makes " +
+                        "finding them fun. o(≧▽≦)o"));
         helplist.add(new help("How to create a custom stamp or stamp set", "Let's first define a stamp and a stamp set. \n" +
                 "A stamp set is the the group of stamps in a singular location. A stamp is a singular stamp. \n" +
                 "You can have any number of stamps in a stamp set, but not vice versa. \n" +
@@ -88,7 +96,10 @@ public class HelpFragment extends Fragment {
                 "9. Basically any tourist attraction. \n \n" +
                 "Here are some useful websites that you can use as well: \n" +
                 "They can be google translated for those not confident in their Japanese. \n" +
-                "https://stamp.funakiya.com\n" +
-                "https://100castlestamps.com"));
+                "https://stamp.funakiya.com \n" +
+                "https://100castlestamps.com \n \n" +
+                "If you are still unable to find the stamp, a simple sumimasen eki (station) / kannkou (tourist) sutanpu wa doko desu ka? does the trick.\n" +
+                "And with that, go and stamp 'em all! ＼(≧▽≦)／ \n " +
+                "[insert red pointing at you to go catch 'em all]"));
     }
 }

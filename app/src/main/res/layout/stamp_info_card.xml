@@ -20,9 +20,8 @@
                 android:layout_height="50dp"
                 android:id="@+id/stamp_back_button"
                 android:src="@drawable/back_btn"
-                android:paddingBottom="10dp"
                 android:layout_marginStart="10dp"
-                android:contentDescription="back"/>
+                android:background="#0000"/>
 
         <RelativeLayout
                 android:layout_width="match_parent"
@@ -42,7 +41,7 @@
                     android:layout_alignParentEnd="true"
                     android:id="@+id/stamp_name_for_card"
                     android:layout_toEndOf="@+id/stamp_image_for_card"
-                    android:textSize="25dp"
+                    android:textSize="25sp"
                     android:gravity="center"/>
 
             <!-- Address Location row -->
@@ -52,7 +51,7 @@
                     android:id="@+id/addressTxt"
                     android:layout_toEndOf="@+id/stamp_image_for_card"
                     android:layout_below="@+id/stamp_name_for_card"
-                    android:textSize="15dp"
+                    android:textSize="15sp"
                     android:layout_marginStart="10dp"
                     android:text="Address"
                     android:gravity="center"/>

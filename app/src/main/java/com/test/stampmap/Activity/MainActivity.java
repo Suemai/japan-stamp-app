@@ -29,6 +29,7 @@ import com.test.stampmap.Fragments.SettingsFragment;
 import com.test.stampmap.Interface.IFilter;
 import com.test.stampmap.R;
 import com.test.stampmap.Settings.ConfigValue;
+import com.test.stampmap.Settings.UpdateManager;
 import com.test.stampmap.Settings.UserSettings;
 import com.test.stampmap.Stamp.StampCollection;
 import org.osmdroid.config.Configuration;
@@ -63,6 +64,10 @@ public class MainActivity extends AppCompatActivity {
                 Manifest.permission.ACCESS_NETWORK_STATE,
                 Manifest.permission.INTERNET
         });
+
+        // Check for updates when app opens
+        UpdateManager updateManager = new UpdateManager(this);
+        updateManager.checkForUpdates(false);
 
         //load stamp data
         StampCollection.getInstance().load(getApplication());

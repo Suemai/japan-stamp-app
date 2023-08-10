@@ -66,7 +66,7 @@ public class SettingsFragment extends Fragment {
         updates = v.findViewById(R.id.update_btn);
         updates.setOnClickListener(view -> {
             UpdateManager updateManager = new UpdateManager(requireContext());
-            updateManager.checkForUpdates();
+            updateManager.checkForUpdates(true);
         });
        return v;
     }
