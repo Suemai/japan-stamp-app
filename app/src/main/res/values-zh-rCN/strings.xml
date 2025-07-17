@@ -104,12 +104,6 @@
         <item>Custom</item>
     </string-array>
 
-    <string-array name="languages">
-        <item>English</item>
-        <item>日本語</item>
-        <item>冰淇淋</item>
-    </string-array>
-
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="wishlist">Wishlist</string>
@@ -117,15 +111,6 @@
     <string name="custom">custom</string>
     <string name="Custom">Custom</string>
     <string name="about_us">About Us</string>
-    <string name="about_us_intro">Hello! Welcome! And thank you for using this app. This little app is a project made my
-        me and a friend during our year abroad in Japan in 2022/23. During that time, as a student, I went
-        travelling.... a lot and one thing you notice whilst travelling is that at many train stations, museums and
-        tourist attractions, there are stamps available. Not postage stamps! Print stamps! And what better way to record
-        your travels than with free stamps and or stamp rallies. And that is where this app comes in. This app records
-        your stamp progress and helps you find said stamps. Honestly, I have been trying to find an app that does
-        exactly that, but even on the Japanese play store, it seems that such app doesn\'t exist. So why not make it
-        yourself. Am I right?
-    </string>
     <string name="how_to_use_the_app">How to use the app</string>
     <string name="help_title">help title</string>
     <string name="help_text">help_text</string>
@@ -140,4 +125,14 @@
     <string name="settings_about">About</string>
     <string name="settings_select_language">Select Language:</string>
     <string name="settings_help">Help</string>
+    <string name="stamp_info_intro">"Hello! Welcome! And thank you for using this app. This little app is a project made
+        by me and a friend during our year abroad in Japan in 2022/23. During that time, as a student, I went
+        travelling.... a lot and one thing you notice whilst travelling is that at many train stations, museums and
+        tourist attractions, there are stamps available. Not postage stamps! Print stamps! And what better way to record
+        your travels than with free stamps and or stamp rallies. And that is where this app comes in. This app records
+        your stamp progress and helps you find said stamps. Honestly, I have been trying to find an app that does
+        exactly that, but even on the Japanese play store, it seems that such app doesn't exist. So why not make it
+        yourself. Am I right? Anyways, if you need help or there's any bugs or features you'd like to suggest, let me
+        know on one of these channels below. "
+    </string>
 </resources>

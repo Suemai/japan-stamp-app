@@ -2,7 +2,6 @@ package com.test.stampmap.Fragments;
 
 import android.content.Context;
 import android.content.res.Configuration;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.*;
@@ -13,16 +12,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.navigation.Navigation;
 import com.bumptech.glide.Glide;
-import com.google.android.material.snackbar.Snackbar;
 import com.test.stampmap.Activity.MainActivity;
 import com.test.stampmap.R;
 import com.test.stampmap.Settings.ConfigValue;
+import com.test.stampmap.Settings.SupportedLocale;
 import com.test.stampmap.Settings.UpdateManager;
-import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 
 public class SettingsFragment extends Fragment {
@@ -33,6 +34,7 @@ public class SettingsFragment extends Fragment {
     TextView about, help, updates;
     View v;
     ViewGroup c;
+    boolean loading;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -72,14 +74,21 @@ public class SettingsFragment extends Fragment {
         });
 
         Spinner spinner = v.findViewById(R.id.language_select);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(requireContext(), R.array.languages, android.R.layout.simple_spinner_item);
+        List<CharSequence> langs = Arrays.stream(SupportedLocale.values()).map(SupportedLocale::getName).collect(Collectors.toList());
+        langs.set(0, "Default (" + Locale.getDefault().getDisplayLanguage() + ")");
+        ArrayAdapter<CharSequence> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, langs);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
-        spinner.setSelection(ConfigValue.APP_LOCALE.getValue());
+        loading = true;
+        spinner.setSelection(SupportedLocale.getCurrent().ordinal());
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                MainActivity.setLocale(requireActivity(), position);
+                if (loading) {
+                    loading = false;
+                    return;
+                }
+                MainActivity.setLocale(requireActivity(), SupportedLocale.values()[position]);
                 Log.i("help", "LANGUAGE CHANGED");
             }
             public void onNothingSelected(AdapterView<?> parent) {}

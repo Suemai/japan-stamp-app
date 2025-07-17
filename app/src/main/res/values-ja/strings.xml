@@ -104,12 +104,6 @@
         <item>Custom</item>
     </string-array>
 
-    <string-array name="languages">
-        <item>English</item>
-        <item>日本語</item>
-        <item>冰淇淋</item>
-    </string-array>
-
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="wishlist">Wishlist</string>
@@ -117,12 +111,11 @@
     <string name="custom">custom</string>
     <string name="Custom">Custom</string>
     <string name="about_us">About Us</string>
-    <string name="about_us_intro">はちのっっへ
-    </string>
     <string name="how_to_use_the_app">How to use the app</string>
     <string name="help_title">help title</string>
     <string name="help_text">help_text</string>
     <string name="help_description">help description</string>
+    <string name="stamp_info_intro">はちのっっへ</string>
     <string name="clear_filters_on_search_cunt">フィルターを消す</string>
     <string name="nav_bar_explore">地図</string>
     <string name="nav_bar_my_stamps">マイスタンプ</string>
@@ -130,7 +123,12 @@
     <string name="settings_settings">設定</string>
     <string name="settings_clear_image_cache">画像キャッシュを消す</string>
     <string name="settings_check_for_updatess">アップデートを確認</string>
-    <string name="settings_about">アップについて</string>
+    <string name="settings_about">アプリについて</string>
     <string name="settings_select_language">言語選択:</string>
     <string name="settings_help">ヘルプ</string>
+    <string name="help_things_to_note_title">注意点</string>
+    <string name="help_how_to_search_title">アプリでの検索方法</string>
+    <string name="help_difficulty_system_title">「星」という難易度制度</string>
+    <string name="help_custom_stamp_title">カスタムスタンプやスタンプセットの作り方</string>
+    <string name="help_tips_title">役に立つヒントやコツ</string>
 </resources>

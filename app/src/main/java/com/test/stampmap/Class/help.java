@@ -1,12 +1,13 @@
 package com.test.stampmap.Class;
 
 public class help {
-    private String title, description;
+    private final int titleId;
+    private final int descriptionId;
     private boolean expanded;
 
-    public help(String title, String description){
-        this.title = title;
-        this.description = description;
+    public help(int titleResourceId, int descriptionResourceId){
+        this.titleId = titleResourceId;
+        this.descriptionId = descriptionResourceId;
         this.expanded = false;
     }
 
@@ -18,20 +19,10 @@ public class help {
         this.expanded = expanded;
     }
 
-    public String getTitle(){
-        return this.title;
+    public int getTitleResourceId(){
+        return this.titleId;
     }
-
-    public String getDescription(){
-        return this.description;
+    public int getDescriptionResourceId(){
+        return this.descriptionId;
     }
-    public void setTitle(String name){
-        title = name;
-    }
-
-    public void setDescription(String text){
-        description = text;
-    }
-
-
 }

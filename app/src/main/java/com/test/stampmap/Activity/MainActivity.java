@@ -1,21 +1,15 @@
 package com.test.stampmap.Activity;
 
 import android.app.Activity;
-import android.app.Application;
-import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
-import android.os.Handler;
-import android.os.Looper;
+import android.os.LocaleList;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.RelativeLayout;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -28,19 +22,16 @@ import android.os.Bundle;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import com.test.stampmap.Fragments.ExploreFragment;
-import com.test.stampmap.Fragments.MyStampsFragment;
-import com.test.stampmap.Fragments.SettingsFragment;
 import com.test.stampmap.Interface.IFilter;
 import com.test.stampmap.R;
 import com.test.stampmap.Settings.ConfigValue;
+import com.test.stampmap.Settings.SupportedLocale;
 import com.test.stampmap.Settings.UpdateManager;
 import com.test.stampmap.Settings.UserSettings;
 import com.test.stampmap.Stamp.StampCollection;
 import org.jetbrains.annotations.NotNull;
 import org.osmdroid.config.Configuration;
 
-import java.lang.reflect.Constructor;
 import java.util.*;
 
 public class MainActivity extends AppCompatActivity {
@@ -53,7 +44,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         UserSettings.setUserSettings((UserSettings) getApplication());
         loadSharedPreferences();
-        if (appStartup) setLocale(this, ConfigValue.APP_LOCALE.getValue());
+        if (appStartup) Log.i("DEFAULT LOCALE", Locale.getDefault().getDisplayLanguage());
+        if (appStartup) setLocale(this, SupportedLocale.getCurrent());
         super.onCreate(savedInstanceState);
         appStartup = false;
 
@@ -131,23 +123,23 @@ public class MainActivity extends AppCompatActivity {
         for (ConfigValue configValue : ConfigValue.values()) configValue.getValue();
     }
 
-    public static void setLocale(Activity activity, int langIndex){
-        setLocale(activity, langIndex, appStartup);
+    public static void setLocale(Activity activity, SupportedLocale lang){
+        setLocale(activity, lang, appStartup);
     }
-    private static void setLocale(Activity activity, int langIndex, boolean firstActivation) {
-        ConfigValue.APP_LOCALE.setValue(langIndex);
-        String[] languages = {"en", "ja", "zh_CN"};
-        String languageCode = languages[langIndex];
-        String [] langtings = languageCode.split("_");
+    private static void setLocale(Activity activity, SupportedLocale lang, boolean firstActivation) {
+        ConfigValue.APP_LOCALE.setValue(lang.name());
         Locale locale;
-        if (langtings.length > 1) locale = new Locale(langtings[0], langtings[1]);
-        else locale = new Locale(languageCode);
-        if (Locale.getDefault().equals(locale)) return;
-        Locale.setDefault(locale);
+
+        if (lang == SupportedLocale.DEFAULT) locale = Locale.getDefault();
+        else {
+            String [] langtings = lang.getCode().split("_");
+            if (langtings.length > 1) locale = new Locale(langtings[0], langtings[1]);
+            else locale = new Locale(lang.getCode());
+        }
+        if (firstActivation && Locale.getDefault().equals(locale)) return;
         Resources resources = activity.getResources();
         resources.getConfiguration().setLocale(locale);
         resources.updateConfiguration(resources.getConfiguration(), resources.getDisplayMetrics());
-//        if (!firstActivation) activity.recreate();
         if (!firstActivation) activity.onConfigurationChanged(resources.getConfiguration());
     }
 

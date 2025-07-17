@@ -31,8 +31,8 @@ public class HelpRecyclerAdapter extends RecyclerView.Adapter<HelpRecyclerAdapte
     @Override
     public void onBindViewHolder(HelpRecyclerAdapter.ViewHolder holder, int position) {
         help helpItem = helpList.get(position);
-        holder.helpTitle.setText(helpItem.getTitle());
-        holder.helpText.setText(helpItem.getDescription());
+        holder.helpTitle.setText(helpItem.getTitleResourceId());
+        holder.helpText.setText(helpItem.getDescriptionResourceId());
 
         boolean isExpanded = helpList.get(position).isExpanded();
         //if layer is expanded make visible else it's not visible

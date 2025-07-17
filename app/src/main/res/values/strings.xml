@@ -104,12 +104,6 @@
         <item>Custom</item>
     </string-array>
 
-    <string-array name="languages">
-        <item>English</item>
-        <item>日本語</item>
-        <item>冰淇淋</item>
-    </string-array>
-
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="wishlist">Wishlist</string>
@@ -141,4 +135,49 @@
     <string name="settings_about">About</string>
     <string name="settings_select_language">Select Language:</string>
     <string name="settings_help">Help</string>
+
+
+    <string name="help_things_to_note_title">Things to note</string>
+    <string name="help_things_to_note_content">1. The stamps in question are different to the shrine/temple seals that
+        are available at temples and shrines. If you do plan to collect them, again you can use the app to make a record
+        of them, if you so wish. \nHowever, there are no current or future plans to implement them into the app. \n2.
+        Due to the nature of the app and the source of the data, you must search in Japanese Kanji. \n3. Due to the
+        nature of the app and the source of the data, information will mostly if not be fully displayed in Japanese.
+        Therefore it is recommended that if you do not know Japanese, have a translator handy. \n4. Updates may come
+        incredibly slow, so bare with us. \n5. This app is by no means a full compulsory list of stamps, meaning that
+        not all stamps available will be on the app.
+    </string>
+    <string name="help_how_to_search_title">How to search on the app</string>
+    <string name="help_how_to_search_content">Due to the nature of the app, you must search in Kanji. \nThis can be
+        done by pressing the search bar and typing the location, alternatively you can search via filtering. \n \n To
+        use filtering to search: \n1. In the explore tab, press the 3 lines on the search bar. \n2. Choose your filter
+        or filters. You can have more than one filter. \n3. Once filters are chosen, press Filter Search. \nIf you
+        want to filter search again, make sure to press Clear Filters before filtering your search again.
+    </string>
+    <string name="help_difficulty_system_title">The difficulty star system</string>
+    <string name="help_difficulty_system_content">You may have noticed the difficulty star system that is in the app.
+        \nWell, this is due to various factors, such as availability of the stamp, location of the stamp (e.g. on the
+        way up to Mt Fuji), whether there are train station staff are available at specific hours, (I experienced this
+        one the hard way) or other requirements. \nHonestly, not 100% sure here, since this was due to the difficulty
+        scaling from our source website, but that\'s what makes finding them fun. o(≧▽≦)o
+    </string>
+    <string name="help_custom_stamp_title">How to create a custom stamp or stamp set</string>
+    <string name="help_custom_stamp_content">Let\'s first define a stamp and a stamp set. \nA stamp set is the the
+        group of stamps in a singular location. A stamp is a singular stamp. \nYou can have any number of stamps in a
+        stamp set, but not vice versa. \n1. Long hold the location where the stamp location is located. \n2. Fill in
+        the details of the stamp location. \n3. Press Add Stamp to add an individual stamp, to finish press Add Stamp
+        again. \n4. To add more stamps in a stamp set, repeat step 3. \n5. Once all information is completed \nKey
+        things to note with custom stamps: \n - Currently there is no way to filter for custom stamps using prefecture
+        or difficulty. \n - The only filters that works with custom stamps is distance and entry fee. \n
+    </string>
+    <string name="help_tips_title">Useful hints and tips</string>
+    <string name="help_tips_content">To help you maximise our stamp gains, here are a few general locations where stamps
+        are located: \n1. Tourist information centres \n2. Museums \n3. Castles \n4. Airports \n5. Train stations
+        \n6. Roadside stations \n7. Observation towers \n8. Certain events, like Comiket 100 \n9. Basically any
+        tourist attraction. \n \nHere are some useful websites that you can use as well: \nThey can be google
+        translated for those not confident in their Japanese. \nhttps://stamp.funakiya.com
+        \nhttps://100castlestamps.com \n \nIf you are still unable to find the stamp, a simple sumimasen eki
+        (station) / kannkou (tourist) sutanpu wa doko desu ka? does the trick.\nAnd with that, go and stamp \'em all!
+        ＼(≧▽≦)／ \n [insert red pointing at you to go catch \'em all]
+    </string>
 </resources>

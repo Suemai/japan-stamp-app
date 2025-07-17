@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.SharedPreferences;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import com.test.stampmap.R;
 
@@ -31,8 +32,15 @@ public class UserSettings extends Application {
 
     protected static <T> T getConfigValue(ConfigValue configValue){
         SharedPreferences sharedPrefs = instance.getSharedPreferences(PREFERENCES, MODE_PRIVATE);
-        if (sharedPrefs.getAll().get(configValue.getName()) == null) setConfigValue(configValue, configValue.getDefaultValue());
-        return (T) sharedPrefs.getAll().get(configValue.getName());
+        Map<String, ?> prefs = sharedPrefs.getAll();
+        Object val = prefs.get(configValue.getName());
+        if (val == null || !prefs.get(configValue.getName()).getClass().equals(configValue.getClazz())) {
+            sharedPrefs.edit().remove(configValue.getName()).apply();
+            setConfigValue(configValue, configValue.getDefaultValue());
+            return (T)configValue.getDefaultValue();
+        }
+        return (T)val;
+
     }
 
     public static int getStatusBarHeight() {
