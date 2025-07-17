@@ -1,5 +1,30 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Users/royst/OneDrive/Desktop/Other Projects/StampApp/japan-stamp-app/app/src/main/res/drawable/add_foreground.xml" value="0.196" />
+        <entry key="..\:/Users/royst/OneDrive/Desktop/Other Projects/StampApp/japan-stamp-app/app/src/main/res/drawable/delete_foreground.xml" value="0.196" />
+        <entry key="..\:/Users/royst/OneDrive/Desktop/Other Projects/StampApp/japan-stamp-app/app/src/main/res/drawable/marker_background.xml" value="0.1415" />
+        <entry key="..\:/Users/royst/OneDrive/Desktop/Other Projects/StampApp/japan-stamp-app/app/src/main/res/drawable/settings_foreground.xml" value="0.1415" />
+        <entry key="..\:/Users/royst/OneDrive/Desktop/Other Projects/StampApp/japan-stamp-app/app/src/main/res/layout/activity_main.xml" value="0.12158054711246201" />
+        <entry key="..\:/Users/royst/OneDrive/Desktop/Other Projects/StampApp/japan-stamp-app/app/src/main/res/layout/add_stamp_drawer.xml" value="0.1" />
+        <entry key="..\:/Users/royst/OneDrive/Desktop/Other Projects/StampApp/japan-stamp-app/app/src/main/res/layout/add_stamp_popup.xml" value="0.1" />
+        <entry key="..\:/Users/royst/OneDrive/Desktop/Other Projects/StampApp/japan-stamp-app/app/src/main/res/layout/explore_fragment.xml" value="0.1" />
+        <entry key="..\:/Users/royst/OneDrive/Desktop/Other Projects/StampApp/japan-stamp-app/app/src/main/res/layout/filter_drawer.xml" value="0.4" />
+        <entry key="..\:/Users/royst/OneDrive/Desktop/Other Projects/StampApp/japan-stamp-app/app/src/main/res/layout/fragment_custom.xml" value="0.25" />
+        <entry key="..\:/Users/royst/OneDrive/Desktop/Other Projects/StampApp/japan-stamp-app/app/src/main/res/layout/fragment_not_obtained.xml" value="0.12158054711246201" />
+        <entry key="..\:/Users/royst/OneDrive/Desktop/Other Projects/StampApp/japan-stamp-app/app/src/main/res/layout/fragment_obtained.xml" value="0.12158054711246201" />
+        <entry key="..\:/Users/royst/OneDrive/Desktop/Other Projects/StampApp/japan-stamp-app/app/src/main/res/layout/fragment_wishlist.xml" value="0.12158054711246201" />
+        <entry key="..\:/Users/royst/OneDrive/Desktop/Other Projects/StampApp/japan-stamp-app/app/src/main/res/layout/my_stamps_fragment.xml" value="0.12158054711246201" />
+        <entry key="..\:/Users/royst/OneDrive/Desktop/Other Projects/StampApp/japan-stamp-app/app/src/main/res/layout/stamp_card.xml" value="0.25" />
+        <entry key="..\:/Users/royst/OneDrive/Desktop/Other Projects/StampApp/japan-stamp-app/app/src/main/res/layout/stamp_element.xml" value="0.25" />
+        <entry key="..\:/Users/royst/OneDrive/Desktop/Other Projects/StampApp/japan-stamp-app/app/src/main/res/layout/stamp_info_drawer.xml" value="0.25" />
+        <entry key="..\:/Users/royst/OneDrive/Desktop/Other Projects/StampApp/japan-stamp-app/app/src/main/res/layout/stamp_sheet_popup.xml" value="0.24895833333333334" />
+        <entry key="..\:/Users/royst/OneDrive/Desktop/Other Projects/StampApp/japan-stamp-app/app/src/main/res/mipmap-anydpi-v26/marker.xml" value="0.1415" />
+        <entry key="..\:/Users/royst/OneDrive/Desktop/Other Projects/StampApp/japan-stamp-app/app/src/main/res/mipmap-anydpi-v26/marker_round.xml" value="0.1415" />
+      </map>
+    </option>
+  </component>
   <component name="FrameworkDetectionExcludesConfiguration">
     <file type="web" url="file://$PROJECT_DIR$" />
   </component>

@@ -1,11 +1,14 @@
 package com.test.stampmap.Settings;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DownloadManager;
 import android.content.*;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.os.Looper;
 import android.util.Log;
@@ -17,6 +20,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import android.os.Handler;
@@ -28,18 +32,24 @@ public class UpdateManager {
     private JSONObject latest;
     private JSONArray assets;
     private Handler handler = new Handler(Looper.getMainLooper());
+    private boolean buttonClicked;
 
 
     public UpdateManager(Context context){
         this.context = context;
+        this.buttonClicked = false;
     }
 
-    public void checkForUpdates() {
+    public void checkForUpdates(boolean buttonClicked) {
         if(!connectivity()){
+            //this is for the search for updates button
+            if (buttonClicked){
             Toast.makeText(context, "Unable to connect to the internet.", Toast.LENGTH_SHORT).show();
+            }
         }
         else {
-            Toast.makeText(context, "Searching for updates", Toast.LENGTH_SHORT).show();
+            if(buttonClicked){
+            Toast.makeText(context, "Searching for updates", Toast.LENGTH_SHORT).show();}
 
             //Checking on GitHub
             String gitHubUrl = "https://api.github.com/repos/Suemai/japan-stamp-app/releases/latest";
@@ -52,11 +62,13 @@ public class UpdateManager {
             client.newCall(request).enqueue(new Callback() {
                 @Override
                 public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                    Toast.makeText(context, "Failed to search, please try again", Toast.LENGTH_SHORT).show();
+                    if(buttonClicked){
+                    Toast.makeText(context, "Failed to search, please try again", Toast.LENGTH_SHORT).show();}
                 }
 
                 @Override
                 public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                    assert response.body() != null;
                     String jsonResponse = response.body().string();
 
                     //Just to test and make sure I'm getting the right response
@@ -78,7 +90,8 @@ public class UpdateManager {
                                     //An update is available
                                     showUpdateDialog();
                                 }else{
-                                    Toast.makeText(context,"No updates available", Toast.LENGTH_SHORT).show();
+                                    if(buttonClicked){
+                                    Toast.makeText(context,"No updates available", Toast.LENGTH_SHORT).show();}
                                 }
 
                             } catch (JSONException e) {
@@ -95,28 +108,19 @@ public class UpdateManager {
     }
 
     private void showUpdateDialog() {
-        // Create and show the update dialog here
+        // Create and show the update dialog
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("New Update Available");
         builder.setMessage("A new update is available. Do you want to install it now?");
-        builder.setPositiveButton("Install Now", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // Trigger the APK download and installation here
-                // Implement the download and install APK logic
-                try {
-                    downloadAndInstall();
-                } catch (JSONException e) {
-                    throw new RuntimeException(e);
-                }
+        builder.setPositiveButton("Install Now", (dialog, which) -> {
+            // Trigger the APK download and installation
+            try {
+                download();
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
             }
         });
-        builder.setNegativeButton("Install Later", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
+        builder.setNegativeButton("Install Later", (dialog, which) -> dialog.dismiss());
         builder.show();
     }
 
@@ -169,7 +173,7 @@ public class UpdateManager {
         return Integer.compare(latestParts.length, currentParts.length);
     }
 
-    private void downloadAndInstall() throws JSONException {
+    private void download() throws JSONException {
 
         assets = latest.getJSONArray("assets");
         // First asset contains the APK file
@@ -186,11 +190,83 @@ public class UpdateManager {
 
         // Get the DownloadManager service and enqueue the download request
         DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
-        downloadManager.enqueue(request);
+        long downloadId = downloadManager.enqueue(request);
 
         Toast.makeText(context,"Downloading...",Toast.LENGTH_SHORT).show();
 
-        //installing
+        // Listen for download completion and install the APK
+        IntentFilter filter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
+        context.registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                long id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
+                if (id == downloadId) {
+                    // Get the APK URI using the DownloadManager's download id
+                    Uri apkUri = downloadManager.getUriForDownloadedFile(downloadId);
+                    // Check permissions and install or download
+                    checkPermissions(context, apkUri);
 
+                    // Get and show release notes after download
+                    try {
+                        String releaseNotes = latest.getString("body");
+                        showChangesDialog(releaseNotes);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }, filter);
+    }
+
+    private void checkPermissions(Context context, Uri apkUri) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            // For Android 11 and above, use PackageInstaller directly
+            install(context, apkUri);
+            deleteAPK(context, apkUri);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // On Android Oreo and above, we need to request permission to install APKs from unknown sources
+            if (context.getPackageManager().canRequestPackageInstalls()) {
+                install(context, apkUri);
+                deleteAPK(context, apkUri);
+            } else {
+                // Request the permission to install APKs
+                AlertDialog.Builder permissions = new AlertDialog.Builder(context);
+                permissions.setTitle("Permissions not accepted");
+                permissions.setMessage("Without permissions, you can't update >_<");
+            }
+        } else {
+            // On pre-Android Oreo devices, no permission checks needed
+            install(context, apkUri);
+            deleteAPK(context, apkUri);
+        }
+    }
+
+    private void install(Context context, Uri apkUri){
+        Intent installIntent = new Intent(Intent.ACTION_VIEW);
+        installIntent.setData(apkUri);
+        installIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        installIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        context.startActivity(installIntent);
+    }
+
+    private void deleteAPK(Context context, Uri apkUri) {
+        File apkFile = new File(apkUri.getPath());
+        if (apkFile.exists()) {
+            if (apkFile.delete()) {
+                Log.d("APK Deletion", "APK file deleted successfully.");
+            } else {
+                Log.e("APK Deletion", "Failed to delete APK file.");
+            }
+        } else {
+            Log.e("APK Deletion", "APK file not found.");
+        }
+    }
+
+    private void showChangesDialog(String changes) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("What's new");
+        builder.setMessage(changes);
+        builder.setPositiveButton("OK", (dialog, which) -> dialog.dismiss());
+        builder.show();
     }
 }
