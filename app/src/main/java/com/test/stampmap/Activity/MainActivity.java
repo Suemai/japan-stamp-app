@@ -3,9 +3,14 @@ package com.test.stampmap.Activity;
 import android.app.Activity;
 import android.app.Application;
 import android.content.pm.ActivityInfo;
+import android.content.res.Resources;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.RelativeLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -31,6 +36,7 @@ import com.test.stampmap.R;
 import com.test.stampmap.Settings.ConfigValue;
 import com.test.stampmap.Settings.UserSettings;
 import com.test.stampmap.Stamp.StampCollection;
+import org.jetbrains.annotations.NotNull;
 import org.osmdroid.config.Configuration;
 
 import java.lang.reflect.Constructor;
@@ -40,13 +46,15 @@ public class MainActivity extends AppCompatActivity {
     public static List<IFilter> filters = new ArrayList<>();
     Fragment currentFragment;
     public static int paddedStatusBarHeight;
+    private static boolean appStartup = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
         UserSettings.setUserSettings((UserSettings) getApplication());
         loadSharedPreferences();
+        if (appStartup) setLocale(this, ConfigValue.APP_LOCALE.getValue());
+        super.onCreate(savedInstanceState);
+        appStartup = false;
 
         //handle permissions first
         Context ctx = getApplicationContext();
@@ -113,4 +121,37 @@ public class MainActivity extends AppCompatActivity {
         for (ConfigValue configValue : ConfigValue.values()) configValue.getValue();
     }
 
+    public static void setLocale(Activity activity, int langIndex){
+        setLocale(activity, langIndex, appStartup);
+    }
+    private static void setLocale(Activity activity, int langIndex, boolean firstActivation) {
+        ConfigValue.APP_LOCALE.setValue(langIndex);
+        String[] languages = {"en", "ja", "zh_CN"};
+        String languageCode = languages[langIndex];
+        String [] langtings = languageCode.split("_");
+        Locale locale;
+        if (langtings.length > 1) locale = new Locale(langtings[0], langtings[1]);
+        else locale = new Locale(languageCode);
+        if (Locale.getDefault().equals(locale)) return;
+        Locale.setDefault(locale);
+        Resources resources = activity.getResources();
+        resources.getConfiguration().setLocale(locale);
+        resources.updateConfiguration(resources.getConfiguration(), resources.getDisplayMetrics());
+//        if (!firstActivation) activity.recreate();
+        if (!firstActivation) activity.onConfigurationChanged(resources.getConfiguration());
+    }
+
+    @Override
+    public void onConfigurationChanged(@NotNull android.content.res.Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        Log.i("MainActivity.onConfigurationChanged", "redrawing navigation bar");
+        BottomNavigationView bottomNav = findViewById(R.id.bottomNavigationView);
+        View help = ((LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.activity_main, null);
+        View newNav = help.findViewById(R.id.bottomNavigationView);
+        ((RelativeLayout)help.findViewById(R.id.mainContainer)).removeAllViews();
+        RelativeLayout layout = findViewById(R.id.mainContainer);
+        layout.removeView(bottomNav);
+        layout.addView(newNav, 0);
+        bottomNavigation();
+    }
 }

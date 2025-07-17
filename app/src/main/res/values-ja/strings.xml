@@ -117,27 +117,20 @@
     <string name="custom">custom</string>
     <string name="Custom">Custom</string>
     <string name="about_us">About Us</string>
-    <string name="about_us_intro">Hello! Welcome! And thank you for using this app. This little app is a project made my
-        me and a friend during our year abroad in Japan in 2022/23. During that time, as a student, I went
-        travelling.... a lot and one thing you notice whilst travelling is that at many train stations, museums and
-        tourist attractions, there are stamps available. Not postage stamps! Print stamps! And what better way to record
-        your travels than with free stamps and or stamp rallies. And that is where this app comes in. This app records
-        your stamp progress and helps you find said stamps. Honestly, I have been trying to find an app that does
-        exactly that, but even on the Japanese play store, it seems that such app doesn\'t exist. So why not make it
-        yourself. Am I right?
+    <string name="about_us_intro">はちのっっへ
     </string>
     <string name="how_to_use_the_app">How to use the app</string>
     <string name="help_title">help title</string>
     <string name="help_text">help_text</string>
     <string name="help_description">help description</string>
-    <string name="clear_filters_on_search_cunt">Clear Filters on Search Cunt</string>
-    <string name="nav_bar_explore">Explore</string>
-    <string name="nav_bar_my_stamps">My Stamps</string>
-    <string name="nav_bar_settings">Settings</string>
-    <string name="settings_settings">Settings</string>
-    <string name="settings_clear_image_cache">Clear Image Cache</string>
-    <string name="settings_check_for_updatess">Check for updatess</string>
-    <string name="settings_about">About</string>
-    <string name="settings_select_language">Select Language:</string>
-    <string name="settings_help">Help</string>
+    <string name="clear_filters_on_search_cunt">フィルターを消す</string>
+    <string name="nav_bar_explore">地図</string>
+    <string name="nav_bar_my_stamps">マイスタンプ</string>
+    <string name="nav_bar_settings">設定</string>
+    <string name="settings_settings">設定</string>
+    <string name="settings_clear_image_cache">画像キャッシュを消す</string>
+    <string name="settings_check_for_updatess">アップデートを確認</string>
+    <string name="settings_about">アップについて</string>
+    <string name="settings_select_language">言語選択:</string>
+    <string name="settings_help">ヘルプ</string>
 </resources>

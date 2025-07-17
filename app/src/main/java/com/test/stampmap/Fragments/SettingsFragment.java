@@ -1,10 +1,11 @@
 package com.test.stampmap.Fragments;
 
+import android.content.Context;
+import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.util.Log;
+import android.widget.*;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
@@ -30,7 +31,8 @@ public class SettingsFragment extends Fragment {
     LinearLayout settingsLayout;
 
     TextView about, help, updates;
-
+    View v;
+    ViewGroup c;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -39,9 +41,9 @@ public class SettingsFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-        View v =  inflater.inflate(R.layout.settings_fragment, container, false);
-
+        Log.i("oh no", "creating settings fragment");
+        v =  inflater.inflate(R.layout.settings_fragment, container, false);
+        c = container;
         //get fragment container layout
         settingsFrag = v.findViewById(R.id.settings_frag_container);
         settingsLayout = v.findViewById(R.id.settings_layout);
@@ -68,8 +70,32 @@ public class SettingsFragment extends Fragment {
             UpdateManager updateManager = new UpdateManager(requireContext());
             updateManager.checkForUpdates();
         });
+
+        Spinner spinner = v.findViewById(R.id.language_select);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(requireContext(), R.array.languages, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setSelection(ConfigValue.APP_LOCALE.getValue());
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                MainActivity.setLocale(requireActivity(), position);
+                Log.i("help", "LANGUAGE CHANGED");
+            }
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
        return v;
     }
-
+    @Override
+    public void onConfigurationChanged(@NotNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        Log.i("bum", "THIS GETS CALLED");
+        FrameLayout current = settingsFrag;
+        v = onCreateView((LayoutInflater)requireActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE), c, null);
+        settingsFrag.removeAllViews();
+        settingsFrag = current;
+        settingsFrag.removeAllViews();
+        settingsFrag.addView(settingsLayout);
+    }
 }
 

@@ -1,6 +1,8 @@
 package com.test.stampmap.Fragments.SettingsChild;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import androidx.fragment.app.Fragment;
@@ -10,12 +12,13 @@ import android.view.ViewGroup;
 import androidx.fragment.app.FragmentManager;
 import androidx.navigation.Navigation;
 import com.test.stampmap.R;
+import org.jetbrains.annotations.NotNull;
 
 
 public class AboutFragment extends Fragment {
 
     ImageButton email_btn, github_btn, discord_btn, back_btn;
-
+    View view;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,7 +30,7 @@ public class AboutFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_about, container, false);
+        view = inflater.inflate(R.layout.fragment_about, container, false);
 
 
         email_btn = view.findViewById(R.id.gmail_btn);
@@ -47,5 +50,12 @@ public class AboutFragment extends Fragment {
 //        });
 
         return view;
+    }
+
+    @Override
+    public void onConfigurationChanged(@NotNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        Log.i("bum", "THIS GETS CALLED");
+        view.requestLayout();
     }
 }

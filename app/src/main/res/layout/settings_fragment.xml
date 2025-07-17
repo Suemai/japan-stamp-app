@@ -17,7 +17,7 @@
         <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Settings"
+                android:text="@string/settings_settings"
                 android:textSize="25sp"
                 android:textAlignment="center"
                 android:padding="10dp"
@@ -31,7 +31,7 @@
 
         <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/filterClear"
-                android:text="Clear Filters on Search Cunt"
+                android:text="@string/clear_filters_on_search_cunt"
                 android:layout_marginStart="10dp"
                 android:padding="10dp"
                 android:textSize="18dp"
@@ -44,7 +44,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="10dp"
-                android:text="Clear Image Cache"
+                android:text="@string/settings_clear_image_cache"
                 android:backgroundTint="@color/design_default_color_secondary"
         />
 
@@ -58,7 +58,7 @@
                 android:layout_height="wrap_content"
                 android:padding="10dp"
                 android:layout_marginStart="10dp"
-                android:text="Check for updatess"
+                android:text="@string/settings_check_for_updatess"
                 android:textSize="20dp"
                 android:id="@+id/update_btn"
         />
@@ -67,7 +67,7 @@
         <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="About"
+                android:text="@string/settings_about"
                 android:textSize="20dp"
                 android:padding="10dp"
                 android:layout_marginStart="10dp"
@@ -76,12 +76,32 @@
         <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Help"
+                android:text="@string/settings_help"
                 android:textSize="20dp"
                 android:padding="10dp"
                 android:layout_marginStart="10dp"
                 android:id="@+id/helpPage"
         />
+        <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="20dp"
+                    android:padding="10dp"
+                    android:layout_marginStart="10dp"
+                    android:text="@string/settings_select_language"
+            />
+            <Spinner
+                    android:id="@+id/language_select"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:layout_marginStart="10dp"
+            />
+        </LinearLayout>
 
     </LinearLayout>
 

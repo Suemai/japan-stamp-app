@@ -45,7 +45,7 @@ public class StampInfoFragment extends Fragment {
         backBtn.setOnClickListener(view1 -> Navigation.findNavController(view).popBackStack());
 
         // Retrieve the arguments
-        int[] hashes = getArguments().getIntArray("stamp");
+        int[] hashes = requireArguments().getIntArray("stamp");
         StampSet parentStampSet = StampCollection.getInstance().getStampSetByHash(hashes[0]);
         Stamp stamp = parentStampSet.getStamps().stream().filter(s -> s.hashCode() == hashes[1]).findFirst().orElse(null);
 

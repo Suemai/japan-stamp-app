@@ -2,8 +2,8 @@ package com.test.stampmap.Settings;
 
 public enum ConfigValue {
     // declare config values here
-    CLEAR_FILTERS(true);
-
+    CLEAR_FILTERS(true),
+    APP_LOCALE(0);
 
     private final String name;
     private final Object defaultValue;

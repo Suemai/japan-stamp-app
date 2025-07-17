@@ -1,7 +1,9 @@
 package com.test.stampmap.Dialogues;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,28 +16,36 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityOptionsCompat;
 import androidx.fragment.app.DialogFragment;
+import com.canhub.cropper.CropImageActivity;
+import com.canhub.cropper.CropImageContract;
+import com.canhub.cropper.CropImageContractOptions;
+import com.canhub.cropper.CropImageOptions;
 import com.test.stampmap.Adapter.StampRecyclerAdapter;
 import com.test.stampmap.R;
 import com.test.stampmap.Stamp.StampCollection;
-import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.app.Activity.RESULT_OK;
-
 public class AddStampDialogue extends DialogFragment {
-
-    private static final int SELECT_PICTURE = 200;
 
     private ImageView stampImage;
 
     public static AddStampDialogue.StampAddedEvent event;
 
     private static String base64Image;
+
+    private final ActivityResultLauncher<CropImageContractOptions> cropImage = registerForActivityResult(new CropImageContract(), result -> {
+        if (result.isSuccessful()) {
+            stampImage.setImageURI(result.getUriContent());
+            base64Image = encodeBase64(stampImage);
+        }
+    });
 
     public AddStampDialogue(){}
     public AddStampDialogue(int BodgeTwoElectricBoogaloo){
@@ -82,11 +92,6 @@ public class AddStampDialogue extends DialogFragment {
         return v;
     }
 
-    // Here we will pick image from gallery or camera
-    private void pickFromGallery(Uri uri) {
-        CropImage.activity(uri).setAspectRatio(1, 1).setRequestedSize(400, 400).start(requireContext(), this);
-    }
-
     private String encodeBase64(ImageView image){
         Bitmap bitmap = ((BitmapDrawable) image.getDrawable()).getBitmap();
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -95,43 +100,22 @@ public class AddStampDialogue extends DialogFragment {
         return Base64.getEncoder().encodeToString(bytes);
     }
 
+    private static CropImageOptions getCropImageOptions() {
+        CropImageOptions options = new CropImageOptions();
+        options.imageSourceIncludeCamera = true;
+        options.imageSourceIncludeGallery = true;
+        options.aspectRatioX = 1;
+        options.aspectRatioY = 1;
+        options.activityTitle = "Pick Stamp Image";
+        options.fixAspectRatio = true;
+        options.activityBackgroundColor = Color.alpha(0);
+        return options;
+    }
+
     // this function is triggered when
     // the Select Image Button is clicked
     void imageChooser() {
-
-        // create an instance of the
-        // intent of the type image
-        Intent i = new Intent();
-        i.setType("image/*");
-        i.setAction(Intent.ACTION_GET_CONTENT);
-
-        // pass the constant to compare it
-        // with the returned requestCode
-        startActivityForResult(Intent.createChooser(i, "Select Picture"), SELECT_PICTURE);
-    }
-
-    // this function is triggered when user
-    // selects the image from the imageChooser
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-            CropImage.ActivityResult result = CropImage.getActivityResult(data);
-            if (resultCode == RESULT_OK) {
-                Uri resultUri = result.getUri();
-                stampImage.setImageURI(resultUri);
-                base64Image = encodeBase64(stampImage);
-            }
-        }
-        if (requestCode == SELECT_PICTURE) {
-            if (resultCode == RESULT_OK) {
-                // Get the url of the image from data
-                Uri selectedImageUri = data.getData();
-                if (null != selectedImageUri) {
-                    // update the preview image in the layout
-                    pickFromGallery(selectedImageUri);
-                }
-            }
-        }
+        cropImage.launch(new CropImageContractOptions(null, getCropImageOptions()));
     }
 
     @Override

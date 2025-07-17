@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.*;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -203,7 +204,7 @@ public class ExploreFragment extends Fragment implements MapEventsReceiver {
         searchText.setHintTextColor(hintColor);
         searchText.setTextColor(getResources().getColor(R.color.black, getResources().newTheme()));
         searchText.setOnEditorActionListener((view, actionId, event) -> {
-            if (actionId == EditorInfo.IME_NULL) {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 closeKeyboard();
                 mHandler.postDelayed(() ->  searchBar.clearFocus(), 500);
                 String queryText = searchBar.getQuery().toString();
