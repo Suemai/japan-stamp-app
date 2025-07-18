@@ -130,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
         ConfigValue.APP_LOCALE.setValue(lang.name());
         Locale locale;
         Log.i("my locale", Locale.getDefault().toString());
-        if (lang == SupportedLocale.DEFAULT) locale = Locale.getDefault();
+        if (lang == SupportedLocale.DEFAULT) locale = SupportedLocale.getSupportedLocaleFor(Locale.getDefault()).getLocale();
         else locale = lang.getLocale();
 
         if (firstActivation && Locale.getDefault().equals(locale)) return;
