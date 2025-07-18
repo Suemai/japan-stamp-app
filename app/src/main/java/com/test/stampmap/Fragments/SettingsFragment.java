@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import androidx.navigation.Navigation;
 import com.bumptech.glide.Glide;
 import com.test.stampmap.Activity.MainActivity;
+import com.test.stampmap.Adapter.LanguageSelectAdapter;
 import com.test.stampmap.R;
 import com.test.stampmap.Settings.ConfigValue;
 import com.test.stampmap.Settings.SupportedLocale;
@@ -74,9 +75,8 @@ public class SettingsFragment extends Fragment {
         });
 
         Spinner spinner = v.findViewById(R.id.language_select);
-        List<CharSequence> langs = Arrays.stream(SupportedLocale.values()).map(SupportedLocale::getName).collect(Collectors.toList());
-        langs.set(0, "Default (" + Locale.getDefault().getDisplayLanguage() + ")");
-        ArrayAdapter<CharSequence> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, langs);
+        List<SupportedLocale> locales = Arrays.stream(SupportedLocale.values().clone()).collect(Collectors.toList());
+        LanguageSelectAdapter adapter = new LanguageSelectAdapter(requireContext(), android.R.layout.simple_spinner_item, locales);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         loading = true;
@@ -84,12 +84,8 @@ public class SettingsFragment extends Fragment {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (loading) {
-                    loading = false;
-                    return;
-                }
-                MainActivity.setLocale(requireActivity(), SupportedLocale.values()[position]);
-                Log.i("help", "LANGUAGE CHANGED");
+                if (loading) loading = false;
+                else MainActivity.setLocale(requireActivity(), adapter.locales.get(position));
             }
             public void onNothingSelected(AdapterView<?> parent) {}
         });

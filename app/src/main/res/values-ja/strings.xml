@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">StampMap</string>
+    <string name="app_name">スタマ</string>
     <string name="search">search</string>
     <string name="title_activity_filter_drawer">FilterDrawerActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>

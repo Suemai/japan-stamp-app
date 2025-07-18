@@ -129,14 +129,12 @@ public class MainActivity extends AppCompatActivity {
     private static void setLocale(Activity activity, SupportedLocale lang, boolean firstActivation) {
         ConfigValue.APP_LOCALE.setValue(lang.name());
         Locale locale;
-
+        Log.i("my locale", Locale.getDefault().toString());
         if (lang == SupportedLocale.DEFAULT) locale = Locale.getDefault();
-        else {
-            String [] langtings = lang.getCode().split("_");
-            if (langtings.length > 1) locale = new Locale(langtings[0], langtings[1]);
-            else locale = new Locale(lang.getCode());
-        }
+        else locale = lang.getLocale();
+
         if (firstActivation && Locale.getDefault().equals(locale)) return;
+        Log.i("MainActivity.setLocale", String.format("changing language to %s!", lang.getName()));
         Resources resources = activity.getResources();
         resources.getConfiguration().setLocale(locale);
         resources.updateConfiguration(resources.getConfiguration(), resources.getDisplayMetrics());
