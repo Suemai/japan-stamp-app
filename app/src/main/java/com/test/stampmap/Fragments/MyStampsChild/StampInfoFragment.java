@@ -9,10 +9,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.*;
 import android.view.inputmethod.EditorInfo;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.*;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 import com.google.android.material.textfield.TextInputEditText;
@@ -91,8 +88,8 @@ public class StampInfoFragment extends Fragment {
 
         obtained_btn.setOnClickListener(view13 -> {
             StampCollection.getInstance().setStampObtained(stamp, parentStampSet, !stamp.getIsObtained());
-            if (!stamp.getIsObtained()) obtained.setImageResource(R.drawable.checkbox_foreground);
-            else obtained.setImageResource(R.drawable.checkbox_obtained_foreground);
+            obtained.setImageResource(stamp.getIsObtained() ? R.drawable.checkbox_obtained_foreground : R.drawable.checkbox_foreground);
+            staticDate.setText(stamp.getIsObtained() ? getDateStringForLocale(stamp.getDateObtained()) : "unobtained");
         });
 
         wishlist = view.findViewById(R.id.wishlist_img);
@@ -105,13 +102,7 @@ public class StampInfoFragment extends Fragment {
 
         wishlist_btn.setOnClickListener(view14 -> {
             StampCollection.getInstance().setStampOnWishlist(stamp, parentStampSet, !stamp.getIsOnWishlist());
-            if (!stamp.getIsOnWishlist()) {
-                wishlist.setImageResource(R.drawable.wishlist_star_outline);
-                // do some stuff
-            }else{
-                wishlist.setImageResource(R.drawable.in_wishlist_star);
-                // do more stuff
-            }
+            wishlist.setImageResource(stamp.getIsOnWishlist() ? R.drawable.in_wishlist_star : R.drawable.wishlist_star_outline);
         });
 
         // Stamp image
@@ -121,13 +112,14 @@ public class StampInfoFragment extends Fragment {
         //  Calendar/date stuff
         staticDate = view.findViewById(R.id.static_date);
         if (!stamp.getIsObtained()) staticDate.setText("unobtained");
-        else {
-//            Date date = Date.from(Instant.ofEpochMilli(stamp.getDateObtained()));
-//            DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT, requireContext().getResources().getConfiguration().locale);
-            staticDate.setText(getDateStringForLocale(stamp.getDateObtained()));
-        }
+        else staticDate.setText(getDateStringForLocale(stamp.getDateObtained()));
+
         calendar = view.findViewById(R.id.calendar_btn);
-        calendar.setOnClickListener(view1 -> datePicker(stamp));
+        calendar.setOnClickListener(view1 -> {
+            if (!stamp.getIsObtained()) Toast.makeText(requireContext(), "stamp not obtained", Toast.LENGTH_SHORT).show();
+            else datePicker(stamp);
+        });
+
 
         // TODO i hate this textbox stuff will have to have another mess around with it
         // notes stuff
