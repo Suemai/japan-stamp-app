@@ -8,17 +8,26 @@ import org.json.JSONObject;
 import java.io.Serializable;
 import java.util.*;
 
-public class StampSet implements Iterable<Stamp>, Serializable, SerialisableStamp {
-    private final String name, address, difficulty, openHours, holiday, entryFee;
+public class StampSet implements Iterable<Stamp> {
+    private final String name;
+    private final String address;
+    private final String difficulty;
+    private final String openHours;
+    private final String holiday;
+    private final String entryFee;
     private final List<Stamp> stamps;
+
+    public StampSet() {
+        this("", "", "", "", "", "", new ArrayList<>());
+    }
 
     public StampSet(String name, String address, String difficulty, String openHours, String holiday, String entryFee, List<Stamp> stamps) {
         this.name = name;
         this.address = address;
         this.difficulty = difficulty;
-        this.openHours = !openHours.equals("") ? openHours : "年中無休（仮）";
-        this.holiday = !holiday.equals("") ? holiday : "未確認";
-        this.entryFee = !entryFee.equals("") ? entryFee : "無料（仮）";
+        this.openHours = !openHours.isEmpty() ? openHours : "年中無休（仮）";
+        this.holiday = !holiday.isEmpty() ? holiday : "未確認";
+        this.entryFee = !entryFee.isEmpty() ? entryFee : "無料（仮）";
         this.stamps = stamps;
     }
 

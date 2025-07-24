@@ -10,4 +10,5 @@
     <color name="transparent_white">#00FFFFFF</color>
     <color name="iconColor">#C1BAB2</color>
     <color name="hintColor">#D6D6D6</color>
+    <color name="notesTextColor">#000000</color>
 </resources>

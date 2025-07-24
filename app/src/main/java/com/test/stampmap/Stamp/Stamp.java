@@ -6,10 +6,14 @@ import org.json.JSONObject;
 import org.osmdroid.util.GeoPoint;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Date;
 
-public class Stamp implements Serializable, SerialisableStamp {
-    private final String name, address, location, imageLink;
+public class Stamp {
+    private final String name;
+    private final String address;
+    private final String location;
+    private final String imageLink;
     private final boolean isObtainable;
     private final GeoPoint coordinates;
     private final boolean isCustom;
@@ -17,6 +21,10 @@ public class Stamp implements Serializable, SerialisableStamp {
     private boolean isOnWishlist;
     private long dateObtained;
     private String notes;
+
+    public Stamp() {
+        this("", "", "", "", false, new GeoPoint(0f, 0f), true, false, false, 0, "");
+    }
 
     public Stamp(String name, String address, String location, String imageLink, boolean isObtainable, GeoPoint coordinates, boolean isCustom, boolean isObtained, boolean isOnWishlist, long dateObtained, String notes) {
         this.name = name;
@@ -76,7 +84,12 @@ public class Stamp implements Serializable, SerialisableStamp {
 
     protected void setObtained(boolean value) {
         this.isObtained = value;
-        this.dateObtained = value ? new Date().toInstant().toEpochMilli() : 0;
+        this.dateObtained = value ? LocalDate.now().toEpochDay() : 0;
+    }
+
+    protected void setDateObtained(LocalDate date) {
+        if (!getIsObtained()) dateObtained = 0;
+        else dateObtained = date.toEpochDay();
     }
 
     protected void setOnWishlist(boolean value) {

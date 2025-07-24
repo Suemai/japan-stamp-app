@@ -17,11 +17,20 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 import com.google.android.material.textfield.TextInputEditText;
 import com.test.stampmap.R;
+import com.test.stampmap.Settings.ConfigValue;
+import com.test.stampmap.Settings.SupportedLocale;
 import com.test.stampmap.Stamp.Stamp;
 import com.test.stampmap.Stamp.StampCollection;
 import com.test.stampmap.Stamp.StampSet;
 
+import java.text.DateFormat;
+import java.time.DateTimeException;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.Calendar;
+import java.util.Date;
 
 public class StampInfoFragment extends Fragment {
 
@@ -111,8 +120,14 @@ public class StampInfoFragment extends Fragment {
 
         //  Calendar/date stuff
         staticDate = view.findViewById(R.id.static_date);
+        if (!stamp.getIsObtained()) staticDate.setText("unobtained");
+        else {
+//            Date date = Date.from(Instant.ofEpochMilli(stamp.getDateObtained()));
+//            DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT, requireContext().getResources().getConfiguration().locale);
+            staticDate.setText(getDateStringForLocale(stamp.getDateObtained()));
+        }
         calendar = view.findViewById(R.id.calendar_btn);
-        calendar.setOnClickListener(view1 -> datePicker());
+        calendar.setOnClickListener(view1 -> datePicker(stamp));
 
         // TODO i hate this textbox stuff will have to have another mess around with it
         // notes stuff
@@ -131,7 +146,7 @@ public class StampInfoFragment extends Fragment {
         return view;
     }
 
-    private void datePicker() {
+    private void datePicker(Stamp stamp) {
         Calendar cal = Calendar.getInstance();
         int year = cal.get(Calendar.YEAR);
         int month = cal.get(Calendar.MONTH);
@@ -142,12 +157,30 @@ public class StampInfoFragment extends Fragment {
                 android.R.style.Widget_Holo_CalendarView,
                 (view, year1, month1, day1) -> {
                     // Handle the selected date here
-                    String selectedDate = day1 + "/" + (month1 + 1) + "/" + year1;
-                    staticDate.setText(selectedDate);
+//                    String selectedDate = day1 + "/" + (month1 + 1) + "/" + year1;
+                    LocalDate selectedDate = LocalDate.of(year1, month1 + 1, day1);
+                    StampCollection.getInstance().setStampDateObtained(stamp, selectedDate);
+                    staticDate.setText(getDateStringForLocale(selectedDate));
                 },
                 year, month, day
         );
         datePicker.show();
         datePicker.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+    }
+
+    private String getDateStringForLocale(long epochDay) {
+        try {
+            return getDateStringForLocale(LocalDate.ofEpochDay(epochDay));
+        }
+        catch (DateTimeException e) { // this isn't really necessary but saves you having to force wipe all stamp data
+            Date date = Date.from(Instant.ofEpochMilli(epochDay));
+            DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT, requireContext().getResources().getConfiguration().locale);
+            return df.format(date);
+        }
+    }
+
+    private String getDateStringForLocale(LocalDate date) {
+        DateTimeFormatter format = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT).withLocale(requireContext().getResources().getConfiguration().locale);
+        return date.format(format);
     }
 }

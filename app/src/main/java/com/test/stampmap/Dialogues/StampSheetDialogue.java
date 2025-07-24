@@ -20,16 +20,9 @@ import com.google.android.material.imageview.ShapeableImageView;
 import com.test.stampmap.Adapter.StampRecyclerAdapter;
 import com.test.stampmap.Fragments.ExploreFragment;
 import com.test.stampmap.R;
-import com.test.stampmap.Stamp.SerialisableStamp;
 import com.test.stampmap.Stamp.Stamp;
 import com.test.stampmap.Stamp.StampCollection;
 import com.test.stampmap.Stamp.StampSet;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.function.Consumer;
-
-import static com.test.stampmap.Stamp.SerialisableStamp.deserialise;
 
 public class StampSheetDialogue extends BottomSheetDialogFragment {
 

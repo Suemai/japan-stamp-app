@@ -35,7 +35,6 @@ public class SettingsFragment extends Fragment {
     TextView about, help, updates;
     View v;
     ViewGroup c;
-    boolean loading;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -75,21 +74,13 @@ public class SettingsFragment extends Fragment {
         });
 
         Spinner spinner = v.findViewById(R.id.language_select);
-        List<SupportedLocale> locales = Arrays.stream(SupportedLocale.values().clone()).collect(Collectors.toList());
-        LanguageSelectAdapter adapter = new LanguageSelectAdapter(requireContext(), android.R.layout.simple_spinner_item, locales);
+        LanguageSelectAdapter adapter = new LanguageSelectAdapter(requireContext(), android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
-        loading = true;
         spinner.setSelection(SupportedLocale.getCurrent().ordinal());
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (loading) loading = false;
-                else MainActivity.setLocale(requireActivity(), adapter.locales.get(position));
-            }
-            public void onNothingSelected(AdapterView<?> parent) {}
-        });
-       return v;
+        spinner.setOnItemSelectedListener(adapter.onSelectedListener);
+
+        return v;
     }
     @Override
     public void onConfigurationChanged(@NotNull Configuration newConfig) {

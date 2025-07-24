@@ -21,69 +21,69 @@
     <string name="obtained">Obtained</string>
 
     <string-array name="prefectures">
-        <item>愛知県</item>
-        <item>秋田県</item>
-        <item>青森県</item>
-        <item>千葉県</item>
-        <item>愛媛県</item>
-        <item>福井県</item>
-        <item>福岡県</item>
-        <item>福島県</item>
-        <item>岐阜県</item>
-        <item>群馬県</item>
-        <item>広島県</item>
-        <item>北海道</item>
-        <item>兵庫県</item>
-        <item>茨城県</item>
-        <item>石川県</item>
-        <item>岩手県</item>
-        <item>香川県</item>
-        <item>鹿児島県</item>
-        <item>神奈川県</item>
-        <item>高知県</item>
-        <item>熊本県</item>
-        <item>京都府</item>
-        <item>三重県</item>
-        <item>宮城県</item>
-        <item>宮崎県</item>
-        <item>長野県</item>
-        <item>長崎県</item>
-        <item>奈良県</item>
-        <item>新潟県</item>
-        <item>大分県</item>
-        <item>岡山県</item>
-        <item>沖縄県</item>
-        <item>大阪府</item>
-        <item>佐賀県</item>
-        <item>埼玉県</item>
-        <item>滋賀県</item>
-        <item>島根県</item>
-        <item>静岡県</item>
-        <item>栃木県</item>
-        <item>徳島県</item>
-        <item>東京都</item>
-        <item>鳥取県</item>
-        <item>富山県</item>
-        <item>和歌山県</item>
-        <item>山形県</item>
-        <item>山口県</item>
-        <item>山梨県</item>
+        <item>Aichi</item>
+        <item>Akita</item>
+        <item>Aomori</item>
+        <item>Chiba</item>
+        <item>Ehime</item>
+        <item>Fukui</item>
+        <item>Fukuoka</item>
+        <item>Fukushima</item>
+        <item>Gifu</item>
+        <item>Gunma</item>
+        <item>Hiroshima</item>
+        <item>Hokkaido</item>
+        <item>Hyogo</item>
+        <item>Ibaraki</item>
+        <item>Ishikawa</item>
+        <item>Iwate</item>
+        <item>Kagawa</item>
+        <item>Kagoshima</item>
+        <item>Kanagawa</item>
+        <item>Kochi</item>
+        <item>Kumamoto</item>
+        <item>Kyoto</item>
+        <item>Mie</item>
+        <item>Miyagi</item>
+        <item>Miyazaki</item>
+        <item>Nagano</item>
+        <item>Nagasaki</item>
+        <item>Nara</item>
+        <item>Niigata</item>
+        <item>Oita</item>
+        <item>Okayama</item>
+        <item>Okinawa</item>
+        <item>Osaka</item>
+        <item>Saga</item>
+        <item>Saitama</item>
+        <item>Shiga</item>
+        <item>Shimane</item>
+        <item>Shizuoka</item>
+        <item>Tochigi</item>
+        <item>Tokushima</item>
+        <item>Tokyo</item>
+        <item>Tottori</item>
+        <item>Toyama</item>
+        <item>Wakayama</item>
+        <item>Yamagata</item>
+        <item>Yamaguchi</item>
+        <item>Yamanashi</item>
     </string-array>
 
     <string-array name="difficulties">
-        <item>☆☆☆☆☆（廃止）</item>
-        <item>★☆☆☆☆（容易）</item>
-        <item>★★☆☆☆（普通）</item>
-        <item>★★★☆☆（やや難しい）</item>
-        <item>★★★★☆（難しい）</item>
-        <item>★★★★★（激レア）</item>
+        <item>☆☆☆☆☆（Discontinued）</item>
+        <item>★☆☆☆☆（Easy）</item>
+        <item>★★☆☆☆（Normal）</item>
+        <item>★★★☆☆（Slightly Hard）</item>
+        <item>★★★★☆（Hard）</item>
+        <item>★★★★★（Very Rare）</item>
     </string-array>
 
     <string-array name="searchtype">
-        <item>名前</item>
-        <item>住所</item>
-        <item>両方</item>
-        <item>なし</item>
+        <item>Name</item>
+        <item>Address</item>
+        <item>Both</item>
+        <item>Nothing</item>
     </string-array>
 
     <string-array name="disance_units">
@@ -92,9 +92,9 @@
     </string-array>
 
     <string-array name="entryfee">
-        <item>無料</item>
-        <item>入場料あり</item>
-        <item>両方</item>
+        <item>Free</item>
+        <item>Has Entry Fee</item>
+        <item>Both</item>
     </string-array>
 
     <string-array name="stamptype">
@@ -180,4 +180,5 @@
         (station) / kannkou (tourist) sutanpu wa doko desu ka? does the trick.\nAnd with that, go and stamp \'em all!
         ＼(≧▽≦)／ \n [insert red pointing at you to go catch \'em all]
     </string>
+    <string name="sys_lang">System</string>
 </resources>

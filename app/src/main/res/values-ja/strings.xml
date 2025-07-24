@@ -131,4 +131,5 @@
     <string name="help_difficulty_system_title">「星」という難易度制度</string>
     <string name="help_custom_stamp_title">カスタムスタンプやスタンプセットの作り方</string>
     <string name="help_tips_title">役に立つヒントやコツ</string>
+    <string name="sys_lang">システム</string>
 </resources>

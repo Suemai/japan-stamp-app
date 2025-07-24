@@ -38,16 +38,14 @@ public class MainActivity extends AppCompatActivity {
     public static List<IFilter> filters = new ArrayList<>();
     Fragment currentFragment;
     public static int paddedStatusBarHeight;
-    private static boolean appStartup = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         UserSettings.setUserSettings((UserSettings) getApplication());
         loadSharedPreferences();
-        if (appStartup) Log.i("DEFAULT LOCALE", Locale.getDefault().getDisplayLanguage());
-        if (appStartup) setLocale(this, SupportedLocale.getCurrent());
+        Log.i("DEFAULT LOCALE", Locale.getDefault().getDisplayLanguage());
+        setLocale(this, SupportedLocale.getCurrent(), true);
         super.onCreate(savedInstanceState);
-        appStartup = false;
 
         //handle permissions first
         Context ctx = getApplicationContext();
@@ -124,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public static void setLocale(Activity activity, SupportedLocale lang){
-        setLocale(activity, lang, appStartup);
+        setLocale(activity, lang, false);
     }
     private static void setLocale(Activity activity, SupportedLocale lang, boolean firstActivation) {
         ConfigValue.APP_LOCALE.setValue(lang.name());

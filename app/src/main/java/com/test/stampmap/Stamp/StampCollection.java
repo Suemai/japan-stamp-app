@@ -19,6 +19,7 @@ import org.json.JSONObject;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
@@ -29,6 +30,7 @@ public class StampCollection {
     private static final String STAMP_FILE = "all-stamps-coords.json";
 
     private static final StampCollection instance = new StampCollection();
+    private boolean initialised = false;
 
     private final HashMap<Integer, StampSet> allStamps = new HashMap<>();
     private final HashMap<Integer, StampSet> userStampData = new HashMap<>();
@@ -69,6 +71,8 @@ public class StampCollection {
     }
 
     public void load(Application application){
+        if (initialised) return;
+        initialised = true;
         this.app = application;
         JSONArray stampList = loadJSONArrayFromAsset(application.getApplicationContext());
         allStamps.clear();
@@ -83,7 +87,7 @@ public class StampCollection {
         ObjectInputStream objIn;
         try (FileInputStream in = app.getApplicationContext().openFileInput(SAVE_FILE_NAME)){
             objIn = new ObjectInputStream(in);
-            this.userStampData.putAll(deserialiseUserStampData((String)objIn.readObject()));
+            this.userStampData.putAll(StampSerialiser.deserialiseStamps((String)objIn.readObject()));
             allStamps.putAll(userStampData);
         } catch (IOException | ClassNotFoundException ignored) {}
     }
@@ -93,31 +97,10 @@ public class StampCollection {
             ObjectOutputStream objOut;
             try (FileOutputStream out = app.getApplicationContext().openFileOutput(SAVE_FILE_NAME, Activity.MODE_PRIVATE)){
                 objOut = new ObjectOutputStream(out);
-                objOut.writeObject(serialiseUserStampData());
+                objOut.writeObject(StampSerialiser.serialiseStamps(this.userStampData));
                 out.getFD().sync();
             } catch (IOException ignored) {}
         });
-    }
-
-    private String serialiseUserStampData(){
-        JSONArray array = new JSONArray();
-        for (StampSet stampSet : this.userStampData.values()) array.put(stampSet.serialise());
-        return array.toString();
-    }
-
-    private HashMap<Integer, StampSet> deserialiseUserStampData(String stampData){
-        HashMap<Integer, StampSet> newUserStampData = new HashMap<>();
-        try {
-            JSONArray array = new JSONArray(stampData);
-            for (int i=0; i<array.length(); i++){
-                JSONObject jsonStampSet = array.getJSONObject(i);
-                StampSet stampSet = (StampSet) SerialisableStamp.deserialise(jsonStampSet);
-                if (stampSet != null) newUserStampData.put(stampSet.hashCode(), stampSet);
-            }
-        }catch (JSONException e){
-            Log.i("ERROR", "oh dear no user data for you");
-        }
-        return newUserStampData;
     }
 
     public void setStampObtained(Stamp stamp, StampSet stampSet, boolean value){
@@ -126,6 +109,12 @@ public class StampCollection {
         else removeIfNecessary(stampSet, StampSet::getContainsCustomData);
         saveMyStamps();
         for (Receiver.MyStampsUpdateReceiver callback : myStampsUpdateCallback) callback.onMyStampsUpdate();
+    }
+
+    public void setStampDateObtained(Stamp stamp, LocalDate date) {
+        if (!stamp.getIsObtained()) return;
+        stamp.setDateObtained(date);
+        saveMyStamps();
     }
 
     public void setStampOnWishlist(Stamp stamp, StampSet stampSet, boolean value){

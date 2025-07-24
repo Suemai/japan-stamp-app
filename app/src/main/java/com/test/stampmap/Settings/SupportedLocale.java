@@ -5,7 +5,7 @@ import java.util.Locale;
 
 public enum SupportedLocale {
     DEFAULT("Default", Locale.ROOT),
-    ENGLISH("English", Locale.ENGLISH),
+    ENGLISH("English", Locale.UK),
     JAPANESE("日本語", Locale.JAPANESE),
     CHINESE_SIMPLIFIED("中文（简体）", Locale.SIMPLIFIED_CHINESE);
 
