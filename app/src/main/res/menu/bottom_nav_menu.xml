@@ -9,7 +9,7 @@
     <item
             android:title="@string/nav_bar_my_stamps"
             android:id="@+id/myStampsFragment"
-            android:icon="@drawable/mystamps_foreground"
+            android:icon="@drawable/my_stamps_foreground"
     />
     <item
             android:title="@string/nav_bar_settings"
