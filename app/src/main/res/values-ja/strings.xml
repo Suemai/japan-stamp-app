@@ -14,11 +14,11 @@
     <string name="menu_slideshow">Slideshow</string>
     <string name="something">something</string>
     <string name="filter_button">filter button</string>
-    <string name="distance">Distance</string>
-    <string name="prefecture">Prefecture</string>
+    <string name="distance">距離</string>
+    <string name="prefecture">都道府県</string>
     <string name="gotten">Gotten</string>
-    <string name="not_obtained">Not Obtained</string>
-    <string name="obtained">Obtained</string>
+    <string name="not_obtained">未獲得</string>
+    <string name="obtained">獲得済</string>
 
     <string-array name="prefectures">
         <item>愛知県</item>
@@ -106,11 +106,11 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="wishlist">Wishlist</string>
+    <string name="wishlist">希望</string>
     <string name="stamp_name">stamp name</string>
     <string name="custom">custom</string>
-    <string name="Custom">Custom</string>
-    <string name="about_us">About Us</string>
+    <string name="Custom">カスタム</string>
+    <string name="about_us">私たちについて</string>
     <string name="how_to_use_the_app">How to use the app</string>
     <string name="help_title">help title</string>
     <string name="help_text">help_text</string>

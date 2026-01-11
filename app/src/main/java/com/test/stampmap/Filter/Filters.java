@@ -225,7 +225,7 @@ public class Filters {
             switch (this.value){
                 case "owned":
                     return StampCollection.getInstance().getMyStamps().contains(stampSet);
-                case "nowowned":
+                case "notowned":
                     return !StampCollection.getInstance().getMyStamps().contains(stampSet);
                 case "onwishlist":
                     return StampCollection.getInstance().getWishlist().contains(stampSet);
