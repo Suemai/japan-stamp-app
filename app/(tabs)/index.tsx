@@ -1,9 +1,10 @@
 import React, {useRef, useState} from "react";
 import {Camera, MapView, UserLocation} from "@maplibre/maplibre-react-native";
-import {View, StyleSheet, Image, Pressable} from "react-native";
+import {View, StyleSheet, Image, Pressable, Keyboard} from "react-native";
+import SearchBar from "@/components/searchBar";
+import {useRouter} from "expo-router";
 
 /* Todo:
-- search bar on top
 - button for reporting a stamp on bottom left
 - button under search bar for search this area
  -> button to filter stamps by category
@@ -15,6 +16,7 @@ export default function Index() {
     const cameraRef = useRef<any>(null);
     const [userLocation, setUserLocation] = useState<any>(null);
     const [following, setFollowing] = useState(true);
+    // const router = useRouter();
 
     const recenterIcon = require("../../assets/images/icons/location-target.png");
 
@@ -32,6 +34,7 @@ export default function Index() {
     
     
   return (
+      <Pressable style={{flex: 1}} onPress={Keyboard.dismiss}>
       <View style={{flex: 1}}>
           <MapView
               ref = {mapRef}
@@ -40,7 +43,7 @@ export default function Index() {
               // logoEnabled = {true}
               compassEnabled = {true}
               compassViewPosition = {0}
-              compassViewMargins = {{x: 15, y: 100}}
+              compassViewMargins = {{x: 15, y: 120}}
               localizeLabels = {true}
               attributionEnabled = {true}
               attributionPosition = {{bottom: 10, left: 15}}
@@ -72,7 +75,14 @@ export default function Index() {
                   source={recenterIcon}
                   style={styles.icon}/>
           </Pressable>
-    </View>
+
+          <View
+              className="absolute top-16 left-4 right-4 z-10">
+              <SearchBar
+              placeholder={"Search for a stamp"}/>
+          </View>
+        </View>
+      </Pressable>
   );
 }
 
