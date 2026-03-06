@@ -1,36 +1,38 @@
-import {Text, Pressable} from 'react-native';
+import { Image, Pressable } from 'react-native';
 
 /* Todo:
 - make button actually pressable, maybe with a bit on animation
-- logic for searching and fetching stamps in the area
+- logic for adding stamps
 */
 
-const SearchArea = () => {
+const ReportStamp = () => {
+
+    const reportIcon = require("../assets/images/icons/validate-stamp.png");
 
     return (
         <Pressable
             onPress={() => {}}
             style={{
-                flexDirection: 'row',
                 alignItems: 'center',
                 justifyContent: 'center',
                 alignSelf: 'center',
                 backgroundColor: '#ffffff',
-                borderRadius: 50,
-                paddingHorizontal: 20,
-                paddingVertical: 10,
+                borderRadius: 12,
+                width: '100%',
+                height: '100%',
                 shadowColor: '#000',
                 shadowOffset: { width: 0, height: 2 },
                 shadowOpacity: 0.18,
                 shadowRadius: 6,
                 elevation: 5,
-                marginTop:5
             }}>
-            <Text style={{ color: '#399FC6', fontWeight: '600', fontSize: 14 }}>
-                Search this area
-            </Text>
+            <Image source={reportIcon}
+                   resizeMode="contain"
+                   tintColor="#000"
+                   style={{
+                       width: '60%',
+                       height: '60%'}}/>
         </Pressable>
     );
 }
-
-export default SearchArea;
+export default ReportStamp;

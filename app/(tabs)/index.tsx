@@ -3,11 +3,12 @@ import {Camera, MapView, UserLocation} from "@maplibre/maplibre-react-native";
 import {View, StyleSheet, Image, Pressable, Keyboard} from "react-native";
 import SearchBar from "@/components/searchBar";
 import {useRouter} from "expo-router";
+import SearchArea from "@/components/searchArea";
+import ReportStamp from "@/components/reportStamps";
 
 /* Todo:
-- button for reporting a stamp on bottom left
-- button under search bar for search this area
- -> button to filter stamps by category
+- button under search bar for search this area - DONE
+ -> button to filter stamps by category - NOT DONE
 */
 
 export default function Index() {
@@ -68,6 +69,10 @@ export default function Index() {
               </UserLocation>
           </MapView>
 
+          <View style={styles.reportButton}>
+              <ReportStamp/>
+          </View>
+
           <Pressable
           style={styles.recenter}
           onPress={currentLocationHandler}>
@@ -80,6 +85,7 @@ export default function Index() {
               className="absolute top-16 left-4 right-4 z-10">
               <SearchBar
               placeholder={"Search for a stamp"}/>
+              <SearchArea/>
           </View>
         </View>
       </Pressable>
@@ -107,5 +113,12 @@ const styles = StyleSheet.create({
         width: 25,
         height: 25,
         tintColor: "#000",
+    },
+    reportButton: {
+        position: "absolute",
+        bottom: 155,
+        right: 16,
+        height: 48,
+        width: 48
     }
 });
