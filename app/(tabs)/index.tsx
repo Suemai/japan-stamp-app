@@ -16,14 +16,14 @@ export default function Index() {
     const mapRef = useRef(null)
     const cameraRef = useRef<any>(null);
     const [userLocation, setUserLocation] = useState<any>(null);
-    const [following, setFollowing] = useState(true);
+    const [following] = useState(true);
+    const [heading, setHeading] = useState(0);
     // const router = useRouter();
 
     const recenterIcon = require("../../assets/images/icons/location-target.png");
 
     const currentLocationHandler = () => {
         if (!userLocation) return;
-        setFollowing(true);
         cameraRef.current?.setCamera({
             centerCoordinate: [userLocation.longitude, userLocation.latitude],
             zoomLevel: 20,
@@ -31,11 +31,11 @@ export default function Index() {
             animationMode: "flyTo",
             animationDuration: 600,
         });
+        // setFollowing(true);
     }
     
     
   return (
-      <Pressable style={{flex: 1}} onPress={Keyboard.dismiss}>
       <View style={{flex: 1}}>
           <MapView
               ref = {mapRef}
@@ -49,6 +49,11 @@ export default function Index() {
               attributionEnabled = {true}
               attributionPosition = {{bottom: 10, left: 15}}
               rotateEnabled = {true}
+              onPress={() => Keyboard.dismiss()}
+              onRegionDidChange={(region) => {
+                  //console.log("region changed, heading:", region.properties.heading);
+                  setHeading(region.properties.heading);
+              }}
               >
 
               <Camera
@@ -87,8 +92,21 @@ export default function Index() {
               placeholder={"Search for a stamp"}/>
               <SearchArea/>
           </View>
+
+          {heading !== 0 && (
+              <Pressable
+                  onPress={() => {
+                      console.log("compass pressed")
+                      cameraRef.current?.setCamera({
+                          heading: 0,
+                          animationDuration: 600
+                      });
+                  }}
+                  style={styles.compass}
+                  />
+          )}
+
         </View>
-      </Pressable>
   );
 }
 
@@ -120,5 +138,14 @@ const styles = StyleSheet.create({
         right: 16,
         height: 48,
         width: 48
+    },
+    compass:{
+        position: "absolute",
+        top: 120,
+        left: 16,
+        width: 45,
+        height: 45,
+        zIndex: 10,
+        // backgroundColor: 'rgba(255, 0, 0, 0.5)'  // To see it covers the compass comment it out later
     }
 });

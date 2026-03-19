@@ -17,7 +17,7 @@ const ReportStamp = () => {
                 justifyContent: 'center',
                 alignSelf: 'center',
                 backgroundColor: '#ffffff',
-                borderRadius: 12,
+                borderRadius: 20,
                 width: '100%',
                 height: '100%',
                 shadowColor: '#000',

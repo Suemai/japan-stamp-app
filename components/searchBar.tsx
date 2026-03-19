@@ -20,7 +20,7 @@ const SearchBar = ({placeholder}:Props) => {
             paddingHorizontal: 15,
             paddingVertical: 8
         }}>
-            <Image source={searchIcon} className="size-5" resizeMode="contain" tintColor="#ab8bff"/>
+            <Image source={searchIcon} style={{ width: 20, height: 20}} resizeMode="contain" tintColor="#ab8bff" />
             <TextInput
                 onPress={() => {}}
                 placeholder={placeholder}
