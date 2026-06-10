@@ -5,7 +5,7 @@ import {PLACEHOLDER_LOCATIONS} from "@/data/tempData";
 export default function Obtained() {
     return (
         <FlatList
-            data={PLACEHOLDER_LOCATIONS}
+            data={PLACEHOLDER_LOCATIONS.filter(s => s.obtained)}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
                 <StampCard
@@ -25,6 +25,7 @@ export default function Obtained() {
                 paddingTop: 40,
                 paddingLeft: 10,
                 paddingRight: 10,
+                paddingBottom: 85
             }}
         >
         </FlatList>

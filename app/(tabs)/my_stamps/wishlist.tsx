@@ -1,14 +1,34 @@
-import {Text, View} from 'react-native';
+import {FlatList, Text, View} from 'react-native';
+import {PLACEHOLDER_LOCATIONS} from "@/data/tempData";
+import StampCard from "@/components/stampCard";
 
 const Wishlist = ()=> {
     return (
-        <View style={{
-            flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center'
-        }}>
-            <Text>Wishlist</Text>
-        </View>
+        <FlatList
+            data={PLACEHOLDER_LOCATIONS.filter(s => s.wishlisted)}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={({ item }) => (
+                <StampCard
+                    id={item.id}
+                    name = {item.name}
+                    imageUri = {item.image}
+                />
+            )}
+            numColumns={3}
+            columnWrapperStyle={{
+                justifyContent: 'flex-start',
+                gap: 20,
+                padding: 5,
+                marginBottom: 10
+            }}
+            contentContainerStyle={{
+                paddingTop: 40,
+                paddingLeft: 10,
+                paddingRight: 10,
+                paddingBottom: 85
+            }}
+        >
+        </FlatList>
     )
 }
 
