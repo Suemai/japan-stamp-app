@@ -3,9 +3,14 @@ import {PLACEHOLDER_LOCATIONS} from "@/data/tempData";
 import StampCard from "@/components/stampCard";
 
 const Wishlist = ()=> {
+
+    const sortedLocations = [...PLACEHOLDER_LOCATIONS].sort((a, b) =>
+        a.name.localeCompare(b.name)
+    );
+
     return (
         <FlatList
-            data={PLACEHOLDER_LOCATIONS.filter(s => s.wishlisted)}
+            data={sortedLocations.filter(s => s.wishlisted)}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
                 <StampCard

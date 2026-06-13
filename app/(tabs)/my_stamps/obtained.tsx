@@ -3,9 +3,14 @@ import StampCard from "@/components/stampCard";
 import {PLACEHOLDER_LOCATIONS} from "@/data/tempData";
 
 export default function Obtained() {
+
+    const sortedLocations = [...PLACEHOLDER_LOCATIONS].sort((a, b) =>
+        a.name.localeCompare(b.name)
+    );
+
     return (
         <FlatList
-            data={PLACEHOLDER_LOCATIONS.filter(s => s.obtained)}
+            data={sortedLocations.filter(s => s.obtained)}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
                 <StampCard

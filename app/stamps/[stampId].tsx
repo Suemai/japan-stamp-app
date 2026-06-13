@@ -1,8 +1,10 @@
-import {View, Text, Image, StyleSheet, TextInput, ScrollView} from 'react-native'
+import {View, Text, Image, StyleSheet, TextInput, ScrollView, Platform, TouchableOpacity} from 'react-native'
 import React, {useState} from 'react'
 import { TabView, TabBar, SceneRendererProps, NavigationState } from "react-native-tab-view";
 import {useLocalSearchParams, useRouter} from "expo-router";
 import {PLACEHOLDER_LOCATIONS} from "@/data/tempData";
+import DateTimePicker, { DateTimePickerEvent } from "@react-native-community/datetimepicker";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 /* The page that shows details of the stamp, not the stamp set!
 TODO:
@@ -10,8 +12,8 @@ TODO:
 
 - This is basically your bit partner!
 - Fetch data from database to display it here
--> will be temp data for now
-
+-> will only display temp data for now
+    -> any data that is changed in this page on the user side won't be saved and needs logic to handle the saves
  */
 
 type RouteKey = "notes" | "comments";
@@ -21,11 +23,80 @@ type Route = {
     title: string;
 };
 
-const NotesTab = ({ notes, onChangeNotes }: { notes: string; onChangeNotes: (v: string) => void }) => (
-    <ScrollView
-        style={styles.scene}
-        contentContainerStyle={styles.sceneContent}
-        keyboardShouldPersistTaps="handled">
+const NotesTab = ({
+                      notes,
+                      onChangeNotes,
+                      dateObtained,
+                      onChangeDateObtained,
+                      obtained,
+}: {
+    notes: string;
+    onChangeNotes: (v: string) => void;
+    dateObtained: Date;
+    onChangeDateObtained: (d: Date) => void;
+    obtained: boolean;
+}) => {
+    const [showPicker, setShowPicker] = useState(false);
+
+    const handleChange = (_event: DateTimePickerEvent, selected?: Date) => {
+        // Android bit
+        if (Platform.OS === "android") setShowPicker(false);
+        if (selected) onChangeDateObtained(selected);
+    };
+
+    return(
+        <ScrollView
+            style={styles.scene}
+            contentContainerStyle={styles.sceneContent}
+            keyboardShouldPersistTaps="handled">
+
+            <View style={styles.dateRow}>
+                <Text style={styles.dateLabel}>Date obtained</Text>
+                <View style={styles.dateRight}>
+                    <Text style={[styles.dateValue, !obtained && styles.dateValueUnobtained]}>
+                        {obtained
+                            ? dateObtained.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })
+                            : "Unobtained"}
+                    </Text>
+                    {obtained && (
+                        <TouchableOpacity
+                            onPress={() => setShowPicker(true)}
+                            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                            style={styles.dateIconButton}>
+
+                            <MaterialCommunityIcons name="calendar-edit" size={18} color="#888" />
+                        </TouchableOpacity>
+                        )}
+                </View>
+            </View>
+
+            {/* iOS */}
+            {showPicker && Platform.OS === "ios" && (
+                <View style={styles.iosPickerWrapper}>
+                    <DateTimePicker
+                        value={dateObtained}
+                        mode="date"
+                        display="inline"
+                        onChange={handleChange}
+                        maximumDate={new Date()}
+                        locale="en-GB"
+                    />
+                    <TouchableOpacity style={styles.iosDoneButton} onPress={() => setShowPicker(false)}>
+                        <Text style={styles.iosDoneText}>Done</Text>
+                    </TouchableOpacity>
+                </View>
+            )}
+
+            {/* Android */}
+            {showPicker && Platform.OS === "android" && (
+                <DateTimePicker
+                    value={dateObtained}
+                    mode="date"
+                    display="default"
+                    onChange={handleChange}
+                    maximumDate={new Date()}
+                />
+            )}
 
         <TextInput
             style={styles.notesInput}
@@ -37,7 +108,8 @@ const NotesTab = ({ notes, onChangeNotes }: { notes: string; onChangeNotes: (v: 
             textAlignVertical="top"
         />
     </ScrollView>
-);
+    );
+};
 
 const CommentsTab = () => (
     <ScrollView
@@ -64,11 +136,6 @@ const StampHeader = ({ stamp }: { stamp: any }) => (
             </View>
 
             <View style={styles.headerRow}>
-                <Text style={styles.headerLabel}>Availability</Text>
-                <Text style={styles.headerValue}>{stamp.availability ?? "—"}</Text>
-            </View>
-
-            <View style={styles.headerRow}>
                 <Text style={styles.headerLabel}>Hours</Text>
                 <Text style={styles.headerValue}>{stamp.openingHours}</Text>
             </View>
@@ -77,12 +144,72 @@ const StampHeader = ({ stamp }: { stamp: any }) => (
                 <Text style={styles.headerLabel}>Holiday</Text>
                 <Text style={styles.headerValue}>{stamp.holiday}</Text>
             </View>
-
-            <View style={styles.headerRow}>
-                <Text style={styles.headerLabel}>Fee</Text>
-                <Text style={styles.headerValue}>{stamp.fee}</Text>
-            </View>
         </View>
+    </View>
+);
+
+type StatsRowProps = {
+    fee: string | number;
+    availability: boolean | undefined;
+    obtained: boolean;
+    wishlisted: boolean;
+    onToggleObtained: () => void;
+    onToggleWishlisted: () => void;
+};
+
+const StatsRow = ({
+                      fee,
+                      availability,
+                      obtained,
+                      wishlisted,
+                      onToggleObtained,
+                      onToggleWishlisted,
+                  }: StatsRowProps) => (
+    <View style={styles.statsRow}>
+
+        <View style={styles.statItem}>
+            <MaterialCommunityIcons
+                name="cash"
+                size={22}
+                color="#888"
+            />
+            <Text style={styles.statLabel}>
+                {fee != null ? `${fee}` : "—"}
+            </Text>
+        </View>
+
+        <View style={styles.statItem}>
+            <MaterialCommunityIcons
+                name={availability ? "check-bold" : "close-thick"}
+                size={22}
+                color={availability ? "#3bc837" : "#fb0422"}
+            />
+            <Text style={styles.statLabel}>
+                {availability === true ? "Available" : availability === false ? "Unavailable" : "—"}
+            </Text>
+        </View>
+
+        <TouchableOpacity style={styles.statItem} onPress={onToggleObtained} activeOpacity={0.7}>
+            <MaterialCommunityIcons
+                name={obtained ? "check-circle" : "check-circle-outline"}
+                size={22}
+                color={obtained ? "#4caf50" : "#bbb"}
+            />
+            <Text style={[styles.statLabel, obtained && styles.statLabel]}>
+                Obtained
+            </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.statItem} onPress={onToggleWishlisted} activeOpacity={0.7}>
+            <MaterialCommunityIcons
+                name={wishlisted ? "heart" : "heart-outline"}
+                size={22}
+                color={wishlisted ? "#e53935" : "#bbb"}
+            />
+            <Text style={[styles.statLabel, wishlisted && styles.statLabel]}>
+                Wishlist
+            </Text>
+        </TouchableOpacity>
     </View>
 );
 
@@ -100,7 +227,7 @@ const StampDetails = () => {
     const [obtained, setObtained] = useState(stamp?.obtained ?? false);
     const [wishlisted, setWishlisted] = useState(stamp?.wishlisted ?? false);
     const [notes, setNotes] = useState(stamp?.notes ?? '');
-    const [dateObtained, setDateObtained] = useState(stamp?.dateObtained ?? new Date());
+    const [dateObtained, setDateObtained] = useState<Date>(stamp?.dateObtained ?? new Date());
     const [tabIndex, setTabIndex] = useState(0);
 
     if (!stamp) {
@@ -113,9 +240,14 @@ const StampDetails = () => {
     const renderScene = ({ route }: { route: Route }) => {
         switch (route.key) {
             case "notes":
-                return <NotesTab notes={notes} onChangeNotes={setNotes} />;
+                return <NotesTab
+                    dateObtained={dateObtained}
+                    onChangeDateObtained={setDateObtained}
+                    notes={notes}
+                    onChangeNotes={setNotes}
+                    obtained={obtained}/>
             case "comments":
-                return <CommentsTab />;
+                return <CommentsTab />
             default:
                 return null;
         }
@@ -137,6 +269,15 @@ const StampDetails = () => {
     return (
         <View style={styles.screen}>
             <StampHeader stamp={stamp} />
+
+            <StatsRow
+                fee={stamp.fee}
+                availability={stamp.available}
+                obtained={obtained}
+                wishlisted={wishlisted}
+                onToggleObtained={() => setObtained(v => !v)}
+                onToggleWishlisted={() => setWishlisted(v => !v)}
+            />
 
             <TabView
                 navigationState={{ index: tabIndex, routes }}
@@ -200,6 +341,24 @@ const styles = StyleSheet.create({
         color: "#444",
         flex: 1,
     },
+    statsRow: {
+        flexDirection: "row",
+        paddingVertical: 12,
+        paddingHorizontal: 8,
+        borderBottomWidth: StyleSheet.hairlineWidth,
+        borderBottomColor: "#e0e0e0",
+        backgroundColor: "#fff",
+    },
+    statItem: {
+        flex: 1,
+        alignItems: "center",
+        gap: 4,
+    },
+    statLabel: {
+        fontSize: 12,
+        color: "#111",
+        textAlign: "center",
+    },
     tabBar: {
         backgroundColor: "#fff",
         borderBottomWidth: StyleSheet.hairlineWidth,
@@ -222,6 +381,55 @@ const styles = StyleSheet.create({
     sceneContent: {
         padding: 16,
         flexGrow: 1,
+    },
+    dateRow: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        paddingVertical: 12,
+        borderBottomWidth: StyleSheet.hairlineWidth,
+        borderBottomColor: "#e0e0e0",
+        marginBottom: 16,
+    },
+    dateLabel: {
+        fontSize: 13,
+        color: "#888",
+    },
+    dateValue: {
+        fontSize: 13,
+        color: "#111",
+        fontWeight: "500",
+    },
+    dateValueUnobtained: {
+        color: "#bbb",
+        fontWeight: "400",
+    },
+    dateRight: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 8,
+    },
+    dateIconButton: {
+        padding: 2,
+    },
+    iosPickerWrapper: {
+        marginBottom: 16,
+        borderRadius: 12,
+        overflow: "hidden",
+        borderWidth: StyleSheet.hairlineWidth,
+        borderColor: "#e0e0e0",
+    },
+    iosDoneButton: {
+        padding: 12,
+        alignItems: "flex-end",
+        borderTopWidth: StyleSheet.hairlineWidth,
+        borderTopColor: "#e0e0e0",
+        backgroundColor: "#fafafa",
+    },
+    iosDoneText: {
+        fontSize: 14,
+        color: "#111",
+        fontWeight: "500",
     },
     notesInput: {
         flex: 1,

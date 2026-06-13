@@ -16,6 +16,7 @@ Features include:
 - Community report of stamps
 - Smoother searching and filtering
 - Cross-platform support (iOS, Android and web!)
+- Stamp rallies
 - More to come when I have more ideas!
 
 

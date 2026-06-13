@@ -3,9 +3,13 @@ import StampCard from "@/components/stampCard";
 import {PLACEHOLDER_LOCATIONS} from "@/data/tempData";
 
 export default function Stamps() {
+    const sortedLocations = [...PLACEHOLDER_LOCATIONS].sort((a, b) =>
+        a.name.localeCompare(b.name)
+    );
+
     return (
         <FlatList
-            data={PLACEHOLDER_LOCATIONS}
+            data={sortedLocations}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
                 <StampCard
@@ -25,6 +29,7 @@ export default function Stamps() {
                 paddingTop: 40,
                 paddingLeft: 10,
                 paddingRight: 10,
+                paddingBottom: 85
             }}
         >
         </FlatList>
