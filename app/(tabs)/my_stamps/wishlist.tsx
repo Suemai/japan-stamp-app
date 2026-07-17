@@ -27,7 +27,7 @@ const Wishlist = ()=> {
                 marginBottom: 10
             }}
             contentContainerStyle={{
-                paddingTop: 40,
+                paddingTop: 20,
                 paddingLeft: 10,
                 paddingRight: 10,
                 paddingBottom: 85

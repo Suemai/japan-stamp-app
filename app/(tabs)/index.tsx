@@ -5,6 +5,7 @@ import SearchBar from "@/components/searchBar";
 import {useRouter} from "expo-router";
 import SearchArea from "@/components/searchArea";
 import ReportStamp from "@/components/reportStamps";
+import {colours} from "@/constants/colours";
 
 /* Todo:
 - button under search bar for search this area - DONE
@@ -118,7 +119,7 @@ const styles = StyleSheet.create({
         width: 48,
         height: 48,
         borderRadius: 12,
-        backgroundColor: "#fff",
+        backgroundColor: colours.primary.background,
         alignItems: "center",
         justifyContent: "center",
         shadowColor: "#000",
@@ -130,7 +131,7 @@ const styles = StyleSheet.create({
     icon: {
         width: 25,
         height: 25,
-        tintColor: "#000",
+        tintColor: colours.primary.light,
     },
     reportButton: {
         position: "absolute",

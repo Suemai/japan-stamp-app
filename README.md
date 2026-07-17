@@ -16,7 +16,6 @@ Features include:
 - Community report of stamps
 - Smoother searching and filtering
 - Cross-platform support (iOS, Android and web!)
-- Stamp rallies
 - More to come when I have more ideas!
 
 
@@ -36,6 +35,7 @@ In later iterations, we plan to add:
 - A thumbs up / thumbs down voting system
 - User comments on stamp reports
 - Community-based verification of stamp existence
+- Stamp rallies
 
 ### Impact on the App
 

@@ -178,6 +178,7 @@ const StatsRow = ({
             </Text>
         </View>
 
+        {/* Availability */}
         <View style={styles.statItem}>
             <MaterialCommunityIcons
                 name={availability ? "check-bold" : "close-thick"}
@@ -189,6 +190,7 @@ const StatsRow = ({
             </Text>
         </View>
 
+        {/* Obtained */}
         <TouchableOpacity style={styles.statItem} onPress={onToggleObtained} activeOpacity={0.7}>
             <MaterialCommunityIcons
                 name={obtained ? "check-circle" : "check-circle-outline"}
@@ -200,6 +202,7 @@ const StatsRow = ({
             </Text>
         </TouchableOpacity>
 
+        {/* Wishlist */}
         <TouchableOpacity style={styles.statItem} onPress={onToggleWishlisted} activeOpacity={0.7}>
             <MaterialCommunityIcons
                 name={wishlisted ? "heart" : "heart-outline"}

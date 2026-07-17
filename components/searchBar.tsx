@@ -1,5 +1,7 @@
 import {View, Image, TextInput} from 'react-native';
 import React from 'react';
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import {FontAwesome6} from "@expo/vector-icons";
 
 interface Props {
     placeholder: string;
@@ -7,9 +9,6 @@ interface Props {
 }
 
 const SearchBar = ({placeholder}:Props) => {
-
-    const searchIcon = require("../assets/images/icons/search.png");
-
 
     return (
         <View style={{
@@ -20,7 +19,7 @@ const SearchBar = ({placeholder}:Props) => {
             paddingHorizontal: 15,
             paddingVertical: 8
         }}>
-            <Image source={searchIcon} style={{ width: 20, height: 20}} resizeMode="contain" tintColor="#ab8bff" />
+            <FontAwesome6 name="magnifying-glass" size={20} color="#ab8bff" />
             <TextInput
                 onPress={() => {}}
                 placeholder={placeholder}

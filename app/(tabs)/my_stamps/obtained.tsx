@@ -2,7 +2,7 @@ import {FlatList, Text, View} from "react-native";
 import StampCard from "@/components/stampCard";
 import {PLACEHOLDER_LOCATIONS} from "@/data/tempData";
 
-export default function Obtained() {
+const Obtained = () => {
 
     const sortedLocations = [...PLACEHOLDER_LOCATIONS].sort((a, b) =>
         a.name.localeCompare(b.name)
@@ -27,7 +27,7 @@ export default function Obtained() {
                 marginBottom: 10
             }}
             contentContainerStyle={{
-                paddingTop: 40,
+                paddingTop: 20,
                 paddingLeft: 10,
                 paddingRight: 10,
                 paddingBottom: 85
@@ -36,3 +36,5 @@ export default function Obtained() {
         </FlatList>
     );
 }
+
+export default Obtained

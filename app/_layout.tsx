@@ -7,5 +7,10 @@ export default function RootLayout() {
         name="(tabs)"
         options={{headerShown: false}}
     />
-    </Stack>;
+    <Stack.Screen
+        name="addNewStampLocation"
+        options={{
+          headerShown: false,
+          presentation:'modal'}}/>
+    </Stack>
 }

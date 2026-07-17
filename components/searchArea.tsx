@@ -26,7 +26,7 @@ const SearchArea = () => {
                 elevation: 5,
                 marginTop:5
             }}>
-            <Text style={{ color: '#399FC6', fontWeight: '600', fontSize: 14 }}>
+            <Text className={'text-primary-light font-bold font-size-14'}>
                 Search this area
             </Text>
         </Pressable>

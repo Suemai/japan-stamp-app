@@ -1,4 +1,4 @@
-import {Animated, FlatList, Text, View} from "react-native";
+import {FlatList} from "react-native";
 import StampCard from "@/components/stampCard";
 import {PLACEHOLDER_LOCATIONS} from "@/data/tempData";
 

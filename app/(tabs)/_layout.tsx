@@ -18,7 +18,7 @@ const TabIcon = ({ focused, icon, title }: any) => {
             min-w-[112px] min-h-16 mt-4
             rounded-full"
             style={{
-                backgroundColor: "#C63959",
+                backgroundColor: "#8658ff",
             }}
             >
             <Image
@@ -27,10 +27,10 @@ const TabIcon = ({ focused, icon, title }: any) => {
                     width: 20,
                     height: 20,
                 }}
-                tintColor="#39C660"
+                tintColor="#EEEDFE"
                 className={"size-5"}
             />
-            <Text className="text-light-text text-base ml-2">{title}</Text>
+            <Text className="text-primary-background text-base ml-2 font-bold">{title}</Text>
         </View>
     );
     } else {
@@ -40,7 +40,7 @@ const TabIcon = ({ focused, icon, title }: any) => {
                        style={{
                            width: 20,
                            height: 20, }}
-                tintColor="#ffffff"
+                tintColor="#EEEDFE"
                 className={"size-5"}/>
             </View>
         );
@@ -57,7 +57,7 @@ const _layout = () => {
                 alignItems: 'center',
             },
             tabBarStyle:{
-                backgroundColor: '#399FC6',
+                backgroundColor: '#ab8bff',
                 borderRadius: 50,
                 marginHorizontal: 20,
                 marginBottom: 35,

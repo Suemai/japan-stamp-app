@@ -13,7 +13,7 @@ const _layout = () => {
                 tabBarActiveTintColor: '#ffffff',
                 tabBarInactiveTintColor: 'rgba(255,255,255,0.6)',
                 tabBarStyle: {
-                    backgroundColor: '#399FC6',
+                    backgroundColor: '#ab8bff',
                     height: 80,
                 },
                 tabBarLabelStyle: {

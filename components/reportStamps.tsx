@@ -1,4 +1,6 @@
 import { Image, Pressable } from 'react-native';
+import {router} from "expo-router";
+import {colours} from "@/constants/colours";
 
 /* Todo:
 - make button actually pressable, maybe with a bit on animation
@@ -11,12 +13,12 @@ const ReportStamp = () => {
 
     return (
         <Pressable
-            onPress={() => {}}
+            onPress={() => router.push('/addNewStampLocation')}
             style={{
                 alignItems: 'center',
                 justifyContent: 'center',
                 alignSelf: 'center',
-                backgroundColor: '#ffffff',
+                backgroundColor: colours.primary.background,
                 borderRadius: 20,
                 width: '100%',
                 height: '100%',
@@ -28,7 +30,7 @@ const ReportStamp = () => {
             }}>
             <Image source={reportIcon}
                    resizeMode="contain"
-                   tintColor="#000"
+                   tintColor={colours.primary.light}
                    style={{
                        width: '60%',
                        height: '60%'}}/>
