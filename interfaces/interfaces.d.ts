@@ -41,7 +41,7 @@ interface LocationForm{
     holidayDetails: String;
     stampAvailable: boolean;
     hasFee: boolean;
-    feeAmount: string;
+    feeAmount: number;
     feeCurrency: string;
 }
 

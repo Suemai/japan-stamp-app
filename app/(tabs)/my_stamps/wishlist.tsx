@@ -4,13 +4,14 @@ import StampCard from "@/components/stampCard";
 
 const Wishlist = ()=> {
 
-    const sortedLocations = [...PLACEHOLDER_LOCATIONS].sort((a, b) =>
-        a.name.localeCompare(b.name)
-    );
+    const wishlistStamps = PLACEHOLDER_LOCATIONS.flatMap(location => location.stamps)
+        .filter(stamp => stamp.wishlisted)
+        .sort((a, b) => a.name.localeCompare(b.name));
+
 
     return (
         <FlatList
-            data={sortedLocations.filter(s => s.wishlisted)}
+            data={wishlistStamps}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
                 <StampCard

@@ -10,41 +10,35 @@ const icons = {
 }
 
 const TabIcon = ({ focused, icon, title }: any) => {
-    if(focused){
     return (
         <View
-            className="flex flex-row
-            flex-1 w-full items-center justify-center
-            min-w-[112px] min-h-16 mt-4
+            className=" flex flex-row flex-1
+            items-center justify-center
+            min-h-16 mt-1.5
             rounded-full"
             style={{
-                backgroundColor: "#8658ff",
+                backgroundColor: focused ? "#8658ff" : "transparent",
+                minWidth: focused ? 90 : 44,
+                paddingVertical: 6,
+                paddingHorizontal: 10,
             }}
             >
             <Image
                 source={icon}
-                style={{
-                    width: 20,
-                    height: 20,
-                }}
                 tintColor="#EEEDFE"
-                className={"size-5"}
+                className="size-5"
             />
-            <Text className="text-primary-background text-base ml-2 font-bold">{title}</Text>
+            {focused && (
+                <Text className="text-primary-background text-base ml-2 font-bold"
+                      style={{
+                          flexShrink: 1,
+                          textAlign: 'center',
+                      }}>
+                    {title}
+                </Text>
+            )}
         </View>
     );
-    } else {
-        return (
-            <View className= "size-full justify-center items-center mt-4 rounded-full">
-                <Image source={icon}
-                       style={{
-                           width: 20,
-                           height: 20, }}
-                tintColor="#EEEDFE"
-                className={"size-5"}/>
-            </View>
-        );
-    }
 }
 
 const _layout = () => {
@@ -61,11 +55,13 @@ const _layout = () => {
                 borderRadius: 50,
                 marginHorizontal: 20,
                 marginBottom: 35,
+                paddingTop: 6,
+                paddingBottom: 6,
                 height: 55,
                 position: 'absolute',
-                overflow: 'hidden',
                 borderWidth: 0,
                 borderColor: 'transparent',
+                overflow: 'hidden',
             },
 
         }}>

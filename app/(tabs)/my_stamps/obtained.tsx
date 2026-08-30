@@ -4,13 +4,13 @@ import {PLACEHOLDER_LOCATIONS} from "@/data/tempData";
 
 const Obtained = () => {
 
-    const sortedLocations = [...PLACEHOLDER_LOCATIONS].sort((a, b) =>
-        a.name.localeCompare(b.name)
-    );
+    const obtainedStamps = PLACEHOLDER_LOCATIONS.flatMap(location => location.stamps)
+        .filter(stamp => stamp.obtained)
+        .sort((a, b) => a.name.localeCompare(b.name));
 
     return (
         <FlatList
-            data={sortedLocations.filter(s => s.obtained)}
+            data={obtainedStamps}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
                 <StampCard

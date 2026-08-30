@@ -5,6 +5,7 @@ import {useLocalSearchParams, useRouter} from "expo-router";
 import {PLACEHOLDER_LOCATIONS} from "@/data/tempData";
 import DateTimePicker, { DateTimePickerEvent } from "@react-native-community/datetimepicker";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import {buildHoursSummary} from "@/utils/hoursSummary";
 
 /* The page that shows details of the stamp, not the stamp set!
 TODO:
@@ -123,34 +124,35 @@ const CommentsTab = () => (
     </ScrollView>
 );
 
-const StampHeader = ({ stamp }: { stamp: any }) => (
+const StampHeader = ({ stamp, location }: { stamp: any; location: any }) => (
     <View style={styles.header}>
         <Image source={{ uri: stamp.image }} style={styles.headerImage} />
         <View style={styles.headerInfo}>
             <Text style={styles.stampName}>{stamp.name}</Text>
-            <Text style={styles.stampLocation}>{stamp.location}</Text>
+            <Text style={styles.stampAddress}>{location.address}</Text>
 
             <View style={styles.headerRow}>
-                <Text style={styles.headerLabel}>Address</Text>
-                <Text style={styles.headerValue}>{stamp.address}</Text>
+                <Text style={styles.headerLabel}>Location</Text>
+                <Text style={styles.headerValue}>{location.location}</Text>
             </View>
 
             <View style={styles.headerRow}>
                 <Text style={styles.headerLabel}>Hours</Text>
-                <Text style={styles.headerValue}>{stamp.openingHours}</Text>
+                <Text style={styles.headerValue}>{buildHoursSummary(location.hours)}</Text>
             </View>
 
             <View style={styles.headerRow}>
                 <Text style={styles.headerLabel}>Holiday</Text>
-                <Text style={styles.headerValue}>{stamp.holiday}</Text>
+                <Text style={styles.headerValue}>{location.holidayDetails}</Text>
             </View>
         </View>
     </View>
 );
 
 type StatsRowProps = {
-    fee: string | number;
-    availability: boolean | undefined;
+    fee: number | null;
+    feeCurrency?: string;
+    availability: boolean;
     obtained: boolean;
     wishlisted: boolean;
     onToggleObtained: () => void;
@@ -159,6 +161,7 @@ type StatsRowProps = {
 
 const StatsRow = ({
                       fee,
+                      feeCurrency,
                       availability,
                       obtained,
                       wishlisted,
@@ -174,7 +177,7 @@ const StatsRow = ({
                 color="#888"
             />
             <Text style={styles.statLabel}>
-                {fee != null ? `${fee}` : "—"}
+                {fee != null ? `${fee} ${feeCurrency} ` : "Free"}
             </Text>
         </View>
 
@@ -186,7 +189,7 @@ const StatsRow = ({
                 color={availability ? "#3bc837" : "#fb0422"}
             />
             <Text style={styles.statLabel}>
-                {availability === true ? "Available" : availability === false ? "Unavailable" : "—"}
+                {availability ? "Available" : !availability ? "Unavailable" : "—"}
             </Text>
         </View>
 
@@ -225,7 +228,14 @@ const StampDetails = () => {
 
     const {stampId} = useLocalSearchParams();
     const router = useRouter();
-    const stamp = PLACEHOLDER_LOCATIONS.find(s=>s.id === Number(stampId));
+    const info = PLACEHOLDER_LOCATIONS
+        .flatMap(location => location.stamps.map(stamp =>({
+            stamp,
+            location,
+        }))
+        ).find(item => item.stamp.id === Number(stampId));
+    const stamp = info?.stamp;
+    const location = info?.location;
 
     const [obtained, setObtained] = useState(stamp?.obtained ?? false);
     const [wishlisted, setWishlisted] = useState(stamp?.wishlisted ?? false);
@@ -271,10 +281,11 @@ const StampDetails = () => {
 
     return (
         <View style={styles.screen}>
-            <StampHeader stamp={stamp} />
+            <StampHeader stamp={stamp} location={location} />
 
             <StatsRow
-                fee={stamp.fee}
+                fee={location?.feeAmount?? null}
+                feeCurrency={location?.feeCurrency}
                 availability={stamp.available}
                 obtained={obtained}
                 wishlisted={wishlisted}
@@ -324,7 +335,7 @@ const styles = StyleSheet.create({
         marginBottom: 2,
         alignSelf: "center",
     },
-    stampLocation: {
+    stampAddress: {
         fontSize: 14,
         color: "#888",
         marginBottom: 8,

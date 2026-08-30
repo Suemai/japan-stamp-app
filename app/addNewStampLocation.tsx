@@ -1,4 +1,4 @@
-import {Image, StyleSheet, Text, TextInput, View, Alert, Platform, ScrollView, TouchableOpacity} from "react-native";
+import {Image, StyleSheet, Text, TextInput, View, Alert, Platform, ScrollView, TouchableOpacity, Switch} from "react-native";
 import React, {useState} from "react";
 import {router} from "expo-router";
 import {SafeAreaView} from "react-native-safe-area-context";
@@ -6,6 +6,8 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import {FontAwesome6} from "@expo/vector-icons";
 import {colours} from "@/constants/colours";
 import {Dropdown} from "react-native-element-dropdown";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import {buildHoursSummary, DayKey, Day_Keys, Day_Labels} from "@/utils/hoursSummary";
 
 function SectionDividers({label, variant}: {label: string; variant: 'location' | 'stamp'}) {
     const isLocation = variant === 'location';
@@ -57,6 +59,29 @@ function StampPhotoPicker({photo, onAdd, onRemove,}: {
     )
 }
 
+function timeStringToDate(time: string): Date {
+    const [hours, minutes] = time.split(':').map(Number);
+    const date = new Date();
+    date.setHours(hours, minutes, 0, 0);
+    return date;
+}
+
+function dateToTimeString(date: Date): string {
+    const h = String(date.getHours()).padStart(2, '0');
+    const m = String(date.getMinutes()).padStart(2, '0');
+    return `${h}:${m}`;
+}
+
+const DEFAULT_HOURS: OpeningHours = {
+    mon: { open: true,  openTime: '09:00', closeTime: '17:00' },
+    tue: { open: true,  openTime: '09:00', closeTime: '17:00' },
+    wed: { open: true,  openTime: '09:00', closeTime: '17:00' },
+    thu: { open: true,  openTime: '09:00', closeTime: '17:00' },
+    fri: { open: true,  openTime: '09:00', closeTime: '17:00' },
+    sat: { open: false, openTime: '09:00', closeTime: '17:00' },
+    sun: { open: false, openTime: '09:00', closeTime: '17:00' },
+};
+
 
 export default function AddNewStampLocation({onSubmit}: {
     onSubmit: (location: LocationForm, stamp: StampData[]) => void}) {
@@ -64,15 +89,7 @@ export default function AddNewStampLocation({onSubmit}: {
     const [locationName, setLocationName] = useState('');
     const [address, setAddress] = useState('');
     const [usingCurrentLocation, setUsingCurrentLocation] = useState(true);
-    const [hours, setHours] = useState<OpeningHours>({
-        mon: {open: true, openTime: '09:00', closeTime: '17:00'},
-        tue: {open: true, openTime: '09:00', closeTime: '17:00'},
-        wed: {open: true, openTime: '09:00', closeTime: '17:00'},
-        thu: {open: true, openTime: '09:00', closeTime: '17:00'},
-        fri: {open: true, openTime: '09:00', closeTime: '17:00'},
-        sat: {open: false, openTime: '09:00', closeTime: '17:00'},
-        sun: {open: false, openTime: '09:00', closeTime: '17:00'},
-    });
+    const [hours, setHours] = useState<OpeningHours>(DEFAULT_HOURS);
     const [holidayMode, setHolidayMode] = useState<HolidayMode>('none');
     const [holidayDetails, setHolidayDetails] = useState('');
     const [stampAvailable, setStampAvailable] = useState(true);
@@ -91,6 +108,31 @@ export default function AddNewStampLocation({onSubmit}: {
         { label: "JPY (¥)", value: "JPY" },
         { label: "CNY (¥)", value: "CNY" },
     ];
+
+    const [activePicker, setActivePicker] = useState<{
+        day: DayKey;
+        field: 'openTime' | 'closeTime';
+    } | null>(null);
+
+    function handleDayToggle(day: DayKey, value: boolean) {
+        setHours(prev => ({
+            ...prev,
+            [day]: { ...prev[day], open: value },
+        }));
+    }
+
+    function handleTimeChange(date: Date | undefined) {
+        if (!activePicker || !date) {
+            setActivePicker(null);
+            return;
+        }
+        const { day, field } = activePicker;
+        setHours(prev => ({
+            ...prev,
+            [day]: { ...prev[day], [field]: dateToTimeString(date) },
+        }));
+        setActivePicker(null);
+    }
 
     const handleClose = () => {
         router.back();
@@ -123,11 +165,11 @@ export default function AddNewStampLocation({onSubmit}: {
     }
 
     function handleRemoveStampPhoto(index: number) {
-        setStamps(prev => prev.filter((_, i) => i !== index));
+        setStamps(prev => prev.map((s, i) => i === index ? { ...s, stampPhoto: null } : s));
     }
 
     function handleStampNameChange(index: number, name: string) {
-        setStamps(prev => prev.map((s, i) => i === index ? {...s, stampPhoto: null} : s));
+        setStamps(prev => prev.map((s, i) => i === index ? {...s, stampName: name} : s));
     }
 
     // Submission
@@ -160,7 +202,7 @@ export default function AddNewStampLocation({onSubmit}: {
             holidayDetails: holidayMode === 'known' ? holidayDetails.trim() : '',
             stampAvailable,
             hasFee,
-            feeAmount: hasFee ? fees.trim() : '',
+            feeAmount: hasFee ? parseFloat(fees) || 0 : 0,
             feeCurrency: hasFee ? feeCurrency : '',
         }
         onSubmit?.(locationData, stamps);
@@ -225,18 +267,67 @@ export default function AddNewStampLocation({onSubmit}: {
                 </View>
 
                 <FieldLabel>Opening hours</FieldLabel>
-                {/*ToDo: Placeholder for now. There'll be a summery on top with a picker below.
+                {/*ToDo: Placeholder for now. There'll be a summary on top with a picker below.
                 The days of the week will have a switch for open and closed.
                 When opened there is a time picker for opening times.
                 The summery will automatically update based on the date and time picked.
                 The summery will be used for the opening times, which people see on the stamp page.
                 */}
-                <TextInput
-                    style={styles.input}
-                    placeholder="e.g. Mon–Sat 9am–5pm, Sun 12–4pm"
-                    placeholderTextColor="#aaa"
-                    returnKeyType="next"
-                />
+                <View style={styles.hoursSummary}>
+                    <Text style={styles.hoursSummaryText}>{buildHoursSummary(hours)}</Text>
+                </View>
+
+                <View style={styles.hoursGrid}>
+                    {Day_Keys.map((day, i) => {
+                        const d = hours[day];
+                        return (
+                            <View
+                                key={day}
+                                style={[styles.hoursRow, i === Day_Keys.length - 1 && styles.hoursRowLast]}
+                            >
+                                <Text style={styles.hoursDay}>{Day_Labels[day]}</Text>
+                                {d.open ? (
+                                    <View style={styles.hoursTimeRow}>
+                                        <TouchableOpacity
+                                            style={styles.timeChip}
+                                            onPress={() => setActivePicker({ day, field: 'openTime' })}
+                                        >
+                                            <Text style={styles.timeChipText}>{d.openTime}</Text>
+                                        </TouchableOpacity>
+                                        <Text style={styles.hoursDash}>–</Text>
+                                        <TouchableOpacity
+                                            style={styles.timeChip}
+                                            onPress={() => setActivePicker({ day, field: 'closeTime' })}
+                                        >
+                                            <Text style={styles.timeChipText}>{d.closeTime}</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                ) : (
+                                    <Text style={styles.hoursClosed}>Closed</Text>
+                                )}
+                                <Switch
+                                    value={d.open}
+                                    onValueChange={(val) => handleDayToggle(day, val)}
+                                    trackColor={{ false: colours.border, true: colours.primary.default }}
+                                    thumbColor="#fff"
+                                />
+                            </View>
+                        );
+                    })}
+                </View>
+                {activePicker && ( <DateTimePicker value={timeStringToDate(
+                    hours[activePicker.day][activePicker.field])}
+                mode={"time"}
+                is24Hour={true}
+                display={"default"}
+                onChange={(event, date) => {
+                    if (event.type === "dismissed") {
+                        setActivePicker(null);
+                        return;
+                    }
+                    handleTimeChange(date);
+                }}/>
+                )}
 
                 <FieldLabel>Holiday closures</FieldLabel>
                 <View style={styles.toggleRow}>
@@ -489,6 +580,78 @@ const styles = StyleSheet.create({
         borderColor: colours.primary.default,
         backgroundColor: colours.primary.background,
     },
+
+    // Hours part
+
+    hoursSummary: {
+        backgroundColor: colours.primary.background,
+        borderWidth: 0.5,
+        borderColor: '#AFA9EC',
+        borderRadius: 8,
+        paddingHorizontal: 12,
+        paddingVertical: 8,
+        marginBottom: 8,
+    },
+    hoursSummaryText: {
+        fontSize: 12,
+        color: colours.primary.dark,
+        lineHeight: 20,
+    },
+
+    hoursGrid: {
+        borderWidth: 0.5,
+        borderColor: colours.border,
+        borderRadius: 8,
+        overflow: 'hidden',
+        marginBottom: 14,
+    },
+    hoursRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingHorizontal: 12,
+        paddingVertical: 9,
+        borderBottomWidth: 0.5,
+        borderBottomColor: colours.border,
+        gap: 10,
+    },
+    hoursRowLast: {
+        borderBottomWidth: 0,
+    },
+    hoursDay: {
+        fontSize: 13,
+        fontWeight: '500',
+        color: colours.text.secondary,
+        width: 32,
+    },
+    hoursTimeRow: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 6,
+    },
+    timeChip: {
+        backgroundColor: colours.input.background,
+        borderWidth: 0.5,
+        borderColor: colours.border,
+        borderRadius: 5,
+        paddingHorizontal: 8,
+        paddingVertical: 3,
+    },
+    timeChipText: {
+        fontSize: 12,
+        color: colours.text.primary,
+    },
+    hoursDash: {
+        fontSize: 12,
+        color: colours.text.secondary,
+    },
+    hoursClosed: {
+        flex: 1,
+        fontSize: 13,
+        color: colours.secondary.light,
+    },
+
+
     toggleRow: {
         flexDirection: 'row',
         gap: 8,
