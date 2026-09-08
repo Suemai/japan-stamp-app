@@ -13,9 +13,9 @@ TODO:
  */
 
 type StampCardProps = {
-    id: Number
-    name: String
-    imageUri: String
+    id: number
+    name: string
+    imageUri: string
 }
 
 const StampCard = ({id, name, imageUri}: StampCardProps) => {
@@ -36,7 +36,7 @@ const StampCard = ({id, name, imageUri}: StampCardProps) => {
                     style={{aspectRatio: 1}}
                     resizeMode="cover"
                 />
-                <Text className="text-sm font-bold mt-2">{name}</Text>
+                <Text className="text-sm font-bold mt-2 text-center">{name}</Text>
 
             </TouchableOpacity>
         </Link>

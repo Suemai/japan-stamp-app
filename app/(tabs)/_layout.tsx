@@ -18,7 +18,7 @@ const TabIcon = ({ focused, icon, title }: any) => {
             rounded-full"
             style={{
                 backgroundColor: focused ? "#8658ff" : "transparent",
-                minWidth: focused ? 90 : 44,
+                minWidth: focused ? 95 : 44,
                 paddingVertical: 6,
                 paddingHorizontal: 10,
             }}
@@ -30,6 +30,9 @@ const TabIcon = ({ focused, icon, title }: any) => {
             />
             {focused && (
                 <Text className="text-primary-background text-base ml-2 font-bold"
+                      numberOfLines={2}
+                      adjustsFontSizeToFit
+                      textBreakStrategy="simple"
                       style={{
                           flexShrink: 1,
                           textAlign: 'center',
@@ -53,7 +56,7 @@ const _layout = () => {
             tabBarStyle:{
                 backgroundColor: '#ab8bff',
                 borderRadius: 50,
-                marginHorizontal: 20,
+                marginHorizontal: 18,
                 marginBottom: 35,
                 paddingTop: 6,
                 paddingBottom: 6,

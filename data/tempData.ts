@@ -5,6 +5,8 @@ export interface StampLocation {
     name: string;
     address: string;
     location: string;
+    latitude: number;
+    longitude: number;
 
     hours: OpeningHours;
 
@@ -28,6 +30,18 @@ export interface Stamp {
     wishlisted: boolean;
     dateObtained: Date | null;
     notes: string;
+
+    thumbsUp: number;
+    thumbsDown: number;
+    userVote: 'up' | 'down' | null;
+}
+
+export interface UserData{
+    obtained: boolean;
+    wishlisted: boolean;
+    dateObtained: Date | null;
+    notes: string;
+    userVote: 'up' | 'down' | null;
 }
 
 export const PLACEHOLDER_LOCATIONS: StampLocation[] = [
@@ -36,6 +50,8 @@ export const PLACEHOLDER_LOCATIONS: StampLocation[] = [
         name: 'Mount Fuji',
         address: '1-1 Fujisan, Fujinomiya, Shizuoka 418-0112, Japan',
         location: 'In station gift shop at the 5th station',
+        latitude: 35.3606,
+        longitude: 138.7274,
         hours: {
             mon: { open: true, openTime: '09:00', closeTime: '17:00' },
             tue: { open: true, openTime: '09:00', closeTime: '17:00' },
@@ -60,6 +76,9 @@ export const PLACEHOLDER_LOCATIONS: StampLocation[] = [
                 wishlisted: false,
                 dateObtained: new Date('2023-08-14'),
                 notes: 'Picked this up at the 5th station gift shop. Beautiful clear day — could see all the way to the coast.',
+                thumbsUp: 42,
+                thumbsDown: 3,
+                userVote: 'up'
             },
         ],
     },
@@ -68,6 +87,8 @@ export const PLACEHOLDER_LOCATIONS: StampLocation[] = [
         name: 'Kinkaku-ji',
         address: '1 Kinkakujicho, Kita-ku, Kyoto 603-8361',
         location: 'In a temple',
+        latitude: 35.0395,
+        longitude: 135.7295,
         hours: {
             mon: { open: true, openTime: '09:00', closeTime: '17:00' },
             tue: { open: true, openTime: '09:00', closeTime: '17:00' },
@@ -92,6 +113,9 @@ export const PLACEHOLDER_LOCATIONS: StampLocation[] = [
                 wishlisted: true,
                 dateObtained: null,
                 notes: '',
+                thumbsUp: 31,
+                thumbsDown: 5,
+                userVote: null
             },
         ],
     },
@@ -100,6 +124,8 @@ export const PLACEHOLDER_LOCATIONS: StampLocation[] = [
         name: 'Eiffel Tower',
         address: 'Champ de Mars, 5 Av. Anatole France, 75007 Paris',
         location: 'Tourist centre by the Eiffel tower',
+        latitude: 48.8583,
+        longitude: 2.2945,
         hours: {
             mon: { open: true, openTime: '09:30', closeTime: '22:45' },
             tue: { open: true, openTime: '09:30', closeTime: '22:45' },
@@ -124,6 +150,9 @@ export const PLACEHOLDER_LOCATIONS: StampLocation[] = [
                 wishlisted: true,
                 dateObtained: null,
                 notes: 'Need to check seasonal availability again in spring.',
+                thumbsUp: 58,
+                thumbsDown: 12,
+                userVote: 'up'
             },
         ],
     },
@@ -132,6 +161,8 @@ export const PLACEHOLDER_LOCATIONS: StampLocation[] = [
         name: 'Colosseum',
         address: 'Piazza del Colosseo, 1, 00184 Roma RM, Italy',
         location: 'Ask clerk at gift shop',
+        latitude: 41.8902,
+        longitude: 12.4922,
         hours: {
             mon: { open: true, openTime: '09:00', closeTime: '19:00' },
             tue: { open: true, openTime: '09:00', closeTime: '19:00' },
@@ -156,6 +187,9 @@ export const PLACEHOLDER_LOCATIONS: StampLocation[] = [
                 wishlisted: false,
                 dateObtained: new Date('2022-06-10'),
                 notes: 'Queues were long but worth it. Grabbed the stamp at the gift shop near the exit.',
+                thumbsUp: 47,
+                thumbsDown: 6,
+                userVote: 'up'
             },
         ],
     },
@@ -164,6 +198,8 @@ export const PLACEHOLDER_LOCATIONS: StampLocation[] = [
         name: 'Sagrada Família',
         address: 'C/ de Mallorca, 401, 08013 Barcelona, Spain',
         location: 'Ask clerk at gift shop',
+        latitude: 41.4036,
+        longitude: 2.1744,
         hours: {
             mon: { open: true, openTime: '09:00', closeTime: '20:00' },
             tue: { open: true, openTime: '09:00', closeTime: '20:00' },
@@ -188,6 +224,9 @@ export const PLACEHOLDER_LOCATIONS: StampLocation[] = [
                 wishlisted: true,
                 dateObtained: null,
                 notes: 'Need to book tickets in advance — sells out weeks ahead.',
+                thumbsUp: 36,
+                thumbsDown: 4,
+                userVote: null
             },
         ],
     },
@@ -196,6 +235,8 @@ export const PLACEHOLDER_LOCATIONS: StampLocation[] = [
         name: 'Machu Picchu',
         address: 'Machu Picchu, Cusco Region, Peru',
         location: 'Ask clerk at gift shop',
+        latitude: -13.1631,
+        longitude: -72.5453,
         hours: {
             mon: { open: true, openTime: '06:00', closeTime: '17:30' },
             tue: { open: true, openTime: '06:00', closeTime: '17:30' },
@@ -220,6 +261,9 @@ export const PLACEHOLDER_LOCATIONS: StampLocation[] = [
                 wishlisted: false,
                 dateObtained: new Date('2021-11-03'),
                 notes: 'Stamped at the main entrance gate. Altitude hit hard — take it slow.',
+                thumbsUp: 52,
+                thumbsDown: 2,
+                userVote: 'up'
             },
         ],
     },
@@ -228,6 +272,8 @@ export const PLACEHOLDER_LOCATIONS: StampLocation[] = [
         name: 'Angkor Wat',
         address: 'Krong Siem Reap, Cambodia',
         location: 'Ask clerk at gift shop',
+        latitude: 13.4110,
+        longitude: 103.8765,
         hours: {
             mon: { open: true, openTime: '05:00', closeTime: '17:30' },
             tue: { open: true, openTime: '05:00', closeTime: '17:30' },
@@ -252,6 +298,9 @@ export const PLACEHOLDER_LOCATIONS: StampLocation[] = [
                 wishlisted: false,
                 dateObtained: new Date('2020-01-18'),
                 notes: 'Sunrise visit was magical. Stamp available at the ticket office.',
+                thumbsUp: 44,
+                thumbsDown: 3,
+                userVote: 'up'
             },
         ],
     },
@@ -260,6 +309,8 @@ export const PLACEHOLDER_LOCATIONS: StampLocation[] = [
         name: 'Petra',
         address: 'Wadi Musa, Jordan',
         location: 'Ask clerk at gift shop',
+        latitude: 30.3285,
+        longitude: 35.4444,
         hours: {
             mon: { open: true, openTime: '06:00', closeTime: '18:00' },
             tue: { open: true, openTime: '06:00', closeTime: '18:00' },
@@ -284,6 +335,9 @@ export const PLACEHOLDER_LOCATIONS: StampLocation[] = [
                 wishlisted: true,
                 dateObtained: null,
                 notes: 'The night tour is supposed to be incredible too.',
+                thumbsUp: 27,
+                thumbsDown: 7,
+                userVote: null
             },
         ],
     },
@@ -292,6 +346,8 @@ export const PLACEHOLDER_LOCATIONS: StampLocation[] = [
         name: 'Taj Mahal',
         address: 'Dharmapuri, Forest Colony, Tajganj, Agra, UP 282001, India',
         location: 'Ask clerk at gift shop',
+        latitude: 27.1750,
+        longitude: 78.0398,
         hours: {
             mon: {open: true, openTime: '06:00', closeTime: '18:30'},
             tue: {open: true, openTime: '06:00', closeTime: '18:30'},
@@ -316,6 +372,9 @@ export const PLACEHOLDER_LOCATIONS: StampLocation[] = [
                 wishlisted: false,
                 dateObtained: new Date('2019-03-22'),
                 notes: 'Go at dawn before the crowds arrive. Stamp desk is inside the east gate.',
+                thumbsUp: 39,
+                thumbsDown: 8,
+                userVote: 'down'
             },
         ],
     },
@@ -324,6 +383,8 @@ export const PLACEHOLDER_LOCATIONS: StampLocation[] = [
         name: 'Great Wall of China',
         address: 'Huairou District, Beijing, China',
         location: 'Ask clerk at gift shop',
+        latitude: 39.9042,
+        longitude: 116.4074,
         hours: {
             mon: { open: true, openTime: '07:30', closeTime: '17:00' },
             tue: { open: true, openTime: '07:30', closeTime: '17:00' },
@@ -348,6 +409,9 @@ export const PLACEHOLDER_LOCATIONS: StampLocation[] = [
                 wishlisted: true,
                 dateObtained: null,
                 notes: 'Mutianyu section is less crowded than Badaling.',
+                thumbsUp: 61,
+                thumbsDown: 9,
+                userVote: 'up'
             },
         ],
     },
@@ -356,6 +420,8 @@ export const PLACEHOLDER_LOCATIONS: StampLocation[] = [
         name: 'Sydney Opera House',
         address: 'Bennelong Point, Sydney NSW 2000, Australia',
         location: 'Ask clerk at gift shop',
+        latitude: -33.8568,
+        longitude: 151.2153,
         hours: {
             mon: { open: true, openTime: '09:00', closeTime: '17:00' },
             tue: { open: true, openTime: '09:00', closeTime: '17:00' },
@@ -380,6 +446,9 @@ export const PLACEHOLDER_LOCATIONS: StampLocation[] = [
                 wishlisted: false,
                 dateObtained: new Date('2023-02-07'),
                 notes: 'Tour guide was fantastic. Stamp from the box office foyer.',
+                thumbsUp: 24,
+                thumbsDown: 5,
+                userVote: null
             },
         ],
     },
@@ -388,6 +457,8 @@ export const PLACEHOLDER_LOCATIONS: StampLocation[] = [
         name: 'Acropolis',
         address: 'Athens 105 58, Greece',
         location: 'Ask clerk at gift shop',
+        latitude: 37.9715,
+        longitude: 23.7266,
         hours: {
             mon: { open: true, openTime: '08:00', closeTime: '20:00' },
             tue: { open: true, openTime: '08:00', closeTime: '20:00' },
@@ -412,6 +483,9 @@ export const PLACEHOLDER_LOCATIONS: StampLocation[] = [
                 wishlisted: false,
                 dateObtained: null,
                 notes: '',
+                thumbsUp: 33,
+                thumbsDown: 6,
+                userVote: 'up'
             },
         ],
     },
@@ -420,6 +494,8 @@ export const PLACEHOLDER_LOCATIONS: StampLocation[] = [
         name: 'Chichen Itza',
         address: 'Yucatán, Mexico',
         location: 'Ask clerk at gift shop',
+        latitude: 20.6843,
+        longitude: -88.5678,
         hours: {
             mon: { open: true, openTime: '08:00', closeTime: '17:00' },
             tue: { open: true, openTime: '08:00', closeTime: '17:00' },
@@ -444,6 +520,9 @@ export const PLACEHOLDER_LOCATIONS: StampLocation[] = [
                 wishlisted: false,
                 dateObtained: new Date('2018-12-28'),
                 notes: 'Extremely hot — bring water and sunscreen. Stamp at the main entrance booth.',
+                thumbsUp: 329,
+                thumbsDown: 4,
+                userVote: null
             },
         ],
     },
@@ -452,6 +531,8 @@ export const PLACEHOLDER_LOCATIONS: StampLocation[] = [
         name: 'Alhambra',
         address: 'Calle Real de la Alhambra, 18009 Granada, Spain',
         location: 'Ask clerk at gift shop',
+        latitude: 37.1765,
+        longitude: -3.5884,
         hours: {
             mon: { open: true, openTime: '08:30', closeTime: '20:00' },
             tue: { open: true, openTime: '08:30', closeTime: '20:00' },
@@ -476,6 +557,9 @@ export const PLACEHOLDER_LOCATIONS: StampLocation[] = [
                 wishlisted: true,
                 dateObtained: null,
                 notes: 'Timed tickets only — book at least 3 months ahead for peak season.',
+                thumbsUp: 35,
+                thumbsDown: 3,
+                userVote: 'up'
             },
         ],
     },
@@ -484,6 +568,8 @@ export const PLACEHOLDER_LOCATIONS: StampLocation[] = [
         name: 'Neuschwanstein Castle',
         address: 'Neuschwansteinstraße 20, 87645 Schwangau, Germany',
         location: 'Ask clerk at gift shop',
+        latitude: 47.5596,
+        longitude: 10.7268,
         hours: {
             mon: { open: true, openTime: '08:00', closeTime: '17:00' },
             tue: { open: true, openTime: '08:00', closeTime: '17:00' },
@@ -508,6 +594,9 @@ export const PLACEHOLDER_LOCATIONS: StampLocation[] = [
                 wishlisted: false,
                 dateObtained: new Date('2022-09-15'),
                 notes: 'Views from Marienbrücke bridge are stunning. Stamp from the ticket centre.',
+                thumbsUp: 48,
+                thumbsDown: 4,
+                userVote: 'up'
             },
         ],
     },
@@ -516,6 +605,8 @@ export const PLACEHOLDER_LOCATIONS: StampLocation[] = [
         name: 'Santorini Caldera',
         address: 'Oia 847 02, Greece',
         location: 'Ask clerk at gift shop',
+        latitude: 36.3928,
+        longitude: 25.4615,
         hours: {
             mon: { open: true, openTime: '00:00', closeTime: '23:59' },
             tue: { open: true, openTime: '00:00', closeTime: '23:59' },
@@ -540,6 +631,9 @@ export const PLACEHOLDER_LOCATIONS: StampLocation[] = [
                 wishlisted: true,
                 dateObtained: null,
                 notes: 'Sunset in Oia is world famous — arrive 2 hours early for a good spot.',
+                thumbsUp: 18,
+                thumbsDown: 2,
+                userVote: null
             },
         ],
     },
@@ -548,6 +642,8 @@ export const PLACEHOLDER_LOCATIONS: StampLocation[] = [
         name: 'Forbidden City',
         address: '4 Jingshan Front St, Dongcheng, Beijing, China',
         location: 'Ask clerk at gift shop',
+        latitude: 39.9163,
+        longitude: 116.3972,
         hours: {
             mon: { open: false, openTime: '', closeTime: '' },
             tue: { open: true, openTime: '08:30', closeTime: '17:00' },
@@ -572,6 +668,9 @@ export const PLACEHOLDER_LOCATIONS: StampLocation[] = [
                 wishlisted: false,
                 dateObtained: null,
                 notes: '',
+                thumbsUp: 41,
+                thumbsDown: 10,
+                userVote: 'down'
             },
         ],
     },
@@ -580,6 +679,8 @@ export const PLACEHOLDER_LOCATIONS: StampLocation[] = [
         name: 'Niagara Falls',
         address: 'Niagara Falls, ON L2E 6T2, Canada',
         location: 'Ask clerk at gift shop',
+        latitude: 43.0895,
+        longitude: -79.0832,
         hours: {
             mon: { open: true, openTime: '09:00', closeTime: '17:00' },
             tue: { open: true, openTime: '09:00', closeTime: '17:00' },
@@ -604,6 +705,9 @@ export const PLACEHOLDER_LOCATIONS: StampLocation[] = [
                 wishlisted: false,
                 dateObtained: new Date('2017-07-04'),
                 notes: 'Maid of the Mist boat tour is a must. Got completely soaked.',
+                thumbsUp: 55,
+                thumbsDown: 6,
+                userVote: 'up'
             },
         ],
     },
@@ -612,6 +716,8 @@ export const PLACEHOLDER_LOCATIONS: StampLocation[] = [
         name: 'Table Mountain',
         address: 'Table Mountain, Cape Town, 8001, South Africa',
         location: 'Ask clerk at gift shop',
+        latitude: -33.9815,
+        longitude: 18.4372,
         hours: {
             mon: { open: true, openTime: '08:00', closeTime: '18:00' },
             tue: { open: true, openTime: '08:00', closeTime: '18:00' },
@@ -636,6 +742,9 @@ export const PLACEHOLDER_LOCATIONS: StampLocation[] = [
                 wishlisted: true,
                 dateObtained: null,
                 notes: 'Cable car often closed due to wind — check before going.',
+                thumbsUp: 3,
+                thumbsDown: 35,
+                userVote: null
             },
         ],
     },
@@ -644,6 +753,8 @@ export const PLACEHOLDER_LOCATIONS: StampLocation[] = [
         name: 'Halong Bay',
         address: 'Hạ Long, Quảng Ninh, Vietnam',
         location: 'Ask clerk at gift shop',
+        latitude: 20.9101,
+        longitude: 107.1839,
         hours: {
             mon: { open: true, openTime: '08:00', closeTime: '17:00' },
             tue: { open: true, openTime: '08:00', closeTime: '17:00' },
@@ -668,6 +779,9 @@ export const PLACEHOLDER_LOCATIONS: StampLocation[] = [
                 wishlisted: false,
                 dateObtained: new Date('2020-02-14'),
                 notes: 'Overnight cruise is the best way to see it. Stamp from the visitor centre at the pier.',
+                thumbsUp: 37,
+                thumbsDown: 3,
+                userVote: 'up'
             },
         ],
     },
@@ -676,6 +790,8 @@ export const PLACEHOLDER_LOCATIONS: StampLocation[] = [
         name: 'Yellowstone National Park',
         address: 'Yellowstone National Park, WY 82190, USA',
         location: 'Ask clerk at gift shop',
+        latitude: 44.4281,
+        longitude: -110.5885,
         hours: {
             mon: { open: true, openTime: '00:00', closeTime: '23:59' },
             tue: { open: true, openTime: '00:00', closeTime: '23:59' },
@@ -700,6 +816,9 @@ export const PLACEHOLDER_LOCATIONS: StampLocation[] = [
                 wishlisted: true,
                 dateObtained: null,
                 notes: 'Old Faithful erupts roughly every 90 minutes. Passport stamp at Old Faithful Visitor Centre.',
+                thumbsUp: 46,
+                thumbsDown: 5,
+                userVote: 'up'
             },
         ],
     },
@@ -708,6 +827,8 @@ export const PLACEHOLDER_LOCATIONS: StampLocation[] = [
         name: 'Stonehenge',
         address: 'Amesbury SP4 7DE, United Kingdom',
         location: 'Ask clerk at gift shop',
+        latitude: 51.1791,
+        longitude: -1.8032,
         hours: {
             mon: { open: true, openTime: '09:00', closeTime: '17:00' },
             tue: { open: true, openTime: '09:00', closeTime: '17:00' },
@@ -732,6 +853,9 @@ export const PLACEHOLDER_LOCATIONS: StampLocation[] = [
                 wishlisted: false,
                 dateObtained: new Date('2024-04-20'),
                 notes: 'Much smaller than expected but still atmospheric. Stamp at the visitor centre.',
+                thumbsUp: 32,
+                thumbsDown: 11,
+                userVote: 'up'
             },
         ],
     },
@@ -740,6 +864,8 @@ export const PLACEHOLDER_LOCATIONS: StampLocation[] = [
         name: 'Burj Khalifa',
         address: '1 Sheikh Mohammed bin Rashid Blvd, Dubai, UAE',
         location: 'Ask clerk at gift shop',
+        latitude: 25.1972,
+        longitude: 55.2705,
         hours: {
             mon: { open: true, openTime: '08:30', closeTime: '23:00' },
             tue: { open: true, openTime: '08:30', closeTime: '23:00' },
@@ -764,6 +890,9 @@ export const PLACEHOLDER_LOCATIONS: StampLocation[] = [
                 wishlisted: true,
                 dateObtained: null,
                 notes: 'At the Top Sky (floors 148–154) is pricier but worth it for the views.',
+                thumbsUp: 43,
+                thumbsDown: 10,
+                userVote: null
             },
         ],
     },
@@ -772,6 +901,8 @@ export const PLACEHOLDER_LOCATIONS: StampLocation[] = [
         name: 'Easter Island',
         address: 'Isla de Pascua, Valparaíso Region, Chile',
         location: 'Ask clerk at gift shop',
+        latitude: -27.1148,
+        longitude: -109.3564,
         hours: {
             mon: { open: true, openTime: '09:00', closeTime: '18:00' },
             tue: { open: true, openTime: '09:00', closeTime: '18:00' },
@@ -795,6 +926,9 @@ export const PLACEHOLDER_LOCATIONS: StampLocation[] = [
                 wishlisted: true,
                 dateObtained: null,
                 notes: 'Remote and expensive to get to but utterly unique. Worth every penny.',
+                thumbsUp: 16,
+                thumbsDown: 2,
+                userVote: 'up'
             },
         ],
     },
@@ -803,6 +937,8 @@ export const PLACEHOLDER_LOCATIONS: StampLocation[] = [
         name: 'Pompeii',
         address: 'Via Villa dei Misteri, 2, 80045 Pompei NA, Italy',
         location: 'Ask clerk at gift shop',
+        latitude: 40.7589,
+        longitude: 14.1602,
         hours: {
             mon: { open: true, openTime: '09:00', closeTime: '17:00' },
             tue: { open: true, openTime: '09:00', closeTime: '17:00' },
@@ -827,6 +963,9 @@ export const PLACEHOLDER_LOCATIONS: StampLocation[] = [
                 wishlisted: false,
                 dateObtained: new Date('2022-06-12'),
                 notes: 'Allow at least half a day. Stamp from the Porta Marina entrance.',
+                thumbsUp: 38,
+                thumbsDown: 7,
+                userVote: 'up'
             },
         ],
     },
@@ -835,6 +974,8 @@ export const PLACEHOLDER_LOCATIONS: StampLocation[] = [
         name: 'Þingvellir National Park',
         address: 'Þingvellir National Park, Iceland',
         location: 'Ask clerk at gift shop',
+        latitude: 64.1464,
+        longitude: -21.9430,
         hours: {
             mon: { open: true, openTime: '00:00', closeTime: '23:59' },
             tue: { open: true, openTime: '00:00', closeTime: '23:59' },
@@ -859,6 +1000,9 @@ export const PLACEHOLDER_LOCATIONS: StampLocation[] = [
                 wishlisted: true,
                 dateObtained: null,
                 notes: 'Best seen Sep–Mar. Stamp from the visitor centre at Þingvellir.',
+                thumbsUp: 21,
+                thumbsDown: 5,
+                userVote: null
             },
         ],
     },
@@ -867,6 +1011,8 @@ export const PLACEHOLDER_LOCATIONS: StampLocation[] = [
         name: 'Victoria Falls',
         address: 'Livingstone, Zambia / Victoria Falls, Zimbabwe',
         location: 'Ask clerk at gift shop',
+        latitude: -17.8814,
+        longitude: 25.8930,
         hours: {
             mon: { open: true, openTime: '06:00', closeTime: '18:00' },
             tue: { open: true, openTime: '06:00', closeTime: '18:00' },
@@ -891,6 +1037,9 @@ export const PLACEHOLDER_LOCATIONS: StampLocation[] = [
                 wishlisted: true,
                 dateObtained: null,
                 notes: 'Zimbabwe side gives the better panoramic view. Zambia side lets you get closer.',
+                thumbsUp: 3,
+                thumbsDown: 25,
+                userVote: null
             },
         ],
     },
@@ -899,6 +1048,8 @@ export const PLACEHOLDER_LOCATIONS: StampLocation[] = [
         name: 'Louvre Museum',
         address: 'Rue de Rivoli, 75001 Paris, France',
         location: 'Ask clerk at gift shop',
+        latitude: 48.8606,
+        longitude: 2.3376,
         hours: {
             mon: { open: true, openTime: '09:00', closeTime: '18:00' },
             tue: { open: false, openTime: '', closeTime: '' },
@@ -923,6 +1074,9 @@ export const PLACEHOLDER_LOCATIONS: StampLocation[] = [
                 wishlisted: false,
                 dateObtained: new Date('2016-05-30'),
                 notes: 'The Mona Lisa room is packed. Go straight there first thing.',
+                thumbsUp: 63,
+                thumbsDown: 14,
+                userVote: 'up'
             },
         ],
     },
@@ -931,6 +1085,8 @@ export const PLACEHOLDER_LOCATIONS: StampLocation[] = [
         name: 'Grand Canyon',
         address: 'Grand Canyon Village, AZ 86023, USA',
         location: 'Ask clerk at gift shop',
+        latitude: 36.0544,
+        longitude: -112.1401,
         hours: {
             mon: { open: true, openTime: '00:00', closeTime: '23:59' },
             tue: { open: true, openTime: '00:00', closeTime: '23:59' },
@@ -955,6 +1111,9 @@ export const PLACEHOLDER_LOCATIONS: StampLocation[] = [
                 wishlisted: false,
                 dateObtained: null,
                 notes: '',
+                thumbsUp: 5,
+                thumbsDown: 57,
+                userVote: null
             },
         ],
     },
@@ -963,6 +1122,8 @@ export const PLACEHOLDER_LOCATIONS: StampLocation[] = [
         name: 'Galápagos Islands',
         address: 'Galápagos Islands, Ecuador',
         location: 'Ask clerk at gift shop',
+        latitude: -0.9538,
+        longitude: -90.9656,
         hours: {
             mon: { open: true, openTime: '06:00', closeTime: '18:00' },
             tue: { open: true, openTime: '06:00', closeTime: '18:00' },
@@ -987,6 +1148,9 @@ export const PLACEHOLDER_LOCATIONS: StampLocation[] = [
                 wishlisted: true,
                 dateObtained: null,
                 notes: 'Entry fee is a conservation levy. Guided tours only in most areas.',
+                thumbsUp: 26,
+                thumbsDown: 2,
+                userVote: null
             },
         ],
     },

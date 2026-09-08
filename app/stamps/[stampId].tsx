@@ -334,12 +334,14 @@ const styles = StyleSheet.create({
         color: "#111",
         marginBottom: 2,
         alignSelf: "center",
+        textAlign: "center",
     },
     stampAddress: {
         fontSize: 14,
         color: "#888",
         marginBottom: 8,
         alignSelf: "center",
+        textAlign: "center",
     },
     headerRow: {
         flexDirection: "row",

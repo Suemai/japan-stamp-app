@@ -1,4 +1,4 @@
-import React, {useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {Camera, MapView, UserLocation} from "@maplibre/maplibre-react-native";
 import {View, StyleSheet, Image, Pressable, Keyboard} from "react-native";
 import SearchBar from "@/components/searchBar";
@@ -6,6 +6,12 @@ import {useRouter} from "expo-router";
 import SearchArea from "@/components/searchArea";
 import ReportStamp from "@/components/reportStamps";
 import {colours} from "@/constants/colours";
+import {StampMarkers} from "@/components/stampMarkers";
+import { PLACEHOLDER_LOCATIONS } from '@/data/tempData';
+import {LocationSheet} from "@/components/locationSheet";
+import { TrueSheet } from '@lodev09/react-native-true-sheet';
+import {StampSheet} from "@/components/stampSheet";
+import Toast from 'react-native-toast-message';
 
 /* Todo:
 - button under search bar for search this area - DONE
@@ -19,6 +25,17 @@ export default function Index() {
     const [userLocation, setUserLocation] = useState<any>(null);
     const [following] = useState(true);
     const [heading, setHeading] = useState(0);
+
+    const [selectedLocationId, setSelectedLocationId] = useState<number | null>(null);
+    const selectedLocation = PLACEHOLDER_LOCATIONS.find(
+        (location) => location.id === selectedLocationId
+    );
+    const [selectedStampId, setSelectedStampId] = useState<number | null>(null);
+    const selectedStamp = selectedLocation?.stamps.find(
+        (stamp) => stamp.id === selectedStampId
+    );
+    const sheetRef = useRef<TrueSheet>(null);
+
     // const router = useRouter();
 
     const recenterIcon = require("../../assets/images/icons/location-target.png");
@@ -33,6 +50,15 @@ export default function Index() {
             animationDuration: 600,
         });
         // setFollowing(true);
+    }
+
+    async function handleSelectLocation(id: number) {
+        setSelectedLocationId(id);
+        await sheetRef.current?.present();
+    }
+    async function handleCloseSheet() {
+        await sheetRef.current?.dismiss();
+        setSelectedLocationId(null);
     }
     
     
@@ -73,6 +99,13 @@ export default function Index() {
                   }}
               >
               </UserLocation>
+
+              <StampMarkers
+                  locations={PLACEHOLDER_LOCATIONS}
+                  onSelectLocation={handleSelectLocation}
+                  cameraRef={cameraRef}
+              />
+
           </MapView>
 
           <View style={styles.reportButton}>
@@ -106,6 +139,50 @@ export default function Index() {
                   style={styles.compass}
                   />
           )}
+
+          <TrueSheet ref={sheetRef}
+                     detents={['auto', 0.55, 0.9]}
+                     onDidDismiss={handleCloseSheet}>
+
+              {selectedStamp ? (
+                  <StampSheet
+                      stamp={selectedStamp}
+                      locationName={selectedLocation?.name ?? ""}
+                      onBack={() => setSelectedStampId(null)}
+                      onClose={handleCloseSheet}
+                      // TODO: Implement these functions to handle user actions
+                      onToggleWishlist={() => {
+                          Toast.show({
+                              type: 'success',
+                              text1: 'Added to wishlist',
+                          });
+                          console.log("Added to wishlist");
+                      }}
+                      onToggleObtained={() => {
+                            Toast.show({
+                                type: 'success',
+                                text1: 'Marked as obtained',
+                            });
+                            console.log("Marked as obtained");
+                      }}
+                        onVote={() => {
+                            Toast.show({
+                                type: 'success',
+                                text1: 'Voted for stamp',
+                            });
+                            console.log("Voted for stamp");
+                        }}
+                  />
+              ) :
+                  <LocationSheet
+                    location={selectedLocation}
+                    onSelectStamp={(stampId) => {
+                        setSelectedStampId(stampId);
+                        console.log('Location sheet -> Selected stamp:', stampId);
+                    }}
+                />
+              }
+          </TrueSheet>
 
         </View>
   );

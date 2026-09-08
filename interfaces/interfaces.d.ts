@@ -7,6 +7,44 @@ interface Stamp {
     location: string;
  */
 
+{/*
+interface StampLocation {
+    id: number;
+    name: string;
+    address: string;
+    location: string;
+    latitude: number;
+    longitude: number;
+
+    hours: OpeningHours;
+
+    holidayMode: HolidayMode;
+    holidayDetails: string;
+
+    hasFee: boolean;
+    feeAmount: number | null;
+    feeCurrency: string;
+
+    stamps: Stamp[];
+}
+
+interface Stamp {
+    id: number;
+    name: string;
+    image: string;
+
+    available: boolean;
+    obtained: boolean;
+    wishlisted: boolean;
+    dateObtained: Date | null;
+    notes: string;
+
+    thumbsUp: number;
+    thumbsDown: number;
+    userVote: 'up' | 'down' | null;
+}
+*/}
+
 // Report Location
 
 interface StampPhoto{
