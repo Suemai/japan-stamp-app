@@ -8,10 +8,11 @@ import ReportStamp from "@/components/reportStamps";
 import {colours} from "@/constants/colours";
 import {StampMarkers} from "@/components/stampMarkers";
 import { PLACEHOLDER_LOCATIONS } from '@/data/tempData';
-import {LocationSheet} from "@/components/locationSheet";
+import {LocationSheet} from "@/components/homeDetails/locationSheet";
 import { TrueSheet } from '@lodev09/react-native-true-sheet';
-import {StampSheet} from "@/components/stampSheet";
+import {StampSheet} from "@/components/homeDetails/stampSheet";
 import Toast from 'react-native-toast-message';
+import {FilterBar} from "@/components/filters/filterBar";
 
 /* Todo:
 - button under search bar for search this area - DONE
@@ -120,10 +121,12 @@ export default function Index() {
                   style={styles.icon}/>
           </Pressable>
 
+          {/*Search bar, Search buttons, filter pins*/}
           <View
               className="absolute top-16 left-4 right-4 z-10">
-              <SearchBar
-              placeholder={"Search for a stamp"}/>
+              {/*<SearchBar*/}
+              {/*placeholder={"Search for a stamp"}/>*/}
+              <FilterBar/>
               <SearchArea/>
           </View>
 

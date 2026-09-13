@@ -1,5 +1,5 @@
 import {FlatList, Text, View} from "react-native";
-import StampCard from "@/components/stampCard";
+import StampCard from "@/components/homeDetails/stampCard";
 import {PLACEHOLDER_LOCATIONS} from "@/data/tempData";
 
 const Obtained = () => {

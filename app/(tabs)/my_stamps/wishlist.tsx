@@ -1,6 +1,6 @@
 import {FlatList, Text, View} from 'react-native';
 import {PLACEHOLDER_LOCATIONS} from "@/data/tempData";
-import StampCard from "@/components/stampCard";
+import StampCard from "@/components/homeDetails/stampCard";
 
 const Wishlist = ()=> {
 

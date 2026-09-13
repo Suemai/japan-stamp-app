@@ -2,7 +2,7 @@ import React from 'react';
 import { Pressable, View, Text, Image, StyleSheet } from 'react-native';
 import {PLACEHOLDER_LOCATIONS, Stamp} from "@/data/tempData";
 import {colours} from "@/constants/colours";
-import {AvailabilityBadge} from "@/components/availabilityBadge";
+import {AvailabilityBadge} from "@/components/homeDetails/availabilityBadge";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 interface Props {

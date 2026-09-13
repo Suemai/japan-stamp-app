@@ -3,7 +3,7 @@ import {View, Text, ScrollView, StyleSheet, Pressable, Image} from 'react-native
 import {Stamp} from "@/data/tempData";
 import {colours} from "@/constants/colours";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import {AvailabilityBadge} from "@/components/availabilityBadge";
+import {AvailabilityBadge} from "@/components/homeDetails/availabilityBadge";
 
 interface Props {
     stamp: Stamp | undefined;

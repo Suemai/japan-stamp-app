@@ -2,7 +2,6 @@ import React from 'react';
 import {View, Text, ScrollView, StyleSheet} from 'react-native';
 import { StampRow } from './stampRow';
 import {StampLocation} from "@/data/tempData";
-import {buildHoursSummary} from "@/utils/hoursSummary";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import {colours} from "@/constants/colours";
 
