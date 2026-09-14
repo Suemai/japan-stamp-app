@@ -1,20 +1,39 @@
-import {FlatList} from "react-native";
 import StampCard from "@/components/stampCard";
-import {PLACEHOLDER_LOCATIONS} from "@/data/tempData";
+import { fetchStamps, StampRowMinimal } from "@/lib/stampApi";
+import { useEffect, useState } from "react";
+import { FlatList } from "react-native";
+
+interface StampTile {
+    id: string;
+    name: string;
+    image_url: string;
+}
 
 export default function Stamps() {
-    const allStamps = PLACEHOLDER_LOCATIONS.flatMap(location => location.stamps)
-        .sort((a, b) => a.name.localeCompare(b.name));
+    const [allStamps, setAllStamps] = useState<StampTile[]>([]);
+
+    useEffect(() => {
+        fetchStamps({ minimal: true })
+            .then((rows: StampRowMinimal[]) => setAllStamps(rows.map(row => ({
+                id: row.id,
+                name: row.name,
+                image_url: row.image_url,
+            }))))
+            .catch(error => console.error('Failed to fetch stamps:', error));
+    }, []);
+
+    // const sorted = [...allStamps].sort((a, b) => a.name.localeCompare(b.name));
+    const sorted = allStamps;
 
     return (
         <FlatList
-            data={allStamps}
-            keyExtractor={(item) => item.id.toString()}
+            data={sorted}
+            keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
                 <StampCard
                     id={item.id}
-                    name = {item.name}
-                    imageUri = {item.image}
+                    name={item.name}
+                    imageUri={item.image_url}
                 />
             )}
             numColumns={3}

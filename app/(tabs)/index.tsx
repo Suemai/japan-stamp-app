@@ -1,17 +1,31 @@
-import React, {useEffect, useRef, useState} from "react";
-import {Camera, MapView, UserLocation} from "@maplibre/maplibre-react-native";
-import {View, StyleSheet, Image, Pressable, Keyboard} from "react-native";
-import SearchBar from "@/components/searchBar";
-import {useRouter} from "expo-router";
-import SearchArea from "@/components/searchArea";
+import { LocationSheet } from "@/components/locationSheet";
 import ReportStamp from "@/components/reportStamps";
-import {colours} from "@/constants/colours";
-import {StampMarkers} from "@/components/stampMarkers";
-import { PLACEHOLDER_LOCATIONS } from '@/data/tempData';
-import {LocationSheet} from "@/components/locationSheet";
+import SearchArea from "@/components/searchArea";
+import SearchBar from "@/components/searchBar";
+import { StampMarkers } from "@/components/stampMarkers";
+import { StampSheet } from "@/components/stampSheet";
+import { colours } from "@/constants/colours";
+import { fetchLocationById, fetchLocationMarkers, fetchStampsAroundLocation, MapCoordinate, StampRow, StampSetRow } from '@/lib/stampApi';
+import { supabase } from '@/lib/supabase';
 import { TrueSheet } from '@lodev09/react-native-true-sheet';
-import {StampSheet} from "@/components/stampSheet";
+import { Camera, MapView, UserLocation } from "@maplibre/maplibre-react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { Image, Keyboard, Pressable, StyleSheet, View } from "react-native";
 import Toast from 'react-native-toast-message';
+
+function distanceBetweenCoordinates(first: MapCoordinate, second: MapCoordinate): number {
+    const earthRadiusKm = 6371;
+    const firstLatitude = first.latitude * Math.PI / 180;
+    const secondLatitude = second.latitude * Math.PI / 180;
+    const latitudeDifference = secondLatitude - firstLatitude;
+    const longitudeDifference = (second.longitude - first.longitude) * Math.PI / 180;
+    const haversine = Math.sin(latitudeDifference / 2) ** 2
+        + Math.cos(firstLatitude)
+        * Math.cos(secondLatitude)
+        * Math.sin(longitudeDifference / 2) ** 2;
+
+    return 2 * earthRadiusKm * Math.asin(Math.sqrt(haversine));
+}
 
 /* Todo:
 - button under search bar for search this area - DONE
@@ -23,14 +37,41 @@ export default function Index() {
     const mapRef = useRef(null)
     const cameraRef = useRef<any>(null);
     const [userLocation, setUserLocation] = useState<any>(null);
-    const [following] = useState(true);
+    const [following, setFollowing] = useState(true);
     const [heading, setHeading] = useState(0);
+    const [locations, setLocations] = useState<Array<StampSetRow & { stamps: StampRow[] }>>([]);
+    const [mapView, setMapView] = useState<{ centre: MapCoordinate; zoom: number; searchRadiusKm: number } | null>(null);
 
-    const [selectedLocationId, setSelectedLocationId] = useState<number | null>(null);
-    const selectedLocation = PLACEHOLDER_LOCATIONS.find(
+    useEffect(() => {
+        fetchLocationMarkers()
+            .then(rows => {
+                const lightweightRows = rows.map(row => ({
+                    ...row,
+                    created_by: null,
+                    name: '',
+                    address: '',
+                    location: '',
+                    hours: null,
+                    holiday_mode: 'open' as const,
+                    holiday_details: '',
+                    has_fee: false,
+                    fee_amount: 0,
+                    fee_currency: '',
+                    publicly_viewable: true,
+                    created_at: '',
+                    updated_at: '',
+                    stamps: [],
+                })) as Array<StampSetRow & { stamps: StampRow[] }>;
+                setLocations(lightweightRows);
+            })
+            .catch(error => console.error('fetchLocationMarkers error:', error));
+    }, []);
+
+    const [selectedLocationId, setSelectedLocationId] = useState<string | null>(null);
+    const selectedLocation = locations.find(
         (location) => location.id === selectedLocationId
     );
-    const [selectedStampId, setSelectedStampId] = useState<number | null>(null);
+    const [selectedStampId, setSelectedStampId] = useState<string | null>(null);
     const selectedStamp = selectedLocation?.stamps.find(
         (stamp) => stamp.id === selectedStampId
     );
@@ -38,10 +79,42 @@ export default function Index() {
 
     // const router = useRouter();
 
+    useEffect(() => {
+        const initializeAuth = async () => {
+            // 1. Fetch the existing session from secure storage
+            const { data: { session }, error } = await supabase.auth.getSession();
+
+            if (error) {
+                console.error('Error fetching session:', error.message);
+                return;
+            }
+
+            // 2. Only sign in anonymously if absolutely no session exists
+            // 12f4d554-f9a3-4b67-a214-333562966b6e
+            if (!session) {
+                console.log("attempting to sign in...");
+                const { data, error: signInError } = await supabase.auth.signInAnonymously();
+                
+                if (signInError) {
+                    console.error('Anonymous sign-in failed:', signInError.message);
+                } else {
+                    console.log('Signed in anonymously as:', data.user?.id);
+                }
+            } else {
+                // 3. An account is already active (could be permanent or previous anonymous)
+                const isAnonymous = session.user?.is_anonymous;
+                console.log(`User already active. Type: ${isAnonymous ? 'Anonymous' : 'Permanent'}, id: ${session.user?.id}`);
+            }
+        };
+
+        initializeAuth();
+    }, []);
+
     const recenterIcon = require("../../assets/images/icons/location-target.png");
 
     const currentLocationHandler = () => {
         if (!userLocation) return;
+        setFollowing(true);
         cameraRef.current?.setCamera({
             centerCoordinate: [userLocation.longitude, userLocation.latitude],
             zoomLevel: 20,
@@ -52,13 +125,53 @@ export default function Index() {
         // setFollowing(true);
     }
 
-    async function handleSelectLocation(id: number) {
+    async function handleSelectLocation(id: string) {
+        const detail = await fetchLocationById(id);
+        if (detail?.[0]) {
+            const hydrated = detail[0];
+            setLocations(current => {
+                const existing = current.find(row => row.id === id);
+                if (existing) {
+                    return current.map(row => row.id === id ? hydrated : row);
+                }
+                return [...current, hydrated];
+            });
+        }
         setSelectedLocationId(id);
         await sheetRef.current?.present();
     }
     async function handleCloseSheet() {
         await sheetRef.current?.dismiss();
         setSelectedLocationId(null);
+        setSelectedStampId(null);
+    }
+
+    async function handleSearchArea() {
+        console.log("Searching around map area...");
+        if (!mapView) return;
+
+        try {
+            const stamps = await fetchStampsAroundLocation(mapView.centre, mapView.searchRadiusKm);
+            const locationMap = new Map<string, StampSetRow & { stamps: StampRow[] }>();
+
+            for (const stamp of stamps) {
+                const location = stamp.stamp_locations;
+                if (!location) continue;
+
+                const existing = locationMap.get(location.id);
+                if (existing) {
+                    existing.stamps.push(stamp);
+                } else {
+                    locationMap.set(location.id, { ...location, stamps: [stamp] });
+                }
+            }
+
+            setLocations(Array.from(locationMap.values()));
+            setSelectedLocationId(null);
+            setSelectedStampId(null);
+        } catch (error) {
+            console.error('Search around map location failed:', error);
+        }
     }
     
     
@@ -78,14 +191,34 @@ export default function Index() {
               rotateEnabled = {true}
               onPress={() => Keyboard.dismiss()}
               onRegionDidChange={(region) => {
-                  //console.log("region changed, heading:", region.properties.heading);
+                  const [longitude, latitude] = region.geometry.coordinates;
+                  const centre = { longitude, latitude };
+                  const [northEast, southWest] = region.properties.visibleBounds;
+                  const searchRadiusKm = Math.max(
+                      distanceBetweenCoordinates(centre, {
+                          longitude: northEast[0],
+                          latitude: northEast[1],
+                      }),
+                      distanceBetweenCoordinates(centre, {
+                          longitude: southWest[0],
+                          latitude: southWest[1],
+                      }),
+                  );
+                  setMapView({
+                      centre,
+                      zoom: region.properties.zoomLevel,
+                      searchRadiusKm,
+                  });
+                  if (region.properties.isUserInteraction) {
+                      setFollowing(false);
+                  }
                   setHeading(region.properties.heading);
               }}
               >
 
               <Camera
                   ref = {cameraRef}
-                  zoomLevel = {20}
+                  defaultSettings={{ zoomLevel: 20 }}
                   animationMode = "flyTo"
                   followUserLocation = {following}>
               </Camera>
@@ -101,7 +234,7 @@ export default function Index() {
               </UserLocation>
 
               <StampMarkers
-                  locations={PLACEHOLDER_LOCATIONS}
+                  locations={locations}
                   onSelectLocation={handleSelectLocation}
                   cameraRef={cameraRef}
               />
@@ -124,7 +257,7 @@ export default function Index() {
               className="absolute top-16 left-4 right-4 z-10">
               <SearchBar
               placeholder={"Search for a stamp"}/>
-              <SearchArea/>
+              <SearchArea onPress={handleSearchArea}/>
           </View>
 
           {heading !== 0 && (

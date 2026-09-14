@@ -1,12 +1,14 @@
-import React from "react";
-import {View, Text, ScrollView, StyleSheet, Pressable, Image} from 'react-native';
-import {Stamp} from "@/data/tempData";
-import {colours} from "@/constants/colours";
+import { AvailabilityBadge } from "@/components/availabilityBadge";
+import { colours } from "@/constants/colours";
+import { fetchUserStampInfo, StampRow as StampApiRow, updateUserStampInfo } from '@/lib/stampApi';
+import { supabase } from '@/lib/supabase';
+import { getImageSource } from '@/utils/imageSource';
+import React, { useEffect, useState } from "react";
+import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import {AvailabilityBadge} from "@/components/availabilityBadge";
 
 interface Props {
-    stamp: Stamp | undefined;
+    stamp: StampApiRow | undefined;
     locationName: string;
     onBack: () => void;
     onClose: () => void;
@@ -20,9 +22,46 @@ interface Props {
 export function StampSheet({ stamp, locationName,
                                onBack, onClose, onToggleWishlist,
                                onToggleObtained, onVote}: Props) {
+    const [wishlisted, setWishlisted] = useState(false);
+    const [obtained, setObtained] = useState(false);
+    const [userVote, setUserVote] = useState<'up' | 'down' | null>(null);
+
+    useEffect(() => {
+        let active = true;
+
+        const loadUserStampInfo = async () => {
+            setWishlisted(false);
+            setObtained(false);
+            setUserVote(null);
+
+            if (!stamp) return;
+
+            try {
+                const { data: { session } } = await supabase.auth.getSession();
+                const userId = session?.user?.id;
+                if (!userId) return;
+
+                const userInfo = await fetchUserStampInfo(stamp.id, userId);
+                if (!active || !userInfo) return;
+
+                setWishlisted(userInfo.wishlisted);
+                setObtained(userInfo.obtained);
+                setUserVote(userInfo.vote);
+            } catch (error) {
+                console.error('Failed to fetch user stamp info:', error);
+            }
+        };
+
+        void loadUserStampInfo();
+
+        return () => {
+            active = false;
+        };
+    }, [stamp]);
+
     if (!stamp) return null;
 
-    const showWarning = stamp.thumbsDown > stamp.thumbsUp && stamp.thumbsDown >= 5;
+    const showWarning = stamp.thumbs_down > stamp.thumbs_up && stamp.thumbs_down >= 5;
 
     return (
         <ScrollView contentContainerStyle={styles.content}>
@@ -44,7 +83,8 @@ export function StampSheet({ stamp, locationName,
 
             <View style={styles.stampWrapper}>
                 <View style={styles.stampImageContainer}>
-                    <Image source={{uri: stamp.image}}
+                    <Image
+                       source={getImageSource(stamp.image_url)}
                        style={styles.stampIcon} />
                 </View>
                 <Text style={styles.locationLabel}>{locationName}</Text>
@@ -53,12 +93,6 @@ export function StampSheet({ stamp, locationName,
                     <AvailabilityBadge available={stamp.available} />
                 </View>
             </View>
-
-            {stamp.obtained && stamp.dateObtained && (
-                <Text style={styles.obtainedNote}>
-                    Collected {new Date(stamp.dateObtained).toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' })}
-                </Text>
-            )}
 
             {showWarning && (
                 <View style={styles.warnBox}>
@@ -70,34 +104,54 @@ export function StampSheet({ stamp, locationName,
 
             <View style={styles.actions}>
                 <Pressable
-                    style={[styles.actionButton, stamp.wishlisted && styles.actionWishActive]}
-                    onPress={onToggleWishlist}
+                    style={[styles.actionButton, wishlisted && styles.actionWishActive]}
+                    onPress={async () => {
+                        const nextValue = !wishlisted;
+                        setWishlisted(nextValue);
+                        try {
+                            await updateUserStampInfo(stamp.id, { wishlisted: nextValue });
+                            onToggleWishlist();
+                        } catch (error) {
+                            setWishlisted(!nextValue);
+                            console.error('Failed to update wishlist:', error);
+                        }
+                    }}
                 >
                     <MaterialCommunityIcons
-                        name={stamp.wishlisted ? "bookmark": "bookmark-outline"}
+                        name={wishlisted ? "bookmark": "bookmark-outline"}
                         size={18}
-                        color={stamp.wishlisted ? colours.primary.default2 : colours.primary.default}
+                        color={wishlisted ? colours.primary.default2 : colours.primary.default}
                     />
                     <Text style={[
                         styles.actionLabel,
-                        stamp.wishlisted && styles.actionLabelWishlisted]}>
-                        {stamp.wishlisted ? 'Wishlisted' : 'Wishlist'}
+                        wishlisted && styles.actionLabelWishlisted]}>
+                        {wishlisted ? 'Wishlisted' : 'Wishlist'}
                     </Text>
                 </Pressable>
 
                 <Pressable
                     style={[styles.actionButton,
-                        stamp.obtained && styles.actionObtainedActive]}
-                    onPress={onToggleObtained}
+                        obtained && styles.actionObtainedActive]}
+                    onPress={async () => {
+                        const nextValue = !obtained;
+                        setObtained(nextValue);
+                        try {
+                            await updateUserStampInfo(stamp.id, { obtained: nextValue });
+                            onToggleObtained();
+                        } catch (error) {
+                            setObtained(!nextValue);
+                            console.error('Failed to update obtained status:', error);
+                        }
+                    }}
                 >
                     <MaterialCommunityIcons
-                        name={stamp.obtained ? "check-circle" : "check-circle-outline"}
+                        name={obtained ? "check-circle" : "check-circle-outline"}
                         size={18}
-                        color={stamp.obtained ? colours.primary.default2 : colours.primary.default} />
+                        color={obtained ? colours.primary.default2 : colours.primary.default} />
                     <Text style={[
                         styles.actionLabel,
-                        stamp.obtained && styles.actionLabelActive]}>
-                        {stamp.obtained ? 'Obtained' : 'Mark obtained'}
+                        obtained && styles.actionLabelActive]}>
+                        {obtained ? 'Obtained' : 'Mark obtained'}
                     </Text>
                 </Pressable>
             </View>
@@ -107,35 +161,55 @@ export function StampSheet({ stamp, locationName,
                 <Pressable
                     style={[
                         styles.voteBtn,
-                        stamp.userVote === 'up' && styles.voteBtnUpActive]}
-                    onPress={() => onVote('up')}
+                        userVote === 'up' && styles.voteBtnUpActive]}
+                    onPress={async () => {
+                        const previousVote = userVote;
+                        setUserVote('up');
+                        try {
+                            await updateUserStampInfo(stamp.id, { vote: 'up' });
+                            onVote('up');
+                        } catch (error) {
+                            setUserVote(previousVote);
+                            console.error('Failed to save upvote:', error);
+                        }
+                    }}
                 >
                     <MaterialCommunityIcons
-                        name={stamp.userVote === 'up' ? "thumb-up" : "thumb-up-outline"}
+                        name={userVote === 'up' ? "thumb-up" : "thumb-up-outline"}
                         size={17}
-                        color={stamp.userVote === 'up' ? colours.secondary.dark2 : colours.primary.light}
+                        color={userVote === 'up' ? colours.secondary.dark2 : colours.primary.light}
                     />
                     <Text style={[
                         styles.voteCount,
-                        stamp.userVote === 'up' && { color: colours.secondary.dark2 }]}>
-                        {stamp.thumbsUp}
+                        userVote === 'up' && { color: colours.secondary.dark2 }]}>
+                        {stamp.thumbs_up}
                     </Text>
                 </Pressable>
 
                 <Pressable
                     style={[
                         styles.voteBtn,
-                        stamp.userVote === 'down' && styles.voteBtnDownActive]}
-                    onPress={() => onVote('down')}
+                        userVote === 'down' && styles.voteBtnDownActive]}
+                    onPress={async () => {
+                        const previousVote = userVote;
+                        setUserVote('down');
+                        try {
+                            await updateUserStampInfo(stamp.id, { vote: 'down' });
+                            onVote('down');
+                        } catch (error) {
+                            setUserVote(previousVote);
+                            console.error('Failed to save downvote:', error);
+                        }
+                    }}
                 >
                     <MaterialCommunityIcons
-                        name={stamp.userVote === 'down' ? "thumb-down" : "thumb-down-outline"}
+                        name={userVote === 'down' ? "thumb-down" : "thumb-down-outline"}
                         size={17}
-                        color={stamp.userVote === 'down' ? colours.warnings.error : colours.primary.light} />
+                        color={userVote === 'down' ? colours.warnings.error : colours.primary.light} />
                     <Text style={[
                         styles.voteCount,
-                        stamp.userVote === 'down' && { color: colours.warnings.error }]}>
-                        {stamp.thumbsDown}
+                        userVote === 'down' && { color: colours.warnings.error }]}>
+                        {stamp.thumbs_down}
                     </Text>
                 </Pressable>
             </View>

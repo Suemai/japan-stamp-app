@@ -1,6 +1,6 @@
-import React, {useRef} from 'react';
-import { ShapeSource, SymbolLayer, Images } from '@maplibre/maplibre-react-native';
-import {StampLocation} from "@/data/tempData";
+import { StampSetRow } from '@/lib/stampApi';
+import { Images, ShapeSource, SymbolLayer } from '@maplibre/maplibre-react-native';
+import React, { useRef } from 'react';
 
 const PIN_COLOR = {
     stampColour: '#eb7364',
@@ -8,8 +8,8 @@ const PIN_COLOR = {
 };
 
 interface Props {
-    locations: StampLocation[];
-    onSelectLocation: (LocationId: number) => void;
+    locations: Array<StampSetRow & { stamps?: any[] }>;
+    onSelectLocation: (LocationId: string) => void;
     cameraRef: React.RefObject<any>;
 }
 
@@ -32,7 +32,7 @@ export function StampMarkers({ locations, onSelectLocation, cameraRef }: Props) 
 
     async function handlePress(e: any) {
         const feature = e.features?.[0];
-        const locationId = Number(feature.properties?.id);
+        const locationId = String(feature.properties?.id);
 
         if (!feature) {
             return;

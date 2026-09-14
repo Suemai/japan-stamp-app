@@ -1,14 +1,13 @@
+import { colours } from "@/constants/colours";
+import { StampRow as DBStampRow, StampSetRow } from '@/lib/stampApi';
 import React from 'react';
-import {View, Text, ScrollView, StyleSheet} from 'react-native';
-import { StampRow } from './stampRow';
-import {StampLocation} from "@/data/tempData";
-import {buildHoursSummary} from "@/utils/hoursSummary";
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import {colours} from "@/constants/colours";
+import { StampRow } from './stampRow';
 
 interface Props {
-    location: StampLocation | undefined;
-    onSelectStamp: (stampId: number) => void;
+    location: (StampSetRow & { stamps: DBStampRow[] }) | undefined;
+    onSelectStamp: (stampId: string) => void;
 }
 
 function Labels({ label }: { label: string }) {
@@ -30,42 +29,32 @@ function InfoItem({ icon, label, value }: { icon: React.ReactNode; label: string
     );
 }
 
-function getTodayHours(hours: OpeningHours): string {
-    const dayKeys: (keyof OpeningHours)[] = [
-        "sun",
-        "mon",
-        "tue",
-        "wed",
-        "thu",
-        "fri",
-        "sat",
-    ];
-
-    const todayKey = dayKeys[new Date().getDay()];
-    const today = hours[todayKey];
-
-    if (!today.open) {
-        return "Closed";
+function getTodayHours(hours: Record<string, any> | null): string {
+    if (!hours) {
+        return 'Unknown hours';
     }
 
-    return `${today.openTime}–${today.closeTime}`;
+    const dayKeys = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+    const todayKey = dayKeys[new Date().getDay()];
+    const today = hours[todayKey] ?? { open: false, openTime: '', closeTime: '' };
+
+    if (!today.open) {
+        return 'Closed';
+    }
+
+    return `${today.openTime ?? ''}–${today.closeTime ?? ''}`;
 }
 
-function formatHoliday(holidayMode: HolidayMode, holidayDetails: string): string {
+function formatHoliday(holidayMode: string | null, holidayDetails: string): string {
     switch (holidayMode) {
-        case "known":
-            return holidayDetails
-                ? `${holidayDetails}`
-                : "Holiday dates known";
-
-        case "unknown":
-            return "Unknown";
-
-        case "none":
-            return "No holiday closure";
-
+        case 'open':
+            return holidayDetails || 'No holiday closure';
+        case 'closed':
+            return holidayDetails || 'Closed';
+        case 'limited':
+            return holidayDetails || 'Limited hours';
         default:
-            return "";
+            return holidayDetails || 'No holiday closure';
     }
 }
 
@@ -95,7 +84,7 @@ export function LocationSheet({
                 />
             }
                 label="Hours"
-                value={getTodayHours(location.hours)}
+                value={getTodayHours(location.hours ?? null)}
             />
             <InfoItem
                 icon={
@@ -106,7 +95,7 @@ export function LocationSheet({
                 />
             }
                 label="Holiday"
-                value={formatHoliday(location.holidayMode, location.holidayDetails)}
+                value={formatHoliday(location.holiday_mode, location.holiday_details)}
             />
             <InfoItem
                 icon={
@@ -117,7 +106,7 @@ export function LocationSheet({
                 />
             }
                 label="Entry fee"
-                value={location.feeAmount ? `${location.feeAmount}` + ` ${location.feeCurrency}` : "Free"}
+                value={location.fee_amount ? `${location.fee_amount}` + ` ${location.fee_currency}` : "Free"}
             />
         </View>
 
@@ -125,7 +114,7 @@ export function LocationSheet({
             {location.stamps.map((stamp) => (
                 <StampRow
                     key={stamp.id}
-                    stamp={stamp}
+                    stamp={stamp as any}
                     onPress={onSelectStamp} />
             ))}
         </ScrollView>

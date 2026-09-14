@@ -1,13 +1,14 @@
+import { AvailabilityBadge } from "@/components/availabilityBadge";
+import { colours } from "@/constants/colours";
+import { StampRow as StampApiRow } from '@/lib/stampApi';
+import { getImageSource } from '@/utils/imageSource';
 import React from 'react';
-import { Pressable, View, Text, Image, StyleSheet } from 'react-native';
-import {PLACEHOLDER_LOCATIONS, Stamp} from "@/data/tempData";
-import {colours} from "@/constants/colours";
-import {AvailabilityBadge} from "@/components/availabilityBadge";
+import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 interface Props {
-    stamp: Stamp;
-    onPress: (stampId: number) => void;
+    stamp: StampApiRow;
+    onPress: (stampId: string) => void;
 }
 
 export function StampRow({ stamp, onPress }: Props) {
@@ -21,14 +22,14 @@ export function StampRow({ stamp, onPress }: Props) {
         >
             <View style={[styles.row]}>
                 <View style={styles.mark}>
-                    <Image source={{uri: stamp.image}}
+                    <Image
+                        source={getImageSource(stamp.image_url)}
                         style={styles.markImage} />
                 </View>
 
                 <View style={styles.mid}>
                     <Text style={styles.name}>
                         {stamp.name}
-                        {stamp.obtained ? '   ✓' : ''}
                     </Text>
                     <AvailabilityBadge available={stamp.available} />
                 </View>

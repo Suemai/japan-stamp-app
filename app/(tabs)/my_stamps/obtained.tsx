@@ -1,22 +1,40 @@
-import {FlatList, Text, View} from "react-native";
 import StampCard from "@/components/stampCard";
-import {PLACEHOLDER_LOCATIONS} from "@/data/tempData";
+import { fetchUserStamps, StampRow } from "@/lib/stampApi";
+import { useFocusEffect } from 'expo-router';
+import { useCallback, useState } from "react";
+import { FlatList } from "react-native";
 
 const Obtained = () => {
+    const [obtainedStamps, setObtainedStamps] = useState<StampRow[]>([]);
 
-    const obtainedStamps = PLACEHOLDER_LOCATIONS.flatMap(location => location.stamps)
-        .filter(stamp => stamp.obtained)
-        .sort((a, b) => a.name.localeCompare(b.name));
+    useFocusEffect(useCallback(() => {
+        let active = true;
+
+        (async () => {
+            try {
+                const rows = await fetchUserStamps('obtained');
+                if (active) setObtainedStamps(rows);
+            } catch (error) {
+                console.error('Failed to fetch obtained stamps:', error);
+                if (active) setObtainedStamps([]);
+            }
+        })();
+        return () => {
+            active = false;
+        };
+    }, []));
+
+    const sorted = [...obtainedStamps].sort((a, b) => a.name.localeCompare(b.name));
 
     return (
         <FlatList
-            data={obtainedStamps}
-            keyExtractor={(item) => item.id.toString()}
+            data={sorted}
+            keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
                 <StampCard
                     id={item.id}
-                    name = {item.name}
-                    imageUri = {item.image}
+                    name={item.name}
+                    imageUri={item.image_url}
                 />
             )}
             numColumns={3}

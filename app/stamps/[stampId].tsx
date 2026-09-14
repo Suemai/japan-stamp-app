@@ -1,11 +1,13 @@
-import {View, Text, Image, StyleSheet, TextInput, ScrollView, Platform, TouchableOpacity} from 'react-native'
-import React, {useState} from 'react'
-import { TabView, TabBar, SceneRendererProps, NavigationState } from "react-native-tab-view";
-import {useLocalSearchParams, useRouter} from "expo-router";
-import {PLACEHOLDER_LOCATIONS} from "@/data/tempData";
+import { fetchStampById, fetchUserStampInfo, StampRow, StampSetRow, updateUserStampInfo } from "@/lib/stampApi";
+import { supabase } from "@/lib/supabase";
+import { buildHoursSummary } from "@/utils/hoursSummary";
+import { getImageSource } from '@/utils/imageSource';
 import DateTimePicker, { DateTimePickerEvent } from "@react-native-community/datetimepicker";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
+import React, { useEffect, useState } from 'react';
+import { Image, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { NavigationState, SceneRendererProps, TabBar, TabView } from "react-native-tab-view";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import {buildHoursSummary} from "@/utils/hoursSummary";
 
 /* The page that shows details of the stamp, not the stamp set!
 TODO:
@@ -124,9 +126,12 @@ const CommentsTab = () => (
     </ScrollView>
 );
 
-const StampHeader = ({ stamp, location }: { stamp: any; location: any }) => (
+const StampHeader = ({ stamp, location }: { stamp: StampRow; location: StampSetRow }) => (
     <View style={styles.header}>
-        <Image source={{ uri: stamp.image }} style={styles.headerImage} />
+        <Image
+            source={getImageSource(stamp.image_url)}
+            style={styles.headerImage}
+        />
         <View style={styles.headerInfo}>
             <Text style={styles.stampName}>{stamp.name}</Text>
             <Text style={styles.stampAddress}>{location.address}</Text>
@@ -138,12 +143,12 @@ const StampHeader = ({ stamp, location }: { stamp: any; location: any }) => (
 
             <View style={styles.headerRow}>
                 <Text style={styles.headerLabel}>Hours</Text>
-                <Text style={styles.headerValue}>{buildHoursSummary(location.hours)}</Text>
+                <Text style={styles.headerValue}>{buildHoursSummary(location.hours as any)}</Text>
             </View>
 
             <View style={styles.headerRow}>
                 <Text style={styles.headerLabel}>Holiday</Text>
-                <Text style={styles.headerValue}>{location.holidayDetails}</Text>
+                <Text style={styles.headerValue}>{location.holiday_details}</Text>
             </View>
         </View>
     </View>
@@ -177,7 +182,7 @@ const StatsRow = ({
                 color="#888"
             />
             <Text style={styles.statLabel}>
-                {fee != null ? `${fee} ${feeCurrency} ` : "Free"}
+                {fee != null && fee !== 0 ? `${fee} ${feeCurrency} ` : "Free"}
             </Text>
         </View>
 
@@ -226,27 +231,65 @@ const routes: Route[] = [
 
 const StampDetails = () => {
 
-    const {stampId} = useLocalSearchParams();
+    const {stampId} = useLocalSearchParams<{ stampId: string }>();
     const router = useRouter();
-    const info = PLACEHOLDER_LOCATIONS
-        .flatMap(location => location.stamps.map(stamp =>({
-            stamp,
-            location,
-        }))
-        ).find(item => item.stamp.id === Number(stampId));
-    const stamp = info?.stamp;
-    const location = info?.location;
+    const [stamp, setStamp] = useState<StampRow | null>(null);
+    const [location, setLocation] = useState<StampSetRow | null>(null);
 
-    const [obtained, setObtained] = useState(stamp?.obtained ?? false);
-    const [wishlisted, setWishlisted] = useState(stamp?.wishlisted ?? false);
-    const [notes, setNotes] = useState(stamp?.notes ?? '');
-    const [dateObtained, setDateObtained] = useState<Date>(stamp?.dateObtained ?? new Date());
+    useEffect(() => {
+        if (!stampId) return;
+        fetchStampById(String(stampId))
+            .then(row => {
+                setStamp(row);
+                setLocation(row?.stamp_locations ? row.stamp_locations as StampSetRow : null);
+            })
+            .catch(error => console.error('fetchStampById error:', error));
+    }, [stampId]);
+
+    const [obtained, setObtained] = useState(false);
+    const [wishlisted, setWishlisted] = useState(false);
+    const [notes, setNotes] = useState('');
+    const [dateObtained, setDateObtained] = useState<Date>(new Date());
     const [tabIndex, setTabIndex] = useState(0);
 
-    if (!stamp) {
-        // console.log("Placeholders: "+ PLACEHOLDER_LOCATIONS);
-        // console.log(stamp);
-        // console.log("id:", stampId, "typeof:", typeof stampId);
+    useEffect(() => {
+        if (!stamp) return;
+        setObtained(false);
+        setWishlisted(false);
+        setNotes('');
+        setDateObtained(new Date());
+    }, [stamp]);
+
+    useEffect(() => {
+        let active = true;
+
+        const loadUserStampInfo = async () => {
+            if (!stamp) return;
+
+            try {
+                const { data: { session } } = await supabase.auth.getSession();
+                const userId = session?.user?.id;
+                if (!userId) return;
+
+                const userInfo = await fetchUserStampInfo(stamp.id, userId);
+                if (!active || !userInfo) return;
+
+                setObtained(userInfo.obtained);
+                setWishlisted(userInfo.wishlisted);
+                setNotes(userInfo.notes);
+            } catch (error) {
+                console.error('Failed to fetch user stamp info:', error);
+            }
+        };
+
+        void loadUserStampInfo();
+
+        return () => {
+            active = false;
+        };
+    }, [stamp]);
+
+    if (!stamp || !location) {
         return <Text>Stamp not found</Text>
     }
 
@@ -280,26 +323,48 @@ const StampDetails = () => {
     );
 
     return (
-        <View style={styles.screen}>
-            <StampHeader stamp={stamp} location={location} />
+        <>
+            <Stack.Screen options={{ title: stamp?.stamp_locations?.name ?? 'Stamp details' }} />
 
-            <StatsRow
-                fee={location?.feeAmount?? null}
-                feeCurrency={location?.feeCurrency}
-                availability={stamp.available}
-                obtained={obtained}
-                wishlisted={wishlisted}
-                onToggleObtained={() => setObtained(v => !v)}
-                onToggleWishlisted={() => setWishlisted(v => !v)}
-            />
+            <View style={styles.screen}>
+                <StampHeader stamp={stamp} location={location} />
 
-            <TabView
-                navigationState={{ index: tabIndex, routes }}
-                renderScene={renderScene}
-                renderTabBar={renderTabBar}
-                onIndexChange={setTabIndex}
-            />
-        </View>
+                <StatsRow
+                    fee={location?.fee_amount ?? null}
+                    feeCurrency={location?.fee_currency}
+                    availability={stamp.available}
+                    obtained={obtained}
+                    wishlisted={wishlisted}
+                    onToggleObtained={async () => {
+                        const nextValue = !obtained;
+                        setObtained(nextValue);
+                        try {
+                            await updateUserStampInfo(stamp.id, { obtained: nextValue });
+                        } catch (error) {
+                            setObtained(!nextValue);
+                            console.error('Failed to update obtained status:', error);
+                        }
+                    }}
+                    onToggleWishlisted={async () => {
+                        const nextValue = !wishlisted;
+                        setWishlisted(nextValue);
+                        try {
+                            await updateUserStampInfo(stamp.id, { wishlisted: nextValue });
+                        } catch (error) {
+                            setWishlisted(!nextValue);
+                            console.error('Failed to update wishlist:', error);
+                        }
+                    }}
+                />
+
+                <TabView
+                    navigationState={{ index: tabIndex, routes }}
+                    renderScene={renderScene}
+                    renderTabBar={renderTabBar}
+                    onIndexChange={setTabIndex}
+                />
+            </View>
+        </>
     )
 }
 

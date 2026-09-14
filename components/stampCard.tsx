@@ -1,6 +1,7 @@
-import {View, Text, TouchableOpacity, Image} from 'react-native'
-import React from 'react'
-import {Link} from "expo-router";
+import { getImageSource } from '@/utils/imageSource';
+import { Link } from "expo-router";
+import React from 'react';
+import { Image, Text, TouchableOpacity } from 'react-native';
 
 /* The page that shows the stamp card for my stamps and all stamps
 TODO:
@@ -13,7 +14,7 @@ TODO:
  */
 
 type StampCardProps = {
-    id: number
+    id: string
     name: string
     imageUri: string
 }
@@ -31,7 +32,7 @@ const StampCard = ({id, name, imageUri}: StampCardProps) => {
                 elevation: 5,
             }}>
                 <Image
-                    source={{uri: imageUri}}
+                    source={getImageSource(imageUri)}
                     className= "w-full rounded-lg"
                     style={{aspectRatio: 1}}
                     resizeMode="cover"

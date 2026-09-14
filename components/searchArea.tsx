@@ -1,15 +1,19 @@
-import {Text, Pressable} from 'react-native';
+import { Pressable, Text } from 'react-native';
 
 /* Todo:
 - make button actually pressable, maybe with a bit on animation
 - logic for searching and fetching stamps in the area
 */
 
-const SearchArea = () => {
+interface Props {
+    onPress: () => void;
+}
+
+const SearchArea = ({ onPress }: Props) => {
 
     return (
         <Pressable
-            onPress={() => {}}
+            onPress={onPress}
             style={{
                 flexDirection: 'row',
                 alignItems: 'center',
