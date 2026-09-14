@@ -24,7 +24,10 @@ const SearchArea = ({ onPress }: Props) => {
                 paddingHorizontal: 20,
                 paddingVertical: 10,
                 shadowColor: '#000',
-                shadowOffset: { width: 0, height: 2 },
+                shadowOffset: {
+                    width: 0,
+                    height: 2
+                },
                 shadowOpacity: 0.18,
                 shadowRadius: 6,
                 elevation: 5,

@@ -1,9 +1,8 @@
-import { LocationSheet } from "@/components/locationSheet";
+import { FilterBar } from "@/components/filters/filterBar";
+import { LocationSheet } from "@/components/homeDetails/locationSheet";
+import { StampSheet } from "@/components/homeDetails/stampSheet";
 import ReportStamp from "@/components/reportStamps";
-import SearchArea from "@/components/searchArea";
-import SearchBar from "@/components/searchBar";
 import { StampMarkers } from "@/components/stampMarkers";
-import { StampSheet } from "@/components/stampSheet";
 import { colours } from "@/constants/colours";
 import { fetchLocationById, fetchLocationMarkers, fetchStampsAroundLocation, MapCoordinate, StampRow, StampSetRow } from '@/lib/stampApi';
 import { supabase } from '@/lib/supabase';
@@ -253,11 +252,13 @@ export default function Index() {
                   style={styles.icon}/>
           </Pressable>
 
+          {/*Search bar, Search buttons, filter pins*/}
           <View
               className="absolute top-16 left-4 right-4 z-10">
-              <SearchBar
-              placeholder={"Search for a stamp"}/>
-              <SearchArea onPress={handleSearchArea}/>
+              {/*<SearchBar*/}
+              {/*placeholder={"Search for a stamp"}/>*/}
+              <FilterBar/>
+              {/* <SearchArea/> */}
           </View>
 
           {heading !== 0 && (

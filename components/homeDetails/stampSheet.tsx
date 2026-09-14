@@ -1,4 +1,4 @@
-import { AvailabilityBadge } from "@/components/availabilityBadge";
+import { AvailabilityBadge } from "@/components/homeDetails/availabilityBadge";
 import { colours } from "@/constants/colours";
 import { fetchUserStampInfo, StampRow as StampApiRow, updateUserStampInfo } from '@/lib/stampApi';
 import { supabase } from '@/lib/supabase';

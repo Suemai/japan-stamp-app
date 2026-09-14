@@ -1,4 +1,4 @@
-import StampCard from "@/components/stampCard";
+import StampCard from "@/components/homeDetails/stampCard";
 import { fetchUserStamps, StampRow } from "@/lib/stampApi";
 import { useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';

@@ -1,4 +1,4 @@
-import { AvailabilityBadge } from "@/components/availabilityBadge";
+import { AvailabilityBadge } from "@/components/homeDetails/availabilityBadge";
 import { colours } from "@/constants/colours";
 import { StampRow as StampApiRow } from '@/lib/stampApi';
 import { getImageSource } from '@/utils/imageSource';

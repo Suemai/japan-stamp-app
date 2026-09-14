@@ -1,4 +1,4 @@
-import StampCard from "@/components/stampCard";
+import StampCard from "@/components/homeDetails/stampCard";
 import { fetchStamps, StampRowMinimal } from "@/lib/stampApi";
 import { useEffect, useState } from "react";
 import { FlatList } from "react-native";
